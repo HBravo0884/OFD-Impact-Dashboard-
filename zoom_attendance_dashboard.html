@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUCM Zoom Attendance Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg:#f0f2f5; --card:#fff; --header:#003366; --accent:#E5001A;
+      --text:#1a1a2e; --muted:#6c757d; --border:#e0e4ea;
+      --pos:#18a558; --neg:#dc3545; --gold:#F4A31A;
+      --gap:16px; --r:10px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+    .wrap{max-width:1440px;margin:0 auto;padding:var(--gap);}
+    /* Header */
+    .hdr{background:var(--header);color:#fff;padding:18px 26px;border-radius:var(--r);margin-bottom:var(--gap);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+    .hdr h1{font-size:19px;font-weight:700;}
+    .hdr p{font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+    .fg{display:flex;flex-direction:column;gap:3px;}
+    .fg label{font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.4px;}
+    .fg select{padding:6px 10px;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-size:12px;cursor:pointer;min-width:140px;}
+    .fg select option{background:#003366;}
+    .refresh-btn{padding:7px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:6px;color:#fff;font-size:12px;cursor:pointer;white-space:nowrap;}
+    .refresh-btn:hover{background:rgba(255,255,255,.25);}
+    /* KPIs */
+    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--gap);margin-bottom:var(--gap);}
+    .kpi{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid var(--header);}
+    .kpi.r{border-top-color:var(--accent);} .kpi.g{border-top-color:var(--pos);} .kpi.o{border-top-color:var(--gold);}
+    .kpi-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+    .kpi-val{font-size:28px;font-weight:800;line-height:1;}
+    .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+    /* Cards */
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:var(--gap);}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--gap);margin-bottom:var(--gap);}
+    .grid21{display:grid;grid-template-columns:2fr 1fr;gap:var(--gap);margin-bottom:var(--gap);}
+    .card{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+    .card h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px;color:var(--text);}
+    .card canvas{max-height:260px;}
+    /* Section label */
+    .sec{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;border-left:3px solid var(--accent);padding-left:9px;margin:18px 0 10px;}
+    /* Table */
+    .tbl-wrap{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow-x:auto;margin-bottom:var(--gap);}
+    .tbl-wrap h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px;}
+    table{width:100%;border-collapse:collapse;font-size:12px;min-width:750px;}
+    thead th{padding:8px 11px;border-bottom:2px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;cursor:pointer;user-select:none;white-space:nowrap;text-align:left;}
+    thead th:hover{color:var(--text);background:#f8f9fa;}
+    tbody td{padding:8px 11px;border-bottom:1px solid #f2f4f6;}
+    tbody tr:hover{background:#fafbfc;}
+    tbody tr:last-child td{border-bottom:none;}
+    .badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;}
+    .b1{background:#e8f0fe;color:#2956b2;} .b2{background:#fce8e8;color:#b71c1c;}
+    .b3{background:#e8f8ee;color:#1a7a43;} .b4{background:#fff4e0;color:#b07a00;}
+    .b5{background:#f3e8ff;color:#6a1b9a;} .b6{background:#e0f7fa;color:#006064;}
+    .b7{background:#fce4ec;color:#880e4f;} .b8{background:#e8eaf6;color:#283593;}
+    /* Reg banner */
+    .reg-banner{background:linear-gradient(135deg,#003366 0%,#00509E 100%);color:#fff;border-radius:var(--r);padding:15px 22px;margin-bottom:var(--gap);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+    .reg-banner .rt{font-size:15px;font-weight:700;} .reg-banner .rm{font-size:11px;color:rgba(255,255,255,.65);margin-top:3px;}
+    .reg-pill{background:rgba(255,255,255,.15);border-radius:30px;padding:6px 18px;font-size:22px;font-weight:800;white-space:nowrap;}
+    /* Footer */
+    .foot{text-align:center;color:var(--muted);font-size:11px;padding:10px 0 4px;}
+    .upd-badge{display:inline-block;background:#e8f0fe;color:#2956b2;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;margin-bottom:12px;}
+    /* Pagination */
+    .pager{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--muted);}
+    .pager button{padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:var(--card);cursor:pointer;font-size:12px;}
+    .pager button:hover{background:#f0f2f5;}
+    .pager button:disabled{opacity:.4;cursor:not-allowed;}
+    @media(max-width:900px){.grid2,.grid3,.grid21{grid-template-columns:1fr;} .kpis{grid-template-columns:repeat(2,1fr);}}
+    @media print{.filters,.refresh-btn{display:none;} body{background:#fff;}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hdr">
+    <div>
+      <h1>Howard University — HUCM Zoom Attendance Dashboard</h1>
+      <p>College of Medicine &nbsp;·&nbsp; Host: Veronica Bruce &nbsp;·&nbsp; Jul 2025 – Feb 2026 &nbsp;·&nbsp; Updated: April 01, 2026 at 11:24 AM</p>
+    </div>
+    <div class="filters">
+      <div class="fg"><label>Month</label>
+        <select id="f-month" onchange="dash.filter()">
+          <option value="all">All Months</option>
+          <option value="Jul 2025">Jul 2025</option><option value="Aug 2025">Aug 2025</option><option value="Sep 2025">Sep 2025</option><option value="Oct 2025">Oct 2025</option><option value="Nov 2025">Nov 2025</option><option value="Dec 2025">Dec 2025</option><option value="Jan 2026">Jan 2026</option><option value="Feb 2026">Feb 2026</option>
+        </select>
+      </div>
+      <div class="fg"><label>Series</label>
+        <select id="f-series" onchange="dash.filter()">
+          <option value="all">All Series</option>
+          <option value="APT Process">APT Process</option><option value="All of Us">All of Us</option><option value="Dean's Lecture">Dean's Lecture</option><option value="Faculty Meeting">Faculty Meeting</option><option value="Faculty Workshop">Faculty Workshop</option><option value="HUCM I&A">HUCM I&A</option><option value="Leadership">Leadership</option><option value="OFD">OFD</option><option value="Other">Other</option><option value="SWAT">SWAT</option><option value="Seminar">Seminar</option><option value="WAG">WAG</option>
+        </select>
+      </div>
+      <div class="fg"><label>Min Participants</label>
+        <select id="f-minpax" onchange="dash.filter()">
+          <option value="0">Show All</option>
+          <option value="2" selected>2+ (exclude tests)</option>
+          <option value="5">5+</option>
+          <option value="10">10+</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- KPIs -->
+  <section class="kpis" id="kpis"></section>
+
+  <div class="sec">Attendance Trends</div>
+  <div class="grid21">
+    <div class="card"><h3>Monthly Participants Trend</h3><canvas id="c-trend"></canvas></div>
+    <div class="card"><h3>Sessions by Series</h3><canvas id="c-series-donut" style="max-height:240px;"></canvas></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><h3>Participants by Series</h3><canvas id="c-series-bar"></canvas></div>
+    <div class="card"><h3>Internal vs External Attendees (by Series)</h3><canvas id="c-int-ext"></canvas></div>
+  </div>
+
+  <div class="sec">Session Detail</div>
+  <div class="tbl-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="margin:0;">All Sessions</h3>
+      <span class="upd-badge" id="session-count">— sessions</span>
+    </div>
+    <div id="tbl"></div>
+    <div class="pager">
+      <span id="pager-info"></span>
+      <div style="display:flex;gap:6px;">
+        <button id="btn-prev" onclick="dash.prevPage()">← Prev</button>
+        <button id="btn-next" onclick="dash.nextPage()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">Registration — The Dean's Dynamic Duo Lecture Series</div>
+  <div class="reg-banner">
+    <div>
+      <div class="rt">The Dean's Dynamic Duo Lecture Series</div>
+      <div class="rm">Scheduled: Jan 21, 2026 &nbsp;·&nbsp; Duration: 60 min &nbsp;·&nbsp; All approved</div>
+    </div>
+    <div class="reg-pill">194 Registrants</div>
+  </div>
+  <div class="grid3">
+    <div class="card"><h3>By Position</h3><canvas id="c-pos" style="max-height:220px;"></canvas></div>
+    <div class="card"><h3>By Degree</h3><canvas id="c-deg" style="max-height:220px;"></canvas></div>
+    <div class="card"><h3>Registration Timeline</h3><canvas id="c-regtl" style="max-height:220px;"></canvas></div>
+  </div>
+
+  <footer class="foot">Data auto-generated from Zoom exports in this folder &nbsp;·&nbsp; HUCM, Howard University &nbsp;·&nbsp; Last updated: April 01, 2026 at 11:24 AM</footer>
+</div>
+<script>
+// ── EMBEDDED DATA (auto-generated) ────────────────────────────────────────
+const ALL_MEETINGS = [{"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-02", "participants": 32, "duration": 97, "totalMin": 706, "internal": 4, "external": 8, "avgDur": 22.5}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-03", "participants": 21, "duration": 99, "totalMin": 701, "internal": 4, "external": 6, "avgDur": 33.8}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-10", "participants": 44, "duration": 93, "totalMin": 993, "internal": 5, "external": 8, "avgDur": 22.7}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-11", "participants": 30, "duration": 63, "totalMin": 1418, "internal": 6, "external": 22, "avgDur": 47.8}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-11", "participants": 34, "duration": 93, "totalMin": 817, "internal": 2, "external": 11, "avgDur": 24.5}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-17", "participants": 39, "duration": 96, "totalMin": 916, "internal": 3, "external": 9, "avgDur": 24.0}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-18", "participants": 10, "duration": 96, "totalMin": 592, "internal": 2, "external": 7, "avgDur": 54.7}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-24", "participants": 36, "duration": 100, "totalMin": 836, "internal": 3, "external": 7, "avgDur": 23.7}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-25", "participants": 32, "duration": 74, "totalMin": 1587, "internal": 7, "external": 21, "avgDur": 50.0}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-25", "participants": 1, "duration": 1, "totalMin": 1, "internal": 2, "external": 9, "avgDur": 30.2}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Jul 2025", "month_sort": "2025-07", "date": "2025-07-31", "participants": 25, "duration": 99, "totalMin": 821, "internal": 3, "external": 6, "avgDur": 33.4}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-01", "participants": 45, "duration": 137, "totalMin": 1249, "internal": 4, "external": 10, "avgDur": 28.2}, {"topic": "The Dean's Dynamic Duo Lecture Series", "short": "The Dean's Dynamic Duo Lecture Serie\u2026", "series": "Dean's Lecture", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-06", "participants": 1, "duration": 1, "totalMin": 1, "internal": 0, "external": 1, "avgDur": 5.0}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-07", "participants": 26, "duration": 104, "totalMin": 734, "internal": 2, "external": 7, "avgDur": 28.8}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-08", "participants": 36, "duration": 55, "totalMin": 1075, "internal": 6, "external": 24, "avgDur": 30.4}, {"topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "short": "\"All of Us\" Pre-Session: Registratio\u2026", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-08", "participants": 18, "duration": 111, "totalMin": 930, "internal": 7, "external": 8, "avgDur": 47.2}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-08", "participants": 35, "duration": 110, "totalMin": 1056, "internal": 2, "external": 10, "avgDur": 29.8}, {"topic": "\"All of Us\" Training: Session 1 (PM)", "short": "\"All of Us\" Training: Session 1 (PM)", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-08", "participants": 1, "duration": 3, "totalMin": 3, "internal": 1, "external": 0, "avgDur": 3.0}, {"topic": "\"All of Us\" Pre-Session: Registration Process (PM)", "short": "\"All of Us\" Pre-Session: Registratio\u2026", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-08", "participants": 13, "duration": 103, "totalMin": 932, "internal": 6, "external": 6, "avgDur": 72.2}, {"topic": "\"All of Us\" Training: Session 1 (AM)", "short": "\"All of Us\" Training: Session 1 (AM)", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-11", "participants": 14, "duration": 96, "totalMin": 826, "internal": 7, "external": 6, "avgDur": 59.6}, {"topic": "\"All of Us\" Training: Session 1 (PM)", "short": "\"All of Us\" Training: Session 1 (PM)", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-11", "participants": 11, "duration": 91, "totalMin": 655, "internal": 4, "external": 6, "avgDur": 60.0}, {"topic": "\"All of Us\" Training: Session 2 (AM)", "short": "\"All of Us\" Training: Session 2 (AM)", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-13", "participants": 2, "duration": 45, "totalMin": 49, "internal": 9, "external": 7, "avgDur": 36.4}, {"topic": "\"All of Us\" Training: Session 2 (PM)", "short": "\"All of Us\" Training: Session 2 (PM)", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-13", "participants": 12, "duration": 89, "totalMin": 706, "internal": 3, "external": 7, "avgDur": 59.3}, {"topic": "APT Process for BASIC SCIENTISTS", "short": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-14", "participants": 32, "duration": 91, "totalMin": 2180, "internal": 8, "external": 23, "avgDur": 68.6}, {"topic": "\"All of Us\" Training: Session 3 (AM)", "short": "\"All of Us\" Training: Session 3 (AM)", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-15", "participants": 12, "duration": 89, "totalMin": 672, "internal": 7, "external": 3, "avgDur": 56.5}, {"topic": "\"All of Us\" Training: Session 3 (PM)", "short": "\"All of Us\" Training: Session 3 (PM)", "series": "All of Us", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-15", "participants": 13, "duration": 100, "totalMin": 810, "internal": 4, "external": 8, "avgDur": 62.8}, {"topic": "APT Process for CLINICIANS", "short": "APT Process for CLINICIANS", "series": "APT Process", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-19", "participants": 50, "duration": 75, "totalMin": 2132, "internal": 11, "external": 35, "avgDur": 43.2}, {"topic": "The Dean's Dynamic Duo Lecture Series", "short": "The Dean's Dynamic Duo Lecture Serie\u2026", "series": "Dean's Lecture", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-20", "participants": 1, "duration": 1, "totalMin": 1, "internal": 19, "external": 58, "avgDur": 52.6}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Aug 2025", "month_sort": "2025-08", "date": "2025-08-22", "participants": 1, "duration": 1, "totalMin": 1, "internal": 6, "external": 17, "avgDur": 7.8}, {"topic": "Loan Repayment Seminar - How to get your loans PAID", "short": "Loan Repayment Seminar - How to get \u2026", "series": "Seminar", "month": "Sep 2025", "month_sort": "2025-09", "date": "2025-09-04", "participants": 30, "duration": 55, "totalMin": 683, "internal": 4, "external": 17, "avgDur": 23.2}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Sep 2025", "month_sort": "2025-09", "date": "2025-09-05", "participants": 36, "duration": 67, "totalMin": 1642, "internal": 8, "external": 24, "avgDur": 44.9}, {"topic": "The Dean's Dynamic Duo Lecture Series", "short": "The Dean's Dynamic Duo Lecture Serie\u2026", "series": "Dean's Lecture", "month": "Sep 2025", "month_sort": "2025-09", "date": "2025-09-17", "participants": 1, "duration": 1, "totalMin": 1, "internal": 15, "external": 31, "avgDur": 47.2}, {"topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "short": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT", "month": "Sep 2025", "month_sort": "2025-09", "date": "2025-09-18", "participants": 3, "duration": 67, "totalMin": 185, "internal": 2, "external": 1, "avgDur": 62.0}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Sep 2025", "month_sort": "2025-09", "date": "2025-09-19", "participants": 8, "duration": 101, "totalMin": 462, "internal": 2, "external": 3, "avgDur": 58.1}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Sep 2025", "month_sort": "2025-09", "date": "2025-09-25", "participants": 5, "duration": 76, "totalMin": 278, "internal": 2, "external": 3, "avgDur": 56.2}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Sep 2025", "month_sort": "2025-09", "date": "2025-09-26", "participants": 4, "duration": 110, "totalMin": 378, "internal": 2, "external": 2, "avgDur": 95.0}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-02", "participants": 8, "duration": 186, "totalMin": 621, "internal": 4, "external": 4, "avgDur": 78.0}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-03", "participants": 33, "duration": 72, "totalMin": 1404, "internal": 9, "external": 18, "avgDur": 43.0}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-03", "participants": 6, "duration": 84, "totalMin": 251, "internal": 2, "external": 4, "avgDur": 42.3}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-09", "participants": 5, "duration": 80, "totalMin": 383, "internal": 2, "external": 3, "avgDur": 77.0}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-10", "participants": 3, "duration": 73, "totalMin": 143, "internal": 0, "external": 3, "avgDur": 48.0}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-16", "participants": 1, "duration": 1, "totalMin": 1, "internal": 2, "external": 0, "avgDur": 1.0}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-16", "participants": 8, "duration": 80, "totalMin": 478, "internal": 3, "external": 4, "avgDur": 60.1}, {"topic": "The Dean's Dynamic Duo Lecture Series", "short": "The Dean's Dynamic Duo Lecture Serie\u2026", "series": "Dean's Lecture", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-17", "participants": 65, "duration": 77, "totalMin": 3015, "internal": 12, "external": 42, "avgDur": 46.9}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-17", "participants": 1, "duration": 5, "totalMin": 5, "internal": 8, "external": 30, "avgDur": 41.8}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-17", "participants": 3, "duration": 99, "totalMin": 261, "internal": 2, "external": 1, "avgDur": 87.3}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-23", "participants": 5, "duration": 73, "totalMin": 261, "internal": 1, "external": 4, "avgDur": 52.6}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-24", "participants": 3, "duration": 180, "totalMin": 412, "internal": 1, "external": 2, "avgDur": 137.7}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-30", "participants": 7, "duration": 85, "totalMin": 317, "internal": 2, "external": 3, "avgDur": 45.7}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-30", "participants": 1, "duration": 2, "totalMin": 2, "internal": 1, "external": 1, "avgDur": 1.5}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-31", "participants": 32, "duration": 59, "totalMin": 1192, "internal": 5, "external": 23, "avgDur": 37.7}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Oct 2025", "month_sort": "2025-10", "date": "2025-10-31", "participants": 7, "duration": 83, "totalMin": 480, "internal": 3, "external": 3, "avgDur": 69.0}, {"topic": "HUCM Faculty Meeting and APT Criteria Vote", "short": "HUCM Faculty Meeting and APT Criteri\u2026", "series": "Faculty Meeting", "month": "Nov 2025", "month_sort": "2025-11", "date": "2025-11-06", "participants": 89, "duration": 57, "totalMin": 3244, "internal": 35, "external": 54, "avgDur": 36.3}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Nov 2025", "month_sort": "2025-11", "date": "2025-11-06", "participants": 8, "duration": 97, "totalMin": 519, "internal": 2, "external": 6, "avgDur": 58.2}, {"topic": "HUCM Writing Accountability Group (WAG) Fall 2025", "short": "HUCM Writing Accountability Group (W\u2026", "series": "WAG", "month": "Nov 2025", "month_sort": "2025-11", "date": "2025-11-07", "participants": 6, "duration": 110, "totalMin": 427, "internal": 2, "external": 3, "avgDur": 61.6}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Nov 2025", "month_sort": "2025-11", "date": "2025-11-14", "participants": 32, "duration": 68, "totalMin": 1300, "internal": 6, "external": 23, "avgDur": 39.8}, {"topic": "Veronica Bruce's Personal Meeting Room", "short": "Veronica Bruce's Personal Meeting Ro\u2026", "series": "Other", "month": "Nov 2025", "month_sort": "2025-11", "date": "2025-11-16", "participants": 2, "duration": 33, "totalMin": 60, "internal": 2, "external": 0, "avgDur": 30.0}, {"topic": " Building the HUH Physician Leadership Pipeline", "short": " Building the HUH Physician Leadersh\u2026", "series": "Leadership", "month": "Dec 2025", "month_sort": "2025-12", "date": "2025-12-03", "participants": 4, "duration": 43, "totalMin": 158, "internal": 2, "external": 2, "avgDur": 39.8}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Dec 2025", "month_sort": "2025-12", "date": "2025-12-12", "participants": 38, "duration": 68, "totalMin": 1859, "internal": 6, "external": 28, "avgDur": 48.2}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Jan 2026", "month_sort": "2026-01", "date": "2026-01-09", "participants": 38, "duration": 54, "totalMin": 1381, "internal": 12, "external": 21, "avgDur": 36.8}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Jan 2026", "month_sort": "2026-01", "date": "2026-01-21", "participants": 1, "duration": 1, "totalMin": 1, "internal": 0, "external": 1, "avgDur": 1.0}, {"topic": "The Dean's Dynamic Duo Lecture Series", "short": "The Dean's Dynamic Duo Lecture Serie\u2026", "series": "Dean's Lecture", "month": "Jan 2026", "month_sort": "2026-01", "date": "2026-01-21", "participants": 122, "duration": 81, "totalMin": 5191, "internal": 16, "external": 83, "avgDur": 43.0}, {"topic": "FACULTY TOOLS WORKSHOPS", "short": "FACULTY TOOLS WORKSHOPS", "series": "Faculty Workshop", "month": "Jan 2026", "month_sort": "2026-01", "date": "2026-01-22", "participants": 1, "duration": 1, "totalMin": 1, "internal": 0, "external": 1, "avgDur": 1.0}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Jan 2026", "month_sort": "2026-01", "date": "2026-01-23", "participants": 21, "duration": 31, "totalMin": 449, "internal": 8, "external": 13, "avgDur": 21.9}, {"topic": "FACULTY TOOLS WORKSHOPS", "short": "FACULTY TOOLS WORKSHOPS", "series": "Faculty Workshop", "month": "Jan 2026", "month_sort": "2026-01", "date": "2026-01-23", "participants": 67, "duration": 80, "totalMin": 3386, "internal": 13, "external": 47, "avgDur": 49.6}, {"topic": "OFD-JEDI Planning Committee", "short": "OFD-JEDI Planning Committee", "series": "OFD", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-05", "participants": 3, "duration": 42, "totalMin": 108, "internal": 3, "external": 3, "avgDur": 48.1}, {"topic": "class assignment", "short": "class assignment", "series": "Other", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-05", "participants": 1, "duration": 7, "totalMin": 7, "internal": 1, "external": 0, "avgDur": 7.0}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-06", "participants": 1, "duration": 1, "totalMin": 1, "internal": 9, "external": 24, "avgDur": 24.2}, {"topic": "FACULTY TOOLS WORKSHOPS", "short": "FACULTY TOOLS WORKSHOPS", "series": "Faculty Workshop", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-06", "participants": 41, "duration": 78, "totalMin": 2124, "internal": 12, "external": 28, "avgDur": 50.2}, {"topic": "FACULTY TOOLS WORKSHOPS", "short": "FACULTY TOOLS WORKSHOPS", "series": "Faculty Workshop", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-12", "participants": 33, "duration": 82, "totalMin": 1559, "internal": 10, "external": 20, "avgDur": 42.9}, {"topic": "FACULTY TOOLS WORKSHOPS", "short": "FACULTY TOOLS WORKSHOPS", "series": "Faculty Workshop", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-13", "participants": 1, "duration": 1, "totalMin": 1, "internal": 0, "external": 2, "avgDur": 1.0}, {"topic": "The Dean's Dynamic Duo Lecture Series", "short": "The Dean's Dynamic Duo Lecture Serie\u2026", "series": "Dean's Lecture", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-18", "participants": 75, "duration": 84, "totalMin": 3680, "internal": 11, "external": 50, "avgDur": 49.1}, {"topic": "FACULTY TOOLS WORKSHOPS", "short": "FACULTY TOOLS WORKSHOPS", "series": "Faculty Workshop", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-19", "participants": 1, "duration": 2, "totalMin": 2, "internal": 10, "external": 18, "avgDur": 37.4}, {"topic": "Veronica Bruce's Personal Meeting Room", "short": "Veronica Bruce's Personal Meeting Ro\u2026", "series": "Other", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-20", "participants": 1, "duration": 20, "totalMin": 20, "internal": 1, "external": 0, "avgDur": 20.0}, {"topic": "HUCM Investigators and Administrators Meeting", "short": "HUCM Investigators and Administrator\u2026", "series": "HUCM I&A", "month": "Feb 2026", "month_sort": "2026-02", "date": "2026-02-20", "participants": 1, "duration": 1, "totalMin": 1, "internal": 8, "external": 31, "avgDur": 44.6}];
+const MONTHLY_DATA = [{"label": "Jul 2025", "sort": "2025-07", "meetings": 10, "participants": 303, "totalMin": 9387}, {"label": "Aug 2025", "sort": "2025-08", "meetings": 14, "participants": 319, "totalMin": 14006}, {"label": "Sep 2025", "sort": "2025-09", "meetings": 6, "participants": 86, "totalMin": 3628}, {"label": "Oct 2025", "sort": "2025-10", "meetings": 13, "participants": 185, "totalMin": 9218}, {"label": "Nov 2025", "sort": "2025-11", "meetings": 5, "participants": 137, "totalMin": 5550}, {"label": "Dec 2025", "sort": "2025-12", "meetings": 2, "participants": 42, "totalMin": 2017}, {"label": "Jan 2026", "sort": "2026-01", "meetings": 4, "participants": 248, "totalMin": 10407}, {"label": "Feb 2026", "sort": "2026-02", "meetings": 4, "participants": 152, "totalMin": 7471}];
+const SERIES_DATA  = [{"series": "SWAT", "sessions": 12, "participants": 350, "totalMin": 9606}, {"series": "HUCM I&A", "sessions": 10, "participants": 328, "totalMin": 13307}, {"series": "Dean's Lecture", "sessions": 3, "participants": 262, "totalMin": 11886}, {"series": "Faculty Workshop", "sessions": 3, "participants": 141, "totalMin": 7069}, {"series": "All of Us", "sessions": 8, "participants": 95, "totalMin": 5580}, {"series": "Faculty Meeting", "sessions": 1, "participants": 89, "totalMin": 3244}, {"series": "WAG", "sessions": 15, "participants": 86, "totalMin": 5671}, {"series": "APT Process", "sessions": 2, "participants": 82, "totalMin": 4312}, {"series": "Seminar", "sessions": 1, "participants": 30, "totalMin": 683}, {"series": "Leadership", "sessions": 1, "participants": 4, "totalMin": 158}, {"series": "OFD", "sessions": 1, "participants": 3, "totalMin": 108}, {"series": "Other", "sessions": 1, "participants": 2, "totalMin": 60}];
+const REG_POSITION = [{"label": "Faculty", "value": 100, "color": "#003580"}, {"label": "Staff", "value": 51, "color": "#E5001A"}, {"label": "Student", "value": 37, "color": "#F4A31A"}, {"label": "Guest", "value": 6, "color": "#18a558"}];
+const REG_DEGREE   = [{"label": "MD", "value": 87}, {"label": "PhD", "value": 55}, {"label": "Other", "value": 39}, {"label": "BS", "value": 4}, {"label": "MS", "value": 3}, {"label": "MBBS", "value": 3}, {"label": "DO", "value": 2}, {"label": "MD/PhD", "value": 1}];
+const REG_TIMELINE = [{"date": "Jan 20", "count": 1}, {"date": "Jan 21", "count": 56}, {"date": "Aug 19", "count": 1}, {"date": "Aug 20", "count": 79}, {"date": "Aug 21", "count": 1}, {"date": "Sep 11", "count": 1}, {"date": "Sep 15", "count": 1}, {"date": "Sep 17", "count": 22}, {"date": "Sep 26", "count": 1}, {"date": "Oct 03", "count": 1}, {"date": "Oct 14", "count": 1}, {"date": "Oct 16", "count": 2}, {"date": "Oct 17", "count": 27}];
+
+// ── PALETTE ───────────────────────────────────────────────────────────────
+const PAL = ["#003580","#E5001A","#F4A31A","#18a558","#7B61FF","#00B4D8","#FF6B6B","#845EC2","#D4AC0D","#2E86AB","#A23B72","#F18F01","#4CAF50","#FF5722"];
+const SERIES_PAL = {};
+[...new Set(ALL_MEETINGS.map(m=>m.series))].forEach((s,i)=>SERIES_PAL[s]=PAL[i%PAL.length]);
+const BADGE = ["b1","b2","b3","b4","b5","b6","b7","b8"];
+const seriesList = [...new Set(ALL_MEETINGS.map(m=>m.series))].sort();
+seriesList.forEach((s,i)=>SERIES_PAL[s+'_badge']=BADGE[i%BADGE.length]);
+
+function fmt(v,t='n'){
+  if(v==null)return'-';
+  if(t==='n')return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':v.toLocaleString();
+  if(t==='h')return(v/60).toFixed(1)+' hrs';
+  if(t==='m')return v.toFixed(1)+' min';
+  return v;
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────
+class Dashboard {
+  constructor() {
+    this.data = ALL_MEETINGS;
+    this.fd = ALL_MEETINGS;
+    this.charts = {};
+    this.page = 0;
+    this.pageSize = 20;
+    this.sortCol = 'date'; this.sortDir = 'asc';
+    this.init();
+  }
+  init() {
+    this.filter();
+    this.buildStaticCharts();
+  }
+  filter() {
+    const month  = document.getElementById('f-month').value;
+    const series = document.getElementById('f-series').value;
+    const minpax = parseInt(document.getElementById('f-minpax').value)||0;
+    this.fd = this.data.filter(m=>{
+      if(month!=='all'&&m.month!==month) return false;
+      if(series!=='all'&&m.series!==series) return false;
+      if(m.participants<minpax) return false;
+      return true;
+    });
+    this.page = 0;
+    this.renderKPIs();
+    this.updateCharts();
+    this.renderTable();
+  }
+  renderKPIs() {
+    const d=this.fd;
+    const sessions   = d.length;
+    const totalPax   = d.reduce((s,m)=>s+m.participants,0);
+    const totalMin   = d.reduce((s,m)=>s+m.totalMin,0);
+    const avgPax     = sessions ? (totalPax/sessions).toFixed(1) : 0;
+    const avgDur     = sessions ? (d.reduce((s,m)=>s+m.avgDur,0)/sessions).toFixed(1) : 0;
+    const topSeries  = d.length ? d.reduce((acc,m)=>{acc[m.series]=(acc[m.series]||0)+m.participants;return acc;},{}) : {};
+    const topS       = Object.entries(topSeries).sort((a,b)=>b[1]-a[1])[0];
+    document.getElementById('kpis').innerHTML = `
+      <div class="kpi"><div class="kpi-lbl">Total Sessions</div><div class="kpi-val">${sessions}</div><div class="kpi-sub">Zoom meetings</div></div>
+      <div class="kpi r"><div class="kpi-lbl">Total Participants</div><div class="kpi-val">${fmt(totalPax)}</div><div class="kpi-sub">across all sessions</div></div>
+      <div class="kpi g"><div class="kpi-lbl">Engagement Hours</div><div class="kpi-val">${fmt(totalMin,'h')}</div><div class="kpi-sub">${totalMin.toLocaleString()} participant-min</div></div>
+      <div class="kpi o"><div class="kpi-lbl">Avg Attendance</div><div class="kpi-val">${avgPax}</div><div class="kpi-sub">per session</div></div>
+      <div class="kpi"><div class="kpi-lbl">Avg Session Duration</div><div class="kpi-val">${avgDur}<span style="font-size:15px;font-weight:500"> min</span></div><div class="kpi-sub">per participant</div></div>
+      ${topS ? `<div class="kpi"><div class="kpi-lbl">Top Series</div><div class="kpi-val" style="font-size:17px;margin-top:4px">${topS[0]}</div><div class="kpi-sub">${topS[1].toLocaleString()} participants</div></div>` : ''}
+    `;
+  }
+  updateCharts() {
+    // Monthly trend
+    const monthMap={};
+    this.fd.forEach(m=>{
+      if(!monthMap[m.month_sort]) monthMap[m.month_sort]={label:m.month,sort:m.month_sort,participants:0,meetings:0};
+      monthMap[m.month_sort].participants+=m.participants;
+      monthMap[m.month_sort].meetings+=1;
+    });
+    const months = Object.values(monthMap).sort((a,b)=>a.sort.localeCompare(b.sort));
+    this._upsertLine('c-trend', months.map(m=>m.label),
+      [{label:'Participants',data:months.map(m=>m.participants),color:'#003580'},
+       {label:'Sessions',data:months.map(m=>m.meetings),color:'#E5001A',yAxisID:'y2'}]);
+
+    // Series bar
+    const seriesMap={};
+    this.fd.forEach(m=>{
+      if(!seriesMap[m.series]) seriesMap[m.series]={series:m.series,participants:0};
+      seriesMap[m.series].participants+=m.participants;
+    });
+    const sArr = Object.values(seriesMap).sort((a,b)=>b.participants-a.participants);
+    this._upsertBar('c-series-bar', sArr.map(s=>s.series), sArr.map(s=>s.participants),
+      sArr.map(s=>SERIES_PAL[s.series]||'#003580'));
+
+    // Internal vs External stacked
+    const siMap={};
+    this.fd.forEach(m=>{
+      if(!siMap[m.series]) siMap[m.series]={series:m.series,internal:0,external:0};
+      siMap[m.series].internal+=m.internal;
+      siMap[m.series].external+=m.external;
+    });
+    const siArr = Object.values(siMap).sort((a,b)=>(b.internal+b.external)-(a.internal+a.external));
+    this._upsertStacked('c-int-ext', siArr.map(s=>s.series),
+      siArr.map(s=>s.internal), siArr.map(s=>s.external));
+
+    // Series donut
+    this._upsertDonut('c-series-donut', sArr.map(s=>s.series), sArr.map(s=>s.participants));
+  }
+  _upsertLine(id, labels, datasets) {
+    const ctx = document.getElementById(id).getContext('2d');
+    if(this.charts[id]) {
+      this.charts[id].data.labels = labels;
+      datasets.forEach((ds,i)=>{ this.charts[id].data.datasets[i].data=ds.data; });
+      this.charts[id].update('none'); return;
+    }
+    this.charts[id] = new Chart(ctx, {
+      type:'line',
+      data:{ labels, datasets: datasets.map(ds=>({
+        label:ds.label, data:ds.data,
+        borderColor:ds.color, backgroundColor:ds.color+'20',
+        borderWidth:2.5, tension:0.3, fill:false,
+        pointRadius:4, pointHoverRadius:7,
+        yAxisID: ds.yAxisID||'y'
+      }))  },
+      options:{ responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{ legend:{position:'top',labels:{usePointStyle:true,padding:16,font:{size:11}}} },
+        scales:{
+          x:{grid:{display:false},ticks:{font:{size:11}}},
+          y:{beginAtZero:true,position:'left',ticks:{font:{size:11}},grid:{color:'#f0f0f0'}},
+          y2:{beginAtZero:true,position:'right',ticks:{font:{size:11}},grid:{display:false}}
+        }
+      }
+    });
+  }
+  _upsertBar(id, labels, data, colors) {
+    const ctx = document.getElementById(id).getContext('2d');
+    if(this.charts[id]) {
+      this.charts[id].data.labels=labels;
+      this.charts[id].data.datasets[0].data=data;
+      this.charts[id].data.datasets[0].backgroundColor=colors.map(c=>c+'CC');
+      this.charts[id].update('none'); return;
+    }
+    this.charts[id] = new Chart(ctx, {
+      type:'bar',
+      data:{labels, datasets:[{data, backgroundColor:colors.map(c=>c+'CC'), borderWidth:0, borderRadius:4}]},
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x.toLocaleString()+' participants'}}},
+        scales:{x:{beginAtZero:true,ticks:{font:{size:11}}},y:{ticks:{font:{size:11}}}}
+      }
+    });
+  }
+  _upsertStacked(id, labels, intData, extData) {
+    const ctx = document.getElementById(id).getContext('2d');
+    if(this.charts[id]) {
+      this.charts[id].data.labels=labels;
+      this.charts[id].data.datasets[0].data=intData;
+      this.charts[id].data.datasets[1].data=extData;
+      this.charts[id].update('none'); return;
+    }
+    this.charts[id] = new Chart(ctx, {
+      type:'bar',
+      data:{labels, datasets:[
+        {label:'Internal',data:intData,backgroundColor:'#003580CC',borderWidth:0},
+        {label:'External',data:extData,backgroundColor:'#E5001ACC',borderWidth:0}
+      ]},
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:11}}}},
+        scales:{
+          x:{stacked:true,ticks:{font:{size:11}}},
+          y:{stacked:true,ticks:{font:{size:11}}}
+        }
+      }
+    });
+  }
+  _upsertDonut(id, labels, data) {
+    const ctx = document.getElementById(id).getContext('2d');
+    const colors = labels.map(l=>SERIES_PAL[l]||'#888');
+    if(this.charts[id]) {
+      this.charts[id].data.labels=labels;
+      this.charts[id].data.datasets[0].data=data;
+      this.charts[id].data.datasets[0].backgroundColor=colors.map(c=>c+'CC');
+      this.charts[id].update('none'); return;
+    }
+    this.charts[id] = new Chart(ctx, {
+      type:'doughnut',
+      data:{labels,datasets:[{data,backgroundColor:colors.map(c=>c+'CC'),borderColor:'#fff',borderWidth:2}]},
+      options:{
+        responsive:true, maintainAspectRatio:false, cutout:'55%',
+        plugins:{
+          legend:{position:'right',labels:{usePointStyle:true,font:{size:10},padding:8}},
+          tooltip:{callbacks:{label:c=>{
+            const tot=c.dataset.data.reduce((a,b)=>a+b,0);
+            return `${c.label}: ${c.parsed} (${((c.parsed/tot)*100).toFixed(0)}%)`;
+          }}}
+        }
+      }
+    });
+  }
+  renderTable() {
+    const sorted = [...this.fd].sort((a,b)=>{
+      let av=a[this.sortCol], bv=b[this.sortCol];
+      if(typeof av==='string') av=av.toLowerCase(), bv=bv.toLowerCase();
+      const c=av<bv?-1:av>bv?1:0;
+      return this.sortDir==='asc'?c:-c;
+    });
+    const start=this.page*this.pageSize, end=Math.min(start+this.pageSize, sorted.length);
+    const page = sorted.slice(start,end);
+    document.getElementById('session-count').textContent=`${sorted.length} sessions`;
+    const cols=[
+      {k:'date',l:'Date'},{k:'topic',l:'Meeting'},{k:'series',l:'Series'},
+      {k:'participants',l:'Participants'},{k:'duration',l:'Duration'},
+      {k:'totalMin',l:'Engagement Min'},{k:'internal',l:'Internal'},
+      {k:'external',l:'External'},{k:'avgDur',l:'Avg Duration'}
+    ];
+    let h='<table><thead><tr>';
+    cols.forEach(c=>{
+      const arrow=this.sortCol===c.k?(this.sortDir==='asc'?' ▲':' ▼'):'';
+      h+=`<th onclick="dash.sort('${c.k}')">${c.l}${arrow}</th>`;
+    });
+    h+='</tr></thead><tbody>';
+    if(!page.length) h+=`<tr><td colspan="9" style="text-align:center;padding:30px;color:#999">No sessions match filters.</td></tr>`;
+    page.forEach(m=>{
+      const bc = SERIES_PAL[m.series+'_badge']||'b1';
+      const extPct = (m.internal+m.external)>0 ? Math.round((m.external/(m.internal+m.external))*100) : 0;
+      h+=`<tr>
+        <td>${m.date}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${m.topic}">${m.short}</td>
+        <td><span class="badge ${bc}">${m.series}</span></td>
+        <td><strong>${m.participants}</strong></td>
+        <td>${m.duration} min</td>
+        <td>${m.totalMin.toLocaleString()}</td>
+        <td>${m.internal}</td>
+        <td>${m.external} <span style="color:#999;font-size:10px">(${extPct}%)</span></td>
+        <td>${m.avgDur.toFixed(1)} min</td>
+      </tr>`;
+    });
+    h+='</tbody></table>';
+    document.getElementById('tbl').innerHTML=h;
+    document.getElementById('pager-info').textContent=`Showing ${start+1}–${end} of ${sorted.length}`;
+    document.getElementById('btn-prev').disabled=this.page===0;
+    document.getElementById('btn-next').disabled=end>=sorted.length;
+  }
+  sort(col) {
+    if(this.sortCol===col) this.sortDir=this.sortDir==='asc'?'desc':'asc';
+    else { this.sortCol=col; this.sortDir='asc'; }
+    this.page=0; this.renderTable();
+  }
+  prevPage() { if(this.page>0){ this.page--; this.renderTable(); } }
+  nextPage() {
+    const max=Math.ceil(this.fd.length/this.pageSize)-1;
+    if(this.page<max){ this.page++; this.renderTable(); }
+  }
+  buildStaticCharts() {
+    // Position doughnut
+    if(REG_POSITION.length) {
+      new Chart(document.getElementById('c-pos').getContext('2d'),{
+        type:'doughnut',
+        data:{labels:REG_POSITION.map(d=>d.label),
+               datasets:[{data:REG_POSITION.map(d=>d.value),
+                           backgroundColor:REG_POSITION.map(d=>d.color+'DD'),
+                           borderColor:'#fff',borderWidth:2}]},
+        options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+          plugins:{legend:{position:'right',labels:{usePointStyle:true,font:{size:11}}},
+            tooltip:{callbacks:{label:c=>{
+              const t=c.dataset.data.reduce((a,b)=>a+b,0);
+              return `${c.label}: ${c.parsed} (${((c.parsed/t)*100).toFixed(0)}%)`;
+            }}}}
+        }
+      });
+    }
+    // Degree bar
+    if(REG_DEGREE.length) {
+      new Chart(document.getElementById('c-deg').getContext('2d'),{
+        type:'bar',
+        data:{labels:REG_DEGREE.map(d=>d.label),
+               datasets:[{data:REG_DEGREE.map(d=>d.value),
+                           backgroundColor:PAL.map(c=>c+'CC'),borderWidth:0,borderRadius:4}]},
+        options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false}},
+          scales:{x:{beginAtZero:true,ticks:{font:{size:11}}},y:{ticks:{font:{size:11}}}}
+        }
+      });
+    }
+    // Registration timeline
+    if(REG_TIMELINE.length) {
+      new Chart(document.getElementById('c-regtl').getContext('2d'),{
+        type:'bar',
+        data:{labels:REG_TIMELINE.map(d=>d.date),
+               datasets:[{data:REG_TIMELINE.map(d=>d.count),
+                           backgroundColor:'#003580CC',borderWidth:0,borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false}},
+          scales:{x:{ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{font:{size:11}}}}
+        }
+      });
+    }
+  }
+}
+const dash = new Dashboard();
+</script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUCM All Zoom Meetings — Jul–Aug 2025</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+  <style>
+    :root{--bg:#f0f2f5;--card:#fff;--hdr:#003087;--acc:#E51937;--text:#1a1a2e;--muted:#6b7280;--bdr:#e5e7eb;--gap:16px;--r:10px;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);}
+    .wrap{max-width:1380px;margin:0 auto;padding:var(--gap);}
+
+    .hdr{background:var(--hdr);color:#fff;padding:20px 28px;border-radius:var(--r);margin-bottom:var(--gap);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+    .hdr h1{font-size:21px;font-weight:700;}
+    .hdr p{font-size:13px;color:rgba(255,255,255,.7);margin-top:3px;}
+    .tag{background:var(--acc);color:#fff;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
+
+    .filters{background:var(--card);border-radius:var(--r);padding:12px 18px;margin-bottom:var(--gap);display:flex;gap:16px;align-items:center;flex-wrap:wrap;box-shadow:0 1px 3px rgba(0,0,0,.07);}
+    .filters label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-right:5px;}
+    .filters select,.filters input{padding:7px 11px;border:1px solid var(--bdr);border-radius:6px;font-size:13px;color:var(--text);background:#fff;cursor:pointer;}
+    .filters select:focus,.filters input:focus{outline:2px solid var(--hdr);}
+    #search{min-width:190px;}
+    #fc{font-size:13px;color:var(--muted);margin-left:auto;}
+
+    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:var(--gap);margin-bottom:var(--gap);}
+    .kpi{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-top:3px solid var(--hdr);}
+    .kpi.r{border-top-color:var(--acc);} .kpi.g{border-top-color:#16a34a;} .kpi.p{border-top-color:#7c3aed;} .kpi.o{border-top-color:#ea580c;} .kpi.t{border-top-color:#0891b2;}
+    .kl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:5px;}
+    .kv{font-size:30px;font-weight:800;line-height:1;}
+    .ks{font-size:11px;color:var(--muted);margin-top:4px;}
+
+    .row2{display:grid;grid-template-columns:3fr 2fr;gap:var(--gap);margin-bottom:var(--gap);}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--gap);margin-bottom:var(--gap);}
+    .cc{background:var(--card);border-radius:var(--r);padding:18px 22px;box-shadow:0 1px 3px rgba(0,0,0,.07);}
+    .cc h3{font-size:14px;font-weight:700;margin-bottom:3px;}
+    .cc .sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+    .cc canvas{max-height:260px;}
+
+    .tc{background:var(--card);border-radius:var(--r);padding:18px 22px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:var(--gap);overflow-x:auto;}
+    .tc h3{font-size:14px;font-weight:700;margin-bottom:3px;}
+    .tc .sub{font-size:12px;color:var(--muted);margin-bottom:12px;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    thead th{text-align:left;padding:8px 11px;border-bottom:2px solid var(--bdr);color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;white-space:nowrap;}
+    thead th:hover{color:var(--text);background:#f9fafb;}
+    tbody td{padding:8px 11px;border-bottom:1px solid #f3f4f6;}
+    tbody tr:last-child td{border-bottom:none;}
+    tbody tr:hover{background:#f9fafb;}
+
+    .pill{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600;}
+    .ps {background:#dbeafe;color:#1d4ed8;} /* SWAT */
+    .pi {background:#f3e8ff;color:#7c3aed;} /* Investigators */
+    .pa {background:#dcfce7;color:#166534;} /* All of Us */
+    .pp {background:#fef9c3;color:#854d0e;} /* APT */
+    .pd {background:#fee2e2;color:#991b1b;} /* Dean's */
+    .po {background:#f3f4f6;color:#6b7280;} /* Other */
+    .pg {background:#fef3c7;color:#92400e;} /* Guest */
+    .ph {background:#eff6ff;color:#1e40af;} /* HUCM */
+
+    .pager{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--muted);}
+    .pager button{padding:5px 12px;border:1px solid var(--bdr);border-radius:6px;background:#fff;cursor:pointer;font-size:12px;}
+    .pager button:hover{background:var(--bg);} .pager button:disabled{opacity:.4;cursor:default;}
+
+    .series-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--gap);margin-bottom:var(--gap);}
+    .series-card{background:var(--card);border-radius:var(--r);padding:16px 20px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-left:4px solid var(--hdr);}
+    .series-card.s1{border-left-color:#003087;} .series-card.s2{border-left-color:#7c3aed;}
+    .series-card.s3{border-left-color:#16a34a;} .series-card.s4{border-left-color:#ea580c;}
+    .series-card.s5{border-left-color:#E51937;}
+    .sc-name{font-size:13px;font-weight:700;margin-bottom:8px;}
+    .sc-stats{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;}
+    .sc-stats span strong{color:var(--text);}
+
+    footer{text-align:center;color:var(--muted);font-size:12px;padding:14px 0 8px;}
+    @media(max-width:900px){.row2,.row3{grid-template-columns:1fr;}.kpis{grid-template-columns:repeat(2,1fr);}}
+    @media print{.filters,.pager{display:none;}body{background:#fff;}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div>
+      <h1>HUCM Zoom Meetings Dashboard</h1>
+      <p>All meetings hosted by OFD JEDI &nbsp;·&nbsp; July – August 2025</p>
+    </div>
+    <span class="tag">13 Meetings &nbsp;·&nbsp; 5 Series &nbsp;·&nbsp; 210 Attendances</span>
+  </div>
+
+  <div class="filters">
+    <div><label for="fs">Series</label>
+      <select id="fs" onchange="filt()">
+        <option value="all">All Series</option>
+        <option value="SWAT Write-A-Thon">SWAT Write-A-Thon</option>
+        <option value="Investigators & Admin">Investigators &amp; Admin</option>
+        <option value='"All of Us" Training'>"All of Us" Training</option>
+        <option value="APT Process">APT Process</option>
+        <option value="Dean's Dynamic Duo">Dean's Dynamic Duo</option>
+      </select></div>
+    <div><label for="fg">Attendee Type</label>
+      <select id="fg" onchange="filt()">
+        <option value="all">All</option>
+        <option value="No">HUCM Only</option>
+        <option value="Yes">Guests Only</option>
+      </select></div>
+    <div><label for="search">Search</label>
+      <input id="search" type="text" placeholder="Name or email…" oninput="filt()"></div>
+    <span id="fc"></span>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">  <div class="kl">Total Meetings</div><div class="kv" id="k1">—</div><div class="ks">across July–Aug 2025</div></div>
+    <div class="kpi r"><div class="kl">Total Attendances</div><div class="kv" id="k2">—</div><div class="ks">including re-joins</div></div>
+    <div class="kpi g"><div class="kl">Unique People</div><div class="kv" id="k3">—</div><div class="ks">distinct attendees</div></div>
+    <div class="kpi p"><div class="kl">Multi-Meeting</div><div class="kv" id="k4">—</div><div class="ks">attended 2+ sessions</div></div>
+    <div class="kpi o"><div class="kl">Avg Attendees</div><div class="kv" id="k5">—</div><div class="ks">per meeting</div></div>
+    <div class="kpi t"><div class="kl">Avg Duration</div><div class="kv" id="k6">—</div><div class="ks">minutes per attendee</div></div>
+  </div>
+
+  <!-- Series summary cards -->
+  <div class="series-grid" id="series-cards"></div>
+
+  <div class="row2">
+    <div class="cc">
+      <h3>Attendees by Meeting</h3>
+      <div class="sub">HUCM members vs external guests per session</div>
+      <canvas id="cMtg"></canvas>
+    </div>
+    <div class="cc">
+      <h3>Loyalty Distribution</h3>
+      <div class="sub">How many sessions each person attended</div>
+      <canvas id="cFreq"></canvas>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="cc" style="grid-column:span 2">
+      <h3>Attendance by Series</h3>
+      <div class="sub">Total attendances per meeting series</div>
+      <canvas id="cSeries"></canvas>
+    </div>
+    <div class="cc">
+      <h3>HUCM vs Guests</h3>
+      <div class="sub">Internal vs external attendees across all meetings</div>
+      <canvas id="cGuest"></canvas>
+    </div>
+  </div>
+
+  <div class="tc">
+    <h3>Most Active Attendees</h3>
+    <div class="sub">People who attended 2 or more meetings — sortable</div>
+    <div id="top-tbl"></div>
+  </div>
+
+  <div class="tc">
+    <h3>All Attendance Records</h3>
+    <div class="sub" id="tbl-sub">Showing all records</div>
+    <div id="main-tbl"></div>
+    <div class="pager">
+      <button id="prev" onclick="pg(-1)">← Prev</button>
+      <span id="pgi"></span>
+      <button id="next" onclick="pg(1)">Next →</button>
+    </div>
+  </div>
+
+  <footer>Howard University College of Medicine — OFD JEDI &nbsp;·&nbsp; Zoom Account Export, July–August 2025</footer>
+</div>
+
+<script>
+const MEETINGS = [{"id": "883 4815 2691", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "date": "2025-07-02", "series": "SWAT Write-A-Thon", "total_pax": 32, "duration_min": 97, "attendee_count": 36, "avg_duration": 92.8, "guests": 0, "hucm": 36}, {"id": "823 8484 2496", "topic": "HUCM Investigators and Administrators Meeting", "date": "2025-07-11", "series": "Investigators & Admin", "total_pax": 30, "duration_min": 63, "attendee_count": 26, "avg_duration": 44.0, "guests": 0, "hucm": 26}, {"id": "819 7027 7262", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "date": "2025-08-08", "series": "\"All of Us\" Training", "total_pax": 2, "duration_min": 2, "attendee_count": 8, "avg_duration": 50.6, "guests": 0, "hucm": 8}, {"id": "871 0937 6236", "topic": "\"All of Us\" Training: Session 1 (PM)", "date": "2025-08-08", "series": "\"All of Us\" Training", "total_pax": 1, "duration_min": 3, "attendee_count": 5, "avg_duration": 59.8, "guests": 0, "hucm": 5}, {"id": "898 0309 0903", "topic": "\"All of Us\" Pre-Session: Registration Process (PM)", "date": "2025-08-08", "series": "\"All of Us\" Training", "total_pax": 13, "duration_min": 103, "attendee_count": 6, "avg_duration": 62.5, "guests": 0, "hucm": 6}, {"id": "880 5062 2515", "topic": "\"All of Us\" Training: Session 1 (AM)", "date": "2025-08-11", "series": "\"All of Us\" Training", "total_pax": 14, "duration_min": 96, "attendee_count": 7, "avg_duration": 57.9, "guests": 0, "hucm": 7}, {"id": "865 2595 7163", "topic": "\"All of Us\" Training: Session 2 (AM)", "date": "2025-08-13", "series": "\"All of Us\" Training", "total_pax": 16, "duration_min": 66, "attendee_count": 12, "avg_duration": 40.6, "guests": 0, "hucm": 12}, {"id": "895 5748 3798", "topic": "\"All of Us\" Training: Session 2 (PM)", "date": "2025-08-13", "series": "\"All of Us\" Training", "total_pax": 12, "duration_min": 89, "attendee_count": 3, "avg_duration": 76.7, "guests": 0, "hucm": 3}, {"id": "813 0713 0523", "topic": "APT Process for BASIC SCIENTISTS", "date": "2025-08-14", "series": "APT Process", "total_pax": 32, "duration_min": 91, "attendee_count": 8, "avg_duration": 71.8, "guests": 0, "hucm": 8}, {"id": "849 5947 9770", "topic": "\"All of Us\" Training: Session 3 (AM)", "date": "2025-08-15", "series": "\"All of Us\" Training", "total_pax": 12, "duration_min": 89, "attendee_count": 7, "avg_duration": 67.1, "guests": 0, "hucm": 7}, {"id": "883 2663 5203", "topic": "\"All of Us\" Training: Session 3 (PM)", "date": "2025-08-15", "series": "\"All of Us\" Training", "total_pax": 13, "duration_min": 100, "attendee_count": 4, "avg_duration": 78.5, "guests": 0, "hucm": 4}, {"id": "876 2259 3199", "topic": "APT Process for CLINICIANS", "date": "2025-08-19", "series": "APT Process", "total_pax": 50, "duration_min": 75, "attendee_count": 11, "avg_duration": 51.4, "guests": 0, "hucm": 11}, {"id": "860 7309 8863", "topic": "The Dean's Dynamic Duo Lecture Series", "date": "2025-08-20", "series": "Dean's Dynamic Duo", "total_pax": 84, "duration_min": 84, "attendee_count": 77, "avg_duration": 58.1, "guests": 58, "hucm": 19}];
+const SERIES   = [{"series": "\"All of Us\" Training", "meetings": 8, "total_attendances": 52, "avg_per_meeting": 1.0}, {"series": "APT Process", "meetings": 2, "total_attendances": 19, "avg_per_meeting": 1.0}, {"series": "Dean's Dynamic Duo", "meetings": 1, "total_attendances": 77, "avg_per_meeting": 1.0}, {"series": "Investigators & Admin", "meetings": 1, "total_attendances": 26, "avg_per_meeting": 1.0}, {"series": "SWAT Write-A-Thon", "meetings": 1, "total_attendances": 36, "avg_per_meeting": 1.0}];
+const FREQ     = [{"meetings": 1, "count": 73}, {"meetings": 2, "count": 9}, {"meetings": 3, "count": 1}, {"meetings": 4, "count": 1}, {"meetings": 5, "count": 2}, {"meetings": 6, "count": 2}, {"meetings": 7, "count": 2}, {"meetings": 12, "count": 1}, {"meetings": 13, "count": 1}];
+const TOP      = [{"identifier": "veronica.bruce@howard.edu", "meetings": 13, "name": "Veronica Bruce", "total_dur": 2120.0, "avg_dur": 81.5, "series_list": ["APT Process", "\"All of Us\" Training", "Investigators & Admin", "Dean's Dynamic Duo", "SWAT Write-A-Thon"]}, {"identifier": "mgondre-lewis@howard.edu", "meetings": 12, "name": "Marjorie Gondr\u00e9-Lewis", "total_dur": 2078.0, "avg_dur": 71.7, "series_list": ["\"All of Us\" Training", "Investigators & Admin", "Dean's Dynamic Duo", "APT Process", "SWAT Write-A-Thon"]}, {"identifier": "carla.davis@howard.edu", "meetings": 7, "name": "Carla Davis", "total_dur": 385.0, "avg_dur": 55.0, "series_list": ["\"All of Us\" Training", "Dean's Dynamic Duo", "APT Process", "SWAT Write-A-Thon"]}, {"identifier": "fkhunter@howard.edu", "meetings": 7, "name": "Finie Richardson", "total_dur": 429.0, "avg_dur": 47.7, "series_list": ["APT Process", "\"All of Us\" Training", "Investigators & Admin", "Dean's Dynamic Duo"]}, {"identifier": "gdowner@howard.edu", "meetings": 6, "name": "G. Downer", "total_dur": 385.0, "avg_dur": 64.2, "series_list": ["APT Process", "\"All of Us\" Training", "Dean's Dynamic Duo"]}, {"identifier": "sghosh@howard.edu", "meetings": 6, "name": "Dr. Somiranjan Ghosh", "total_dur": 362.0, "avg_dur": 60.3, "series_list": ["APT Process", "Dean's Dynamic Duo", "\"All of Us\" Training"]}, {"identifier": "basheer.qolomany@howard.edu", "meetings": 5, "name": "Basheer Qolomany", "total_dur": 344.0, "avg_dur": 68.8, "series_list": ["Dean's Dynamic Duo", "\"All of Us\" Training"]}, {"identifier": "joanne.allard@howard.edu", "meetings": 5, "name": "Joanne Allard", "total_dur": 320.0, "avg_dur": 64.0, "series_list": ["APT Process", "\"All of Us\" Training"]}, {"identifier": "betelihem.tobo@howard.edu", "meetings": 4, "name": "Betelihem Tobo", "total_dur": 471.0, "avg_dur": 67.3, "series_list": ["\"All of Us\" Training", "Dean's Dynamic Duo", "SWAT Write-A-Thon"]}, {"identifier": "christian.parry@howard.edu", "meetings": 3, "name": "Christian Parry", "total_dur": 390.0, "avg_dur": 78.0, "series_list": ["Investigators & Admin", "Dean's Dynamic Duo", "SWAT Write-A-Thon"]}, {"identifier": "phouston@howard.edu", "meetings": 2, "name": "Patricia Houston", "total_dur": 121.0, "avg_dur": 60.5, "series_list": ["Investigators & Admin", "Dean's Dynamic Duo"]}, {"identifier": "david.bowman@howard.edu", "meetings": 2, "name": "David Bowman", "total_dur": 136.0, "avg_dur": 68.0, "series_list": ["Dean's Dynamic Duo", "APT Process"]}, {"identifier": "darose@howard.edu", "meetings": 2, "name": "david Rose", "total_dur": 112.0, "avg_dur": 37.3, "series_list": ["Dean's Dynamic Duo", "APT Process"]}, {"identifier": "ebony.caldwell@howard.edu", "meetings": 2, "name": "Dr. Caldwell", "total_dur": 89.0, "avg_dur": 29.7, "series_list": ["Investigators & Admin", "APT Process"]}, {"identifier": "nosimot.buhari@bison.howard.edu", "meetings": 2, "name": "Nosimot Adenike Buhari", "total_dur": 127.0, "avg_dur": 63.5, "series_list": ["\"All of Us\" Training"]}, {"identifier": "byron.ford@howard.edu", "meetings": 2, "name": "Byron Ford", "total_dur": 243.0, "avg_dur": 60.8, "series_list": ["Investigators & Admin", "Dean's Dynamic Duo"]}, {"identifier": "tmclaurin-jones@howard.edu", "meetings": 2, "name": "TyWanda McLaurin-Jones, Ph.D", "total_dur": 559.0, "avg_dur": 79.9, "series_list": ["APT Process", "SWAT Write-A-Thon"]}, {"identifier": "benita.king@howard.edu", "meetings": 2, "name": "Benita King# COM - Center for Innovation ( \"Benita King, COM, Center for Innovation\" )", "total_dur": 50.0, "avg_dur": 25.0, "series_list": ["\"All of Us\" Training"]}, {"identifier": "kmanaye@howard.edu", "meetings": 2, "name": "Kebreten Manaye", "total_dur": 58.0, "avg_dur": 29.0, "series_list": ["Investigators & Admin", "Dean's Dynamic Duo"]}, {"identifier": "pamela.coleman@howard.edu", "meetings": 1, "name": "pamela coleman", "total_dur": 44.0, "avg_dur": 44.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "noor.malik@howard.edu", "meetings": 1, "name": "Noor Malik", "total_dur": 41.0, "avg_dur": 41.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "paola.correaalfo@bison.howard.edu", "meetings": 1, "name": "Paola Correa", "total_dur": 73.0, "avg_dur": 73.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "nicholas.azinge@howard.edu", "meetings": 1, "name": "Nicholas Azinge", "total_dur": 64.0, "avg_dur": 64.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "a_kibreab@howard.edu", "meetings": 1, "name": "Angesom Kibreab", "total_dur": 67.0, "avg_dur": 67.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "nam.nguyen@howard.edu", "meetings": 1, "name": "nam nguyen", "total_dur": 65.0, "avg_dur": 65.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "n_kalu@howard.edu", "meetings": 1, "name": "Nnenna Kalu", "total_dur": 118.0, "avg_dur": 59.0, "series_list": ["Investigators & Admin"]}, {"identifier": "msumon@huhosp.org", "meetings": 1, "name": "Mahbubur Sumon", "total_dur": 62.0, "avg_dur": 62.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "prosper.ngouemo@howard.edu", "meetings": 1, "name": "Prosper N'Gouemo", "total_dur": 55.0, "avg_dur": 55.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "maurice.fluitt@howard.edu", "meetings": 1, "name": "Maurice Fluitt", "total_dur": 64.0, "avg_dur": 64.0, "series_list": ["Dean's Dynamic Duo"]}, {"identifier": "mark.johnson@howard.edu", "meetings": 1, "name": "Mark Johnson", "total_dur": 62.0, "avg_dur": 62.0, "series_list": ["Dean's Dynamic Duo"]}];
+const GUESTS   = [{"meeting": "HUCM Summer Write-A-Thon (SWAT) 2025", "date": "2025-07-02", "hucm": 36, "guests": 0}, {"meeting": "HUCM Investigators and Administrators Me", "date": "2025-07-11", "hucm": 26, "guests": 0}, {"meeting": "\"All of Us\" Pre-Session: Registration Pr", "date": "2025-08-08", "hucm": 8, "guests": 0}, {"meeting": "\"All of Us\" Training: Session 1 (PM)", "date": "2025-08-08", "hucm": 5, "guests": 0}, {"meeting": "\"All of Us\" Pre-Session: Registration Pr", "date": "2025-08-08", "hucm": 6, "guests": 0}, {"meeting": "\"All of Us\" Training: Session 1 (AM)", "date": "2025-08-11", "hucm": 7, "guests": 0}, {"meeting": "\"All of Us\" Training: Session 2 (AM)", "date": "2025-08-13", "hucm": 12, "guests": 0}, {"meeting": "\"All of Us\" Training: Session 2 (PM)", "date": "2025-08-13", "hucm": 3, "guests": 0}, {"meeting": "APT Process for BASIC SCIENTISTS", "date": "2025-08-14", "hucm": 8, "guests": 0}, {"meeting": "\"All of Us\" Training: Session 3 (AM)", "date": "2025-08-15", "hucm": 7, "guests": 0}, {"meeting": "\"All of Us\" Training: Session 3 (PM)", "date": "2025-08-15", "hucm": 4, "guests": 0}, {"meeting": "APT Process for CLINICIANS", "date": "2025-08-19", "hucm": 11, "guests": 0}, {"meeting": "The Dean's Dynamic Duo Lecture Series", "date": "2025-08-20", "hucm": 19, "guests": 58}];
+const ALL      = [{"name": "Dr. Somiranjan Ghosh", "email": "sghosh@howard.edu", "date": "2025-08-14", "topic": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "duration": 86, "guest": "No"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-08-14", "topic": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "duration": 60, "guest": "No"}, {"name": "G. Downer", "email": "gdowner@howard.edu", "date": "2025-08-14", "topic": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "duration": 68, "guest": "No"}, {"name": "Joanne Allard", "email": "joanne.allard@howard.edu", "date": "2025-08-14", "topic": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "duration": 79, "guest": "No"}, {"name": "John Stubbs", "email": "jstubbs@howard.edu", "date": "2025-08-14", "topic": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "duration": 56, "guest": "No"}, {"name": "Magdalena Misiak", "email": "magdalena.misiak@howard.edu", "date": "2025-08-14", "topic": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "duration": 71, "guest": "No"}, {"name": "Muneer Abbas, Ph.D. #HowardUniversity", "email": "m_abbas@howard.edu", "date": "2025-08-14", "topic": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "duration": 63, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-14", "topic": "APT Process for BASIC SCIENTISTS", "series": "APT Process", "duration": 91, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "series": "\"All of Us\" Training", "duration": 2, "guest": "No"}, {"name": "Benita King# COM - Center for Innovation ( \"Benita King, COM, Center for Innovation\" )", "email": "benita.king@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "series": "\"All of Us\" Training", "duration": 30, "guest": "No"}, {"name": "Betelihem Tobo", "email": "betelihem.tobo@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "series": "\"All of Us\" Training", "duration": 17, "guest": "No"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "series": "\"All of Us\" Training", "duration": 57, "guest": "No"}, {"name": "G. Downer", "email": "gdowner@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "series": "\"All of Us\" Training", "duration": 63, "guest": "No"}, {"name": "Joanne Allard", "email": "joanne.allard@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "series": "\"All of Us\" Training", "duration": 62, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "series": "\"All of Us\" Training", "duration": 65, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (AM)", "series": "\"All of Us\" Training", "duration": 109, "guest": "No"}, {"name": "Bonnie Harris", "email": "bonnie.harris@howard.edu", "date": "2025-07-11", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 61, "guest": "No"}, {"name": "Byron Ford", "email": "byron.ford@howard.edu", "date": "2025-07-11", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 62, "guest": "No"}, {"name": "Christian Parry", "email": "christian.parry@howard.edu", "date": "2025-07-11", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 54, "guest": "No"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-07-11", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 61, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-11", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 61, "guest": "No"}, {"name": "Nnenna Kalu", "email": "n_kalu@howard.edu", "date": "2025-07-11", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 58, "guest": "No"}, {"name": "Bonnie Harris", "email": "bonnie.harris@howard.edu", "date": "2025-07-25", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 67, "guest": "No"}, {"name": "Byron Ford", "email": "byron.ford@howard.edu", "date": "2025-07-25", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 71, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-25", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 70, "guest": "No"}, {"name": "Nnenna Kalu", "email": "n_kalu@howard.edu", "date": "2025-07-25", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 60, "guest": "No"}, {"name": "Patricia Houston", "email": "phouston@howard.edu", "date": "2025-07-25", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 68, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-07-25", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 74, "guest": "No"}, {"name": "Xiping Zhan", "email": "xiping.zhan@howard.edu", "date": "2025-07-25", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 71, "guest": "No"}, {"name": "Bonnie Harris", "email": "bonnie.harris@howard.edu", "date": "2025-08-08", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 46, "guest": "No"}, {"name": "Byron Ford", "email": "byron.ford@howard.edu", "date": "2025-08-08", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 48, "guest": "No"}, {"name": "Dr. Caldwell", "email": "ebony.caldwell@howard.edu", "date": "2025-08-08", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 43, "guest": "No"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-08-08", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 38, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-08", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 48, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-08", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 28, "guest": "No"}, {"name": "Bonnie Harris", "email": "bonnie.harris@howard.edu", "date": "2025-08-22", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 4, "guest": "No"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-08-22", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 11, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-22", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 13, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-22", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 23, "guest": "No"}, {"name": "Danielle Hairston, M.D.", "email": "danielle.hairston@howard.edu", "date": "2025-08-22", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 1, "guest": "No"}, {"name": "Bonnie Harris", "email": "bonnie.harris@howard.edu", "date": "2025-08-22", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 1, "guest": "No"}, {"name": "Kebreten Manaye", "email": "kmanaye@howard.edu", "date": "2025-08-22", "topic": "HUCM Investigators and Administrators Meeting", "series": "Investigators & Admin", "duration": 1, "guest": "No"}, {"name": "Carla Davis", "email": "carla.davis@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (AM)", "series": "\"All of Us\" Training", "duration": 54, "guest": "No"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (AM)", "series": "\"All of Us\" Training", "duration": 50, "guest": "No"}, {"name": "G. Downer", "email": "gdowner@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (AM)", "series": "\"All of Us\" Training", "duration": 66, "guest": "No"}, {"name": "Joanne Allard", "email": "joanne.allard@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (AM)", "series": "\"All of Us\" Training", "duration": 64, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (AM)", "series": "\"All of Us\" Training", "duration": 75, "guest": "No"}, {"name": "Nosimot Adenike Buhari", "email": "nosimot.buhari@bison.howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (AM)", "series": "\"All of Us\" Training", "duration": 72, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (AM)", "series": "\"All of Us\" Training", "duration": 89, "guest": "No"}, {"name": "Adora Okogbule-Wonodi", "email": "adora.wonodi@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 57, "guest": "Yes"}, {"name": "Alem Mehari", "email": "alem.mehari@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 62, "guest": "Yes"}, {"name": "Andrea Hayes-Dixon", "email": "andreaa.hayes@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 63, "guest": "Yes"}, {"name": "Angesom Kibreab", "email": "a_kibreab@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 67, "guest": "No"}, {"name": "Barbara Harrison", "email": "bwharrison@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 56, "guest": "No"}, {"name": "Basheer Qolomany", "email": "basheer.qolomany@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 83, "guest": "No"}, {"name": "Bernard Kwabi-Addo", "email": "bkwabi-addo@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 58, "guest": "Yes"}, {"name": "Betelihem Tobo", "email": "betelihem.tobo@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 68, "guest": "No"}, {"name": "Byron Ford", "email": "byron.ford@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 62, "guest": "No"}, {"name": "Carla Davis", "email": "carla.davis@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 80, "guest": "No"}, {"name": "Chinyere Ikwu", "email": "cikwu@huhosp.org", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 8, "guest": "Yes"}, {"name": "Christian Parry", "email": "christian.parry@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 59, "guest": "No"}, {"name": "Christopher McGinley", "email": "christopher.mcginley@bison.howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 62, "guest": "Yes"}, {"name": "Cynthia Morgan", "email": "cynthia.morgan1@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 61, "guest": "Yes"}, {"name": "Daniel Larbi", "email": "daniel.larbi@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 48, "guest": "Yes"}, {"name": "David Bowman", "email": "david.bowman@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 67, "guest": "No"}, {"name": "Debra Ford", "email": "dhford@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 68, "guest": "Yes"}, {"name": "Delisha Stewart", "email": "delisha.stewart@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 66, "guest": "Yes"}, {"name": "Denise Scott", "email": "d_m_scott@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 56, "guest": "Yes"}, {"name": "Ebony Copeland", "email": "ebony.copeland@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 62, "guest": "Yes"}, {"name": "Fayo Oyolola", "email": "fayo.oyolola@yahoo.com", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 59, "guest": "Yes"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 60, "guest": "No"}, {"name": "Greg Ford", "email": "gregory.ford@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 52, "guest": "Yes"}, {"name": "Habib Shariat", "email": "hshariat@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 51, "guest": "Yes"}, {"name": "Hassan Ashktorab", "email": "hashktorab@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 59, "guest": "Yes"}, {"name": "Hassan Brim", "email": "hbrim@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 57, "guest": "Yes"}, {"name": "Inez Reeves", "email": "ireeves@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 56, "guest": "Yes"}, {"name": "Jacob Lustgarten", "email": "jacob.lustgarten@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 59, "guest": "Yes"}, {"name": "Jahn O'Neil", "email": "jahn.oneil@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 62, "guest": "Yes"}, {"name": "James Taylor", "email": "james.taylor2@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 62, "guest": "Yes"}, {"name": "Jhansi Gajjala", "email": "jhansi.gajjala@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 2, "guest": "Yes"}, {"name": "Joanne Adelberg", "email": "joanne.adelberg@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 64, "guest": "Yes"}, {"name": "Jordan Benson", "email": "jordan.benson@bison.howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 59, "guest": "Yes"}, {"name": "Julius Ngwa", "email": "julius.ngwa@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 64, "guest": "Yes"}, {"name": "Kanwal Gambhir", "email": "kgambhir@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 64, "guest": "Yes"}, {"name": "Kebreten Manaye", "email": "kmanaye@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 57, "guest": "No"}, {"name": "Lamiaa Rougui", "email": "lamiaa.rougui1@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 61, "guest": "Yes"}, {"name": "Maame Sarfo-Gyamfi", "email": "maame.sarfogyamf@bison.howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 27, "guest": "Yes"}, {"name": "Mahbubur Sumon", "email": "msumon@huhosp.org", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 62, "guest": "Yes"}, {"name": "Manuel Jean", "email": "manuel.jean1@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 63, "guest": "Yes"}, {"name": "Marina Jerebtsova", "email": "marina.jerebtsova@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 61, "guest": "Yes"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 73, "guest": "No"}, {"name": "Mark Johnson", "email": "mark.johnson@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 62, "guest": "Yes"}, {"name": "Maurice Fluitt", "email": "maurice.fluitt@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 64, "guest": "Yes"}, {"name": "Miriam Michael", "email": "michaelclarkefamily@gmail.com", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 13, "guest": "Yes"}, {"name": "Nicholas Azinge", "email": "nicholas.azinge@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 64, "guest": "Yes"}, {"name": "Noor Malik", "email": "noor.malik@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 41, "guest": "Yes"}, {"name": "Paola Correa", "email": "paola.correaalfo@bison.howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 73, "guest": "Yes"}, {"name": "Patricia Houston", "email": "phouston@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 53, "guest": "No"}, {"name": "Prosper N'Gouemo", "email": "prosper.ngouemo@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 55, "guest": "Yes"}, {"name": "Qiyi Tang", "email": "qiyi.tang@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 50, "guest": "Yes"}, {"name": "Quinn Capers", "email": "quinn.capers@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 60, "guest": "Yes"}, {"name": "Richard Schottenfeld", "email": "richard.schottenfeld@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 52, "guest": "No"}, {"name": "Safia Mohamud", "email": "safia.mohamud@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 66, "guest": "No"}, {"name": "Sergei Nekhai", "email": "snekhai@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 68, "guest": "Yes"}, {"name": "Sherry Dore Morris", "email": "sherry.dore-morris@gov.kn", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 70, "guest": "Yes"}, {"name": "Somiranjan Ghosh", "email": "sghosh@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 73, "guest": "No"}, {"name": "Stafford Battle", "email": "sbattle@hwoard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 66, "guest": "Yes"}, {"name": "Tamara Owens", "email": "tlowens@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 46, "guest": "Yes"}, {"name": "Tamaro Hudson", "email": "t_hudson@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 67, "guest": "Yes"}, {"name": "Tanmoy Mondal", "email": "tanmoy.mondal@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 69, "guest": "No"}, {"name": "Tayseer Haroun", "email": "tayseer.haroun@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 51, "guest": "Yes"}, {"name": "Tom Mellman", "email": "tmellman@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 114, "guest": "Yes"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 84, "guest": "No"}, {"name": "Wai Lim Ku", "email": "wailim.ku@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 74, "guest": "Yes"}, {"name": "Wardah Bajwa", "email": "drwardabajwa@gmail.com", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 59, "guest": "Yes"}, {"name": "Yasmine Kanaan", "email": "ymkanaan@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 68, "guest": "Yes"}, {"name": "abiodun otolorin", "email": "abiodun.otolorin@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 52, "guest": "Yes"}, {"name": "david Rose", "email": "darose@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 30, "guest": "Yes"}, {"name": "david rose", "email": "darose@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 22, "guest": "No"}, {"name": "frough saadatmand", "email": "frough.saadatmand@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 64, "guest": "Yes"}, {"name": "gail kerr", "email": "gail.kerr@va.gov", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 38, "guest": "Yes"}, {"name": "goulda downer", "email": "gdowner@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 67, "guest": "No"}, {"name": "nam nguyen", "email": "nam.nguyen@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 65, "guest": "Yes"}, {"name": "pamela coleman", "email": "pamela.coleman@howard.edu", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 44, "guest": "Yes"}, {"name": "sandra caines", "email": "sandra.lestrade-caines@gov.kn", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 82, "guest": "Yes"}, {"name": "Gwendolyn West", "email": "gwest@huhosp.org", "date": "2025-08-20", "topic": "The Dean's Dynamic Duo Lecture Series", "series": "Dean's Dynamic Duo", "duration": 1, "guest": "Yes"}, {"name": "Basheer Qolomany", "email": "basheer.qolomany@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 51, "guest": "No"}, {"name": "Dr. Somiranjan Ghosh", "email": "sghosh@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 56, "guest": "No"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 33, "guest": "No"}, {"name": "G. Downer", "email": "gdowner@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 58, "guest": "No"}, {"name": "Joanne Allard", "email": "joanne.allard@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 52, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 21, "guest": "No"}, {"name": "Nosimot Adenike Buhari", "email": "nosimot.buhari@bison.howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 55, "guest": "No"}, {"name": "Thomas Heinbockel", "email": "theinbockel@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 47, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 66, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 2, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 1, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (AM)", "series": "\"All of Us\" Training", "duration": 45, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Training: Session 1 (PM)", "series": "\"All of Us\" Training", "duration": 3, "guest": "No"}, {"name": "Basheer Qolomany", "email": "basheer.qolomany@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (PM)", "series": "\"All of Us\" Training", "duration": 67, "guest": "No"}, {"name": "Dr. Somiranjan Ghosh", "email": "sghosh@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (PM)", "series": "\"All of Us\" Training", "duration": 69, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (PM)", "series": "\"All of Us\" Training", "duration": 69, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (PM)", "series": "\"All of Us\" Training", "duration": 91, "guest": "No"}, {"name": "Carla Davis", "email": "carla.davis@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 20, "guest": "No"}, {"name": "David Rose (he, him)", "email": "darose@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 60, "guest": "No"}, {"name": "Dr. David Bowman", "email": "david.bowman@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 69, "guest": "No"}, {"name": "Ebony Caldwell# MD ( Dr. Caldwell )", "email": "ebony.caldwell@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 8, "guest": "No"}, {"name": "Ebony Caldwell, MD", "email": "ebony.caldwell@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 38, "guest": "No"}, {"name": "Katrina Chin Loy (she/her)", "email": "katrina.chinloy@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 69, "guest": "No"}, {"name": "Leslie Jones M.D.", "email": "l_s_jones@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 33, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 61, "guest": "No"}, {"name": "Tatiana Sanses", "email": "tatiana.sanses@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 59, "guest": "No"}, {"name": "TyWanda McLaurin-Jones, Ph.D", "email": "tmclaurin-jones@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 73, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-19", "topic": "APT Process for CLINICIANS", "series": "APT Process", "duration": 75, "guest": "No"}, {"name": "Carla Davis", "email": "carla.davis@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (AM)", "series": "\"All of Us\" Training", "duration": 54, "guest": "No"}, {"name": "Dr. Somiranjan Ghosh", "email": "sghosh@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (AM)", "series": "\"All of Us\" Training", "duration": 5, "guest": "No"}, {"name": "Finie Richardson", "email": "fkhunter@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (AM)", "series": "\"All of Us\" Training", "duration": 59, "guest": "No"}, {"name": "G. Downer", "email": "gdowner@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (AM)", "series": "\"All of Us\" Training", "duration": 63, "guest": "No"}, {"name": "Joanne Allard", "email": "joanne.allard@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (AM)", "series": "\"All of Us\" Training", "duration": 63, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (AM)", "series": "\"All of Us\" Training", "duration": 65, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-11", "topic": "\"All of Us\" Training: Session 1 (AM)", "series": "\"All of Us\" Training", "duration": 96, "guest": "No"}, {"name": "Basheer Qolomany", "email": "basheer.qolomany@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (PM)", "series": "\"All of Us\" Training", "duration": 69, "guest": "No"}, {"name": "Dr. Somiranjan Ghosh", "email": "sghosh@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (PM)", "series": "\"All of Us\" Training", "duration": 73, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (PM)", "series": "\"All of Us\" Training", "duration": 72, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-15", "topic": "\"All of Us\" Training: Session 3 (PM)", "series": "\"All of Us\" Training", "duration": 100, "guest": "No"}, {"name": "Betelihem Tobo", "email": "betelihem.tobo@howard.edu", "date": "2025-07-02", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 88, "guest": "No"}, {"name": "Christian Parry", "email": "christian.parry@howard.edu", "date": "2025-07-02", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 89, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-02", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 89, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-07-02", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 98, "guest": "No"}, {"name": "Carla Davis", "email": "carla.davis@howard.edu", "date": "2025-07-03", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 66, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-03", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 92, "guest": "No"}, {"name": "TyWanda McLaurin-Jones, Ph.D", "email": "tmclaurin-jones@howard.edu", "date": "2025-07-03", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 37, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-07-03", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 99, "guest": "No"}, {"name": "Betelihem Tobo", "email": "betelihem.tobo@howard.edu", "date": "2025-07-10", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 89, "guest": "No"}, {"name": "Christian Parry", "email": "christian.parry@howard.edu", "date": "2025-07-10", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 93, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-10", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 91, "guest": "No"}, {"name": "TyWanda McLaurin-Jones, Ph.D", "email": "tmclaurin-jones@howard.edu", "date": "2025-07-10", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 82, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-07-10", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 93, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-11", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 74, "guest": "No"}, {"name": "TyWanda McLaurin-Jones, Ph.D", "email": "tmclaurin-jones@howard.edu", "date": "2025-07-11", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 76, "guest": "No"}, {"name": "Betelihem Tobo", "email": "betelihem.tobo@howard.edu", "date": "2025-07-17", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 86, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-17", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 97, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-07-17", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 96, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-18", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 95, "guest": "No"}, {"name": "TyWanda McLaurin-Jones, Ph.D", "email": "tmclaurin-jones@howard.edu", "date": "2025-07-18", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 93, "guest": "No"}, {"name": "Christian Parry", "email": "christian.parry@howard.edu", "date": "2025-07-24", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 95, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-24", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 95, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-07-24", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 100, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-25", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 89, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-07-25", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 93, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-07-31", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 90, "guest": "No"}, {"name": "TyWanda McLaurin-Jones, Ph.D", "email": "tmclaurin-jones@howard.edu", "date": "2025-07-31", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 94, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-07-31", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 99, "guest": "No"}, {"name": "Betelihem Tobo", "email": "betelihem.tobo@howard.edu", "date": "2025-08-01", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 101, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-01", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 137, "guest": "No"}, {"name": "TyWanda McLaurin-Jones, Ph.D", "email": "tmclaurin-jones@howard.edu", "date": "2025-08-01", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 104, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-01", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 109, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-07", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 103, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-07", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 104, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-08", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 99, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-08", "topic": "HUCM Summer Write-A-Thon (SWAT) 2025", "series": "SWAT Write-A-Thon", "duration": 106, "guest": "No"}, {"name": "Carla Davis", "email": "carla.davis@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (PM)", "series": "\"All of Us\" Training", "duration": 57, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (PM)", "series": "\"All of Us\" Training", "duration": 84, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-13", "topic": "\"All of Us\" Training: Session 2 (PM)", "series": "\"All of Us\" Training", "duration": 89, "guest": "No"}, {"name": "Basheer Qolomany", "email": "basheer.qolomany@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (PM)", "series": "\"All of Us\" Training", "duration": 74, "guest": "No"}, {"name": "Benita King# COM - Center for Innovation ( Benita King )", "email": "benita.king@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (PM)", "series": "\"All of Us\" Training", "duration": 20, "guest": "No"}, {"name": "Betelihem Tobo", "email": "betelihem.tobo@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (PM)", "series": "\"All of Us\" Training", "duration": 22, "guest": "No"}, {"name": "Carla Davis", "email": "carla.davis@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (PM)", "series": "\"All of Us\" Training", "duration": 54, "guest": "No"}, {"name": "Marjorie Gondr\u00e9-Lewis", "email": "mgondre-lewis@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (PM)", "series": "\"All of Us\" Training", "duration": 102, "guest": "No"}, {"name": "Veronica Bruce", "email": "veronica.bruce@howard.edu", "date": "2025-08-08", "topic": "\"All of Us\" Pre-Session: Registration Process (PM)", "series": "\"All of Us\" Training", "duration": 103, "guest": "No"}];
+const KPIS     = {"total_meetings": 13, "total_attendances": 210, "unique_people": 92, "multi_meeting": 19, "avg_per_meeting": 16.2, "avg_duration": 62.3};
+
+const SCOLS = {
+  'SWAT Write-A-Thon':'#003087','Investigators & Admin':'#7c3aed',
+  '"All of Us" Training':'#16a34a','APT Process':'#ea580c',"Dean's Dynamic Duo":'#E51937','Other':'#9ca3af'
+};
+const SPILL = {
+  'SWAT Write-A-Thon':'ps','Investigators & Admin':'pi',
+  '"All of Us" Training':'pa','APT Process':'pp',"Dean's Dynamic Duo":'pd','Other':'po'
+};
+const SCARDCLS = ['s1','s2','s3','s4','s5'];
+
+let fRecs=[...ALL], pg_cur=0, PG=50;
+let sF='date',sD='asc',sTF='meetings',sTD='desc';
+let cMtg,cFreq,cSeries,cGuest;
+
+window.addEventListener('DOMContentLoaded',()=>{
+  renderKPIs(ALL);
+  renderSeriesCards(SERIES);
+  buildCharts();
+  renderTop(TOP.filter(t=>t.meetings>1));
+  renderTable();
+  document.getElementById('fc').textContent=ALL.length+' records';
+});
+
+function seriesPill(s){return`<span class="pill ${SPILL[s]||'po'}">${s}</span>`;}
+
+function filt(){
+  const fs=document.getElementById('fs').value;
+  const fg=document.getElementById('fg').value;
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  fRecs=ALL.filter(r=>{
+    if(fs!=='all'&&r.series!==fs) return false;
+    if(fg!=='all'&&r.guest!==fg) return false;
+    if(q&&!r.name.toLowerCase().includes(q)&&!r.email.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  pg_cur=0;
+  renderKPIs(fRecs);
+  updateCharts(fRecs);
+  renderTable();
+  document.getElementById('fc').textContent=fRecs.length+' records';
+}
+
+function renderKPIs(recs){
+  const mtgs=new Set(recs.map(r=>r.topic+r.date));
+  document.getElementById('k1').textContent=mtgs.size;
+  document.getElementById('k2').textContent=recs.length;
+  const uniq=new Set(recs.map(r=>r.email||r.name));
+  document.getElementById('k3').textContent=uniq.size;
+  const pm={};
+  recs.forEach(r=>{const k=r.email||r.name;if(!pm[k])pm[k]=new Set();pm[k].add(r.topic+r.date);});
+  document.getElementById('k4').textContent=Object.values(pm).filter(s=>s.size>1).length;
+  const byM={};
+  recs.forEach(r=>{byM[r.topic+r.date]=(byM[r.topic+r.date]||0)+1;});
+  const mv=Object.values(byM);
+  document.getElementById('k5').textContent=mv.length?(mv.reduce((a,b)=>a+b,0)/mv.length).toFixed(1):0;
+  const durs=recs.filter(r=>r.duration>0).map(r=>r.duration);
+  document.getElementById('k6').textContent=durs.length?Math.round(durs.reduce((a,b)=>a+b,0)/durs.length):0;
+}
+
+function renderSeriesCards(data){
+  const clsMap={'SWAT Write-A-Thon':'s1','Investigators & Admin':'s2','"All of Us" Training':'s3','APT Process':'s4',"Dean's Dynamic Duo":'s5'};
+  let html='';
+  data.forEach(s=>{
+    const cls=clsMap[s.series]||'s1';
+    html+=`<div class="series-card ${cls}">
+      <div class="sc-name">${s.series}</div>
+      <div class="sc-stats">
+        <span><strong>${s.meetings}</strong> meeting${s.meetings!==1?'s':''}</span>
+        <span><strong>${s.total_attendances}</strong> attendances</span>
+      </div>
+    </div>`;
+  });
+  document.getElementById('series-cards').innerHTML=html;
+}
+
+function buildCharts(){
+  // Meeting bar chart (HUCM vs Guest)
+  const ctx1=document.getElementById('cMtg').getContext('2d');
+  const labels=MEETINGS.map(m=>m.date.slice(5)+' '+m.topic.slice(0,20)+'…');
+  cMtg=new Chart(ctx1,{
+    type:'bar',
+    data:{
+      labels:MEETINGS.map(m=>m.date.slice(5)+' '+m.topic.slice(0,18)),
+      datasets:[
+        {label:'HUCM',   data:MEETINGS.map(m=>m.hucm),   backgroundColor:'#003087CC',borderRadius:3},
+        {label:'Guests', data:MEETINGS.map(m=>m.guests), backgroundColor:'#E51937CC',borderRadius:3},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:14}},tooltip:{mode:'index',intersect:false}},
+      scales:{x:{stacked:true,grid:{display:false},ticks:{maxRotation:45,font:{size:10}}},y:{stacked:true,beginAtZero:true}}
+    }
+  });
+
+  // Freq dist
+  const ctx2=document.getElementById('cFreq').getContext('2d');
+  const fcols=['#e5e7eb','#93c5fd','#3b82f6','#1d4ed8','#003087','#7c3aed','#5b21b6','#1e1b4b','#E51937'];
+  cFreq=new Chart(ctx2,{
+    type:'bar',
+    data:{
+      labels:FREQ.map(f=>f.meetings+(f.meetings===1?' session':' sessions')),
+      datasets:[{label:'People',data:FREQ.map(f=>f.count),backgroundColor:fcols.slice(0,FREQ.length),borderRadius:5}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true}}}
+  });
+
+  // Series attendances
+  const ctx3=document.getElementById('cSeries').getContext('2d');
+  cSeries=new Chart(ctx3,{
+    type:'bar',
+    data:{
+      labels:SERIES.map(s=>s.series),
+      datasets:[{label:'Total attendances',data:SERIES.map(s=>s.total_attendances),
+        backgroundColor:SERIES.map(s=>SCOLS[s.series]||'#9ca3af'),borderRadius:5}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y} attendances`}}},
+      scales:{x:{grid:{display:false}},y:{beginAtZero:true,title:{display:true,text:'Attendances'}}}
+    }
+  });
+
+  // Guest doughnut
+  const ctx4=document.getElementById('cGuest').getContext('2d');
+  const hucmTotal=ALL.filter(r=>r.guest==='No').length;
+  const guestTotal=ALL.filter(r=>r.guest==='Yes').length;
+  cGuest=new Chart(ctx4,{
+    type:'doughnut',
+    data:{
+      labels:['HUCM Members','External Guests'],
+      datasets:[{data:[hucmTotal,guestTotal],backgroundColor:['#003087CC','#E51937CC'],borderColor:'#fff',borderWidth:3}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'58%',
+      plugins:{
+        legend:{position:'bottom',labels:{usePointStyle:true,padding:14}},
+        tooltip:{callbacks:{label:c=>{
+          const t=c.dataset.data.reduce((a,b)=>a+b,0);
+          return ` ${c.label}: ${c.parsed} (${((c.parsed/t)*100).toFixed(1)}%)`;
+        }}}
+      }
+    }
+  });
+}
+
+function updateCharts(recs){
+  // Rebuild meeting chart
+  const byMtg={};
+  MEETINGS.forEach(m=>{byMtg[m.topic+m.date]={h:0,g:0};});
+  recs.forEach(r=>{
+    const k=r.topic+r.date;
+    if(byMtg[k]){if(r.guest==='No')byMtg[k].h++;else byMtg[k].g++;}
+  });
+  cMtg.data.datasets[0].data=MEETINGS.map(m=>byMtg[m.topic+m.date]?.h||0);
+  cMtg.data.datasets[1].data=MEETINGS.map(m=>byMtg[m.topic+m.date]?.g||0);
+  cMtg.update('none');
+  // Guest doughnut
+  const h=recs.filter(r=>r.guest==='No').length;
+  const g=recs.filter(r=>r.guest==='Yes').length;
+  cGuest.data.datasets[0].data=[h,g];
+  cGuest.update('none');
+  // Series bar
+  const sc={};
+  recs.forEach(r=>{sc[r.series]=(sc[r.series]||0)+1;});
+  cSeries.data.datasets[0].data=SERIES.map(s=>sc[s.series]||0);
+  cSeries.update('none');
+}
+
+// TOP TABLE
+function renderTop(data){
+  const sorted=[...data].sort((a,b)=>{
+    const av=a[sTF],bv=b[sTF];const c=av<bv?-1:av>bv?1:0;return sTD==='asc'?c:-c;
+  });
+  const cols=[{f:'name',l:'Name'},{f:'meetings',l:'Sessions'},{f:'avg_dur',l:'Avg Min'},{f:'total_dur',l:'Total Min'},{f:'series_list',l:'Series Attended'}];
+  let html='<table><thead><tr>';
+  cols.forEach(c=>{
+    const a=sTF===c.f?(sTD==='asc'?' ▲':' ▼'):'';
+    html+=`<th onclick="sTop('${c.f}')">${c.l}${a}</th>`;
+  });
+  html+='</tr></thead><tbody>';
+  sorted.forEach(r=>{
+    const series=(Array.isArray(r.series_list)?r.series_list:[]).map(s=>seriesPill(s)).join(' ');
+    html+=`<tr>
+      <td><strong>${r.name}</strong></td>
+      <td><strong style="color:var(--hdr)">${r.meetings}</strong></td>
+      <td>${r.avg_dur}</td>
+      <td>${r.total_dur}</td>
+      <td>${series}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('top-tbl').innerHTML=html;
+}
+window.sTop=function(f){if(sTF===f)sTD=sTD==='asc'?'desc':'asc';else{sTF=f;sTD=f==='meetings'?'desc':'asc';}renderTop(TOP.filter(t=>t.meetings>1));};
+
+// MAIN TABLE
+function renderTable(){
+  const sorted=[...fRecs].sort((a,b)=>{
+    const av=a[sF],bv=b[sF];const c=av<bv?-1:av>bv?1:0;return sD==='asc'?c:-c;
+  });
+  const start=pg_cur*PG;
+  const page=sorted.slice(start,start+PG);
+  const total=Math.ceil(sorted.length/PG);
+  const cols=[{f:'name',l:'Name'},{f:'date',l:'Date'},{f:'topic',l:'Meeting'},{f:'series',l:'Series'},{f:'duration',l:'Min'},{f:'guest',l:'Type'}];
+  let html='<table><thead><tr>';
+  cols.forEach(c=>{const a=sF===c.f?(sD==='asc'?' ▲':' ▼'):'';html+=`<th onclick="sMain('${c.f}')">${c.l}${a}</th>`;});
+  html+='</tr></thead><tbody>';
+  page.forEach(r=>{
+    const gPill=r.guest==='Yes'?'<span class="pill pg">Guest</span>':'<span class="pill ph">HUCM</span>';
+    html+=`<tr>
+      <td>${r.name}</td>
+      <td>${r.date}</td>
+      <td title="${r.topic}">${r.topic.slice(0,38)}${r.topic.length>38?'…':''}</td>
+      <td>${seriesPill(r.series)}</td>
+      <td>${r.duration}</td>
+      <td>${gPill}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('main-tbl').innerHTML=html;
+  document.getElementById('tbl-sub').textContent=`Showing ${start+1}–${Math.min(start+PG,sorted.length)} of ${sorted.length} records`;
+  document.getElementById('pgi').textContent=`Page ${pg_cur+1} of ${total||1}`;
+  document.getElementById('prev').disabled=pg_cur===0;
+  document.getElementById('next').disabled=pg_cur>=total-1;
+}
+window.sMain=function(f){if(sF===f)sD=sD==='asc'?'desc':'asc';else{sF=f;sD='asc';}pg_cur=0;renderTable();};
+window.pg=function(d){const t=Math.ceil(fRecs.length/PG);pg_cur=Math.max(0,Math.min(pg_cur+d,t-1));renderTable();};
+</script>
+</body>
+</html>

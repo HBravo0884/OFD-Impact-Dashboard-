@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HUCM Office of Faculty Development — Impact Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --c1:#097C87; --c2:#FCA47C; --c3:#23CED9; --c4:#F9D779; --c5:#A1CCA6;
+  --c1d:#065e68; --c1l:#3db8c2;
+  --c2d:#e07a50; --c2l:#fdc8a8;
+  --c3d:#1aabba; --c5d:#7fb585;
+  --bg:#f0f7f8; --card:#fff; --border:#d4eaec;
+  --text:#0d2e32; --muted:#5a8a8f;
+  --radius:10px; --shadow:0 2px 14px #00000010;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+
+header{
+  background:linear-gradient(135deg,var(--c1d) 0%,var(--c1) 60%,var(--c3d) 100%);
+  color:#fff;padding:18px 32px;display:flex;align-items:center;gap:18px;
+  border-bottom:4px solid var(--c2);
+}
+.logo-mark{
+  width:44px;height:44px;border-radius:8px;flex-shrink:0;
+  background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.32);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;font-weight:900;letter-spacing:-.5px;
+}
+header h1{font-size:1.22rem;font-weight:700;line-height:1.25}
+header p{font-size:.76rem;opacity:.82;margin-top:3px}
+.hdr-badge{
+  margin-left:auto;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);
+  border-radius:6px;padding:7px 14px;font-size:.72rem;text-align:right;line-height:1.65;white-space:nowrap;
+}
+
+.tab-bar{background:var(--c1d);padding:0 24px;display:flex;gap:2px;border-bottom:3px solid var(--c2)}
+.tab-btn{
+  background:none;border:none;color:rgba(255,255,255,.58);padding:10px 18px;
+  cursor:pointer;font-size:.82rem;font-weight:600;
+  border-bottom:3px solid transparent;margin-bottom:-3px;transition:.15s;letter-spacing:.3px;
+}
+.tab-btn:hover{color:#fff}
+.tab-btn.active{color:#fff;border-bottom-color:var(--c2)}
+.tab-pane{display:none;padding:24px 28px;animation:fadein .18s}
+.tab-pane.active{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.kpi-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.kpi-card{
+  background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:16px 20px;flex:1;min-width:150px;border-left:5px solid var(--c1);
+}
+.kpi-card:nth-child(1){border-left-color:var(--c1)}
+.kpi-card:nth-child(2){border-left-color:var(--c2)}
+.kpi-card:nth-child(3){border-left-color:var(--c3)}
+.kpi-card:nth-child(4){border-left-color:var(--c5)}
+.kpi-num{font-size:1.85rem;font-weight:800;line-height:1;color:var(--c1);margin-bottom:4px}
+.kpi-card:nth-child(2) .kpi-num{color:var(--c2d)}
+.kpi-card:nth-child(3) .kpi-num{color:var(--c3d)}
+.kpi-card:nth-child(4) .kpi-num{color:var(--c5d)}
+.kpi-label{font-size:.69rem;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.kpi-sub{font-size:.71rem;color:var(--muted);margin-top:2px}
+
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:18px;margin-bottom:20px}
+.chart-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px}
+.chart-card h3{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--c1d);margin-bottom:3px}
+.chart-card .sub{font-size:.69rem;color:var(--muted);margin-bottom:12px;line-height:1.4}
+.chart-card canvas{max-height:280px}
+
+.sec{font-size:.9rem;font-weight:700;color:var(--c1d);margin:4px 0 16px;padding-bottom:6px;border-bottom:2px solid var(--border)}
+
+.series-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.ser-btn{background:#fff;border:2px solid var(--border);border-radius:20px;padding:5px 14px;font-size:.76rem;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s}
+.ser-btn:hover{border-color:var(--c1);color:var(--c1d)}
+.ser-btn.active{background:var(--c1);border-color:var(--c1);color:#fff}
+.avg-legend{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:.75rem;color:var(--muted)}
+.avg-pill{background:var(--c2);color:#fff;border-radius:20px;padding:2px 10px;font-weight:700;font-size:.72rem}
+
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.filter-bar select,.filter-bar input{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.8rem;background:#fff;color:var(--text);min-width:170px}
+.filter-bar input{min-width:220px}
+.filter-bar label{font-size:.78rem;color:var(--muted);white-space:nowrap}
+.dir-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;background:var(--card)}
+thead th{background:var(--c1d);color:#fff;padding:9px 11px;text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{background:var(--c1)}
+thead th.sorted-asc::after{content:" ▲";font-size:.65rem}
+thead th.sorted-desc::after{content:" ▼";font-size:.65rem}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:hover{background:#e5f5f6}
+tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
+.num{text-align:right;font-weight:700;color:var(--c1d)}
+.name-cell{font-weight:600}
+.deg-inline{display:inline-block;font-size:.67rem;color:var(--c5d);background:#e6f4e8;border-radius:4px;padding:1px 6px;margin-left:6px;font-weight:700;vertical-align:middle}
+.stag{display:inline-block;border-radius:20px;padding:2px 8px;font-size:.64rem;font-weight:700;margin:1px 2px;white-space:nowrap}
+.dir-count{font-size:.75rem;color:var(--muted);margin-left:auto}
+
+.methods-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 26px;max-width:860px;line-height:1.7}
+.methods-card h2{color:var(--c1d);font-size:1rem;margin-bottom:10px;border-bottom:2px solid var(--border);padding-bottom:6px}
+.methods-card h3{color:var(--c1);font-size:.87rem;margin:16px 0 6px}
+.methods-card p,.methods-card li{font-size:.82rem;color:var(--text)}
+.methods-card ul{padding-left:18px}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.badge{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.72rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">OFD</div>
+  <div>
+    <h1>Office of Faculty Development — Impact Dashboard</h1>
+    <p>Howard University College of Medicine · CME &amp; Programming Engagement</p>
+  </div>
+  <div class="hdr-badge">
+    __KPI_RECORDS__ attendance records<br>
+    __KPI_PEOPLE__ unique participants · __KPI_MEETINGS__ sessions
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="switchTab('activity',this)">By Series</button>
+  <button class="tab-btn" onclick="switchTab('engagement',this)">Engagement</button>
+  <button class="tab-btn" onclick="switchTab('directory',this)">Directory</button>
+  <button class="tab-btn" onclick="switchTab('methods',this)">Data &amp; Methods</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="tab-overview" class="tab-pane active">
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-num">__KPI_PEOPLE__</div>
+      <div class="kpi-label">Unique Participants</div>
+      <div class="kpi-sub">Faculty, staff &amp; trainees</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">__KPI_MEETINGS__</div>
+      <div class="kpi-label">Sessions Delivered</div>
+      <div class="kpi-sub">Across 5 programming series</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">__KPI_RECORDS__</div>
+      <div class="kpi-label">Attendance Records</div>
+      <div class="kpi-sub">Total session-level engagements</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">__KPI_DEPT__%</div>
+      <div class="kpi-label">Department Coverage</div>
+      <div class="kpi-sub">% of participants by dept</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Avg Attendance per Session — by Series</h3>
+      <div class="sub">Normalized headcount: average people per event. Hover for sessions run and total records.</div>
+      <canvas id="chartSeriesAvg"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Unique Faculty Reached — by Series</h3>
+      <div class="sub">Total distinct individuals ever reached by each series. Measures breadth of OFD programming reach.</div>
+      <canvas id="chartSeriesReach"></canvas>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Departmental Engagement</h3>
+      <div class="sub">Unique participants per HUCM academic department. Shows which units OFD programming is actively reaching.</div>
+      <canvas id="chartDepts"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Faculty Engagement Depth</h3>
+      <div class="sub">How many participants attended 1 session vs. became repeat attendees. Measures programming stickiness over time.</div>
+      <canvas id="chartLoyalty"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- BY SERIES -->
+<div id="tab-activity" class="tab-pane">
+  <div class="sec">Session-by-Session Attendance</div>
+  <div class="series-tabs" id="seriesTabs"></div>
+  <div class="avg-legend" id="avgLegend"></div>
+  <div class="chart-card" style="max-width:900px;margin-bottom:22px">
+    <h3 id="activityChartTitle">Sessions</h3>
+    <div class="sub" id="activityChartSub"></div>
+    <canvas id="chartActivityDetail" style="max-height:400px"></canvas>
+  </div>
+  <div class="sec">All Sessions — Attendance Timeline</div>
+  <div class="chart-card" style="max-width:900px">
+    <h3>All Sessions Chronological</h3>
+    <div class="sub">Every session in date order. Identifies high-traffic periods and engagement trends across the academic year. Colors cycle by series.</div>
+    <canvas id="chartTimeline" style="max-height:340px"></canvas>
+  </div>
+</div>
+
+<!-- ENGAGEMENT -->
+<div id="tab-engagement" class="tab-pane">
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Department: Breadth vs. Depth</h3>
+      <div class="sub">Each bubble = one department. X = unique people, Y = avg sessions per person, size = total attendance records. Top-right = high-impact departments for OFD.</div>
+      <canvas id="chartDeptBubble" style="max-height:340px"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Individual Attendance — Sessions × Series</h3>
+      <div class="sub">Each dot = one participant. X = sessions attended, Y = distinct series attended, color = role. Hover for name &amp; dept. Top-right = most engaged individuals.</div>
+      <canvas id="chartPeopleScatter" style="max-height:340px"></canvas>
+    </div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Attendees by Academic Rank</h3>
+      <div class="sub">Distribution across the academic career ladder. Shows whether OFD programming reaches faculty at all levels.</div>
+      <canvas id="chartRanks"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Attendees by Position Type</h3>
+      <div class="sub">Audience composition across all programming — faculty, staff, trainees, and external attendees.</div>
+      <canvas id="chartPos"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- DIRECTORY -->
+<div id="tab-directory" class="tab-pane">
+  <div class="filter-bar">
+    <label>Search:</label>
+    <input type="text" id="searchInput" placeholder="Name, email, dept…" oninput="filterDir()">
+    <label>Department:</label>
+    <select id="deptFilter" onchange="filterDir()"><__DEPT_OPTS__></select>
+    <label>Position:</label>
+    <select id="posFilter" onchange="filterDir()">
+      <option value="">All Positions</option>
+      <option>Faculty</option><option>Staff</option>
+      <option>Student / Resident</option><option>External</option>
+    </select>
+    <label>Rank:</label>
+    <select id="rankFilter" onchange="filterDir()"><__RANK_OPTS__></select>
+    <span class="dir-count" id="dirCount"></span>
+  </div>
+  <div class="dir-wrap">
+    <table id="dirTable">
+      <thead><tr>
+        <th onclick="sortDir(0)">Name / Degree</th>
+        <th onclick="sortDir(1)">Department</th>
+        <th onclick="sortDir(2)">Position</th>
+        <th onclick="sortDir(3)">Rank</th>
+        <th onclick="sortDir(4)">Email</th>
+        <th onclick="sortDir(5)">Sessions</th>
+        <th>Series</th>
+        <th onclick="sortDir(7)">First</th>
+        <th onclick="sortDir(8)">Last</th>
+      </tr></thead>
+      <tbody id="dirBody">__DIR_ROWS__</tbody>
+    </table>
+  </div>
+</div>
+
+<!-- DATA & METHODS -->
+<div id="tab-methods" class="tab-pane">
+  <div class="methods-card">
+    <h2>About This Dashboard</h2>
+    <p>The OFD Impact Dashboard tracks participation in Office of Faculty Development programming at Howard University College of Medicine — including CME sessions, Dean's Dynamic Duo lectures, the APT Process, SWAT Write-A-Thon, and Investigators &amp; Admin meetings — to measure reach, engagement depth, and faculty development trends.</p>
+    <h2 style="margin-top:20px">Data Sources</h2>
+    <ul>
+      <li><strong>Zoom CME Exports</strong> — per-meeting participant reports with email, duration, and join/leave events.</li>
+      <li><strong>HUCM Admin Directory</strong> — institutional roster linking emails to department, position, rank, and degree.</li>
+      <li><strong>Faculty Master Roster</strong> — supplemental data with ethnicity, gender, and additional credentials.</li>
+    </ul>
+    <h2 style="margin-top:20px">Key Metrics Explained</h2>
+    <ul>
+      <li><strong>Avg Attendance / Session:</strong> Normalizes series with different numbers of events. Reflects per-event draw independent of how often a series meets.</li>
+      <li><strong>Unique Faculty Reached:</strong> Total distinct individuals attending at least one session in a series. Measures broad outreach.</li>
+      <li><strong>Engagement Depth:</strong> Buckets participants by total sessions attended — shows how many are one-time vs. repeat vs. highly loyal attendees.</li>
+      <li><strong>Department Breadth vs. Depth bubble:</strong> Bubbles to the top-right are departments that are both broadly and deeply engaged with OFD programming.</li>
+    </ul>
+    <h2 style="margin-top:20px">Deduplication Pipeline</h2>
+    <ul>
+      <li><strong>Pass 1 — Email match:</strong> Identical emails merged to one canonical record.</li>
+      <li><strong>Pass 2 — Name normalization:</strong> Display names cleaned and fuzzy-matched across spelling variants.</li>
+      <li><strong>Pass 3 — Username-format resolution:</strong> firstname.lastname and flastname entries mapped to full names via the directory.</li>
+      <li><strong>Pass 4 — Shared-account detection:</strong> Zoom "Person A (Person B)" pattern re-attributed to the actual attendee.</li>
+      <li><strong>Pass 5 — Zero-overlap analysis:</strong> Account pairs with shared series but zero session overlap reviewed and merged where confirmed.</li>
+    </ul>
+    <h2 style="margin-top:20px">Non-Human Accounts Removed</h2>
+    <div class="badge-row">
+      <span class="badge">Heath's AI Notetaker</span><span class="badge">Stanley's Notetaker (Otter.ai)</span>
+      <span class="badge">Jabari's Notetaker (Otter.ai)</span><span class="badge">Read.ai Meeting Notes</span>
+      <span class="badge">iPhone</span><span class="badge">Lisa Gales iPhone</span>
+      <span class="badge">Vercetti 14 Pro Max</span><span class="badge">Zoom User</span>
+      <span class="badge">Family Fatih Health Clinic</span>
+    </div>
+    <h2 style="margin-top:20px">Department Taxonomy</h2>
+    <p>Labels normalized to HUCM academic structure. Key consolidations: Gastroenterology → <strong>Internal Medicine</strong>; Physiology variants → <strong>Physiology &amp; Biophysics</strong>; Biochem → <strong>Biochemistry &amp; Molecular Biology</strong>; CFM → <strong>Community &amp; Family Medicine</strong>; Transplant → <strong>Surgery</strong>; HUCM/College of Medicine → <strong>Dean's Office / COM Admin</strong>.</p>
+    <p style="margin-top:14px;font-size:.78rem;color:var(--muted)">Department coverage: <strong>__KPI_DEPT__%</strong> of unique participants have a confirmed department. Session counts reflect unique date × topic combinations.</p>
+  </div>
+</div>
+
+<script>
+// ── 5-color primary palette ───────────────────────────────────────────────────
+const C1='#097C87',C2='#FCA47C',C3='#23CED9',C4='#F9D779',C5='#A1CCA6';
+const P5=[C1,C2,C3,C4,C5];
+// Extended — darker/lighter variants to fill charts needing more colours
+const P=[
+  '#097C87','#FCA47C','#23CED9','#F9D779','#A1CCA6',
+  '#065e68','#e07a50','#1aabba','#e8c055','#7fb585',
+  '#3db8c2','#fdc8a8','#7ae6ee','#fce9a8','#cce5cf',
+  '#04434a','#c85a30','#0f8f9e','#d4a830','#4d9e57',
+];
+function pal(n){return Array.from({length:n},(_,i)=>P[i%P.length]);}
+
+Chart.defaults.font.family="'Segoe UI',Arial,sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.plugins.legend.labels.boxWidth=11;
+
+// ── Injected data ─────────────────────────────────────────────────────────────
+const seriesAvgLabels  =__SERIES_AVG_JSON__;
+const seriesAvgData    =__SERIES_AVG_DATA__;
+const seriesAvgSess    =__SERIES_AVG_SESS__;
+const seriesAvgTotals  =__SERIES_AVG_TOTALS__;
+const seriesReachLabels=__SERIES_REACH_JSON__;
+const seriesReachData  =__SERIES_REACH_DATA__;
+const sessionsBySeriesRaw=__SESSIONS_BY_SERIES__;
+const deptLabels       =__DEPTS_JSON__;
+const deptData         =__DEPTS_DATA__;
+const rankLabels       =__RANKS_JSON__;
+const rankData         =__RANKS_DATA__;
+const loyaltyLabels    =__LOYALTY_JSON__;
+const loyaltyData      =__LOYALTY_DATA__;
+const timelineLabels   =__TIMELINE_JSON__;
+const timelineData     =__TIMELINE_DATA__;
+const timelineDates    =__TIMELINE_DATES__;
+
+// ── Tab switch ────────────────────────────────────────────────────────────────
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='activity'   &&!window._aB){buildActivityTab();  window._aB=true;}
+  if(id==='engagement' &&!window._eB){buildEngagementTab();window._eB=true;}
+  if(id==='directory'  &&!window._dB){initDir();           window._dB=true;}
+}
+
+// ── OVERVIEW charts ───────────────────────────────────────────────────────────
+new Chart(document.getElementById('chartSeriesAvg'),{
+  type:'bar',
+  data:{labels:seriesAvgLabels,datasets:[{
+    label:'Avg Attendees/Session',data:seriesAvgData,
+    backgroundColor:P5.map(c=>c+'cc'),borderColor:P5,
+    borderWidth:1,borderRadius:6,borderSkipped:false
+  }]},
+  options:{
+    indexAxis:'y',responsive:true,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{
+      const i=ctx.dataIndex;
+      return[' Avg: '+ctx.raw+'/session',' Sessions run: '+seriesAvgSess[i],' Total records: '+seriesAvgTotals[i]];
+    }}}},
+    scales:{
+      x:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Avg attendees / session',font:{size:10}}},
+      y:{grid:{display:false}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartSeriesReach'),{
+  type:'bar',
+  data:{labels:seriesReachLabels,datasets:[{
+    label:'Unique People',data:seriesReachData,
+    backgroundColor:[C1+'cc',C3+'cc',C5+'cc',C2+'cc',C4+'cc'],
+    borderColor:[C1,C3,C5,C2,C4],
+    borderWidth:1,borderRadius:6,borderSkipped:false
+  }]},
+  options:{
+    indexAxis:'y',responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Unique people reached',font:{size:10}}},
+      y:{grid:{display:false}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartDepts'),{
+  type:'bar',
+  data:{labels:deptLabels,datasets:[{
+    label:'People',data:deptData,
+    backgroundColor:pal(deptLabels.length).map(c=>c+'cc'),
+    borderColor:pal(deptLabels.length),borderWidth:1,borderRadius:4
+  }]},
+  options:{
+    indexAxis:'y',responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{x:{beginAtZero:true,grid:{color:'#e0f0f1'}},y:{grid:{display:false},ticks:{font:{size:10}}}}
+  }
+});
+
+new Chart(document.getElementById('chartLoyalty'),{
+  type:'bar',
+  data:{labels:loyaltyLabels,datasets:[{
+    label:'Participants',data:loyaltyData,
+    backgroundColor:[C1+'cc',C3+'cc',C5+'cc',C2+'cc'],
+    borderColor:[C1,C3,C5,C2],
+    borderWidth:1.5,borderRadius:8,borderSkipped:false
+  }]},
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.raw+' participants'}}},
+    scales:{
+      x:{grid:{display:false}},
+      y:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Participants',font:{size:10}}}
+    }
+  }
+});
+
+// ── BY SERIES tab ─────────────────────────────────────────────────────────────
+let _actChart=null;
+function buildActivityTab(){
+  const names=Object.keys(sessionsBySeriesRaw);
+  const tabsEl=document.getElementById('seriesTabs');
+  names.forEach((name,idx)=>{
+    const btn=document.createElement('button');
+    btn.className='ser-btn'+(idx===0?' active':'');
+    btn.textContent=name;
+    btn.onclick=()=>{
+      document.querySelectorAll('.ser-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderSeries(name,idx);
+    };
+    tabsEl.appendChild(btn);
+  });
+  renderSeries(names[0],0);
+
+  new Chart(document.getElementById('chartTimeline'),{
+    type:'bar',
+    data:{labels:timelineLabels,datasets:[{
+      label:'Attendees',data:timelineData,
+      backgroundColor:timelineData.map((_,i)=>P5[i%5]+'bb'),
+      borderColor:timelineData.map((_,i)=>P5[i%5]),
+      borderWidth:1,borderRadius:4
+    }]},
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false},tooltip:{callbacks:{title:ctx=>timelineDates[ctx[0].dataIndex]}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:8.5},maxRotation:45}},
+        y:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Attendees',font:{size:10}}}
+      }
+    }
+  });
+}
+
+function renderSeries(name,idx){
+  const sess=sessionsBySeriesRaw[name];
+  const vals=sess.map(s=>s.n);
+  const avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):0;
+  const col=P5[idx%5];
+  document.getElementById('activityChartTitle').textContent=name+' — Individual Sessions';
+  document.getElementById('activityChartSub').textContent=sess.length+' sessions · avg '+avg+' attendees / session';
+  document.getElementById('avgLegend').innerHTML='Series average: <span class="avg-pill">'+avg+' / session</span>';
+  if(_actChart)_actChart.destroy();
+  _actChart=new Chart(document.getElementById('chartActivityDetail'),{
+    type:'bar',
+    data:{
+      labels:sess.map(s=>s.label),
+      datasets:[
+        {label:'Attendees',data:vals,backgroundColor:col+'cc',borderColor:col,borderWidth:1,borderRadius:5,order:2},
+        {label:'Series Avg',data:vals.map(()=>parseFloat(avg)),type:'line',borderColor:'#e07a50',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{position:'top',labels:{usePointStyle:true}},tooltip:{mode:'index'}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:9.5},maxRotation:35}},
+        y:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Attendees',font:{size:10}}}
+      }
+    }
+  });
+}
+
+// ── ENGAGEMENT tab ────────────────────────────────────────────────────────────
+function buildEngagementTab(){
+  // Dept bubble
+  const dB=__DEPT_BUBBLES__;
+  const dMax=Math.max(...dB.map(d=>d.total));
+  new Chart(document.getElementById('chartDeptBubble'),{
+    type:'bubble',
+    data:{datasets:dB.map((d,i)=>({
+      label:d.dept,
+      data:[{x:d.people,y:d.avg_sessions,r:Math.max(6,Math.sqrt(d.total/dMax)*44)}],
+      backgroundColor:P[i%P.length]+'99',borderColor:P[i%P.length],borderWidth:1.5
+    }))},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{position:'right',labels:{font:{size:9},boxWidth:9,padding:5}},
+        tooltip:{callbacks:{label:ctx=>{
+          const d=dB[ctx.datasetIndex];
+          return[' '+d.dept,' People: '+d.people,' Avg sessions: '+d.avg_sessions,' Total records: '+d.total];
+        }}}
+      },
+      scales:{
+        x:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Unique people from dept',font:{size:10}}},
+        y:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Avg sessions / person',font:{size:10}}}
+      }
+    }
+  });
+
+  // People scatter
+  const sR=__SCATTER_PEOPLE__;
+  const pC={'Faculty':C1,'Staff':C2,'Student':C3,'Guest':C5,'Unknown':'#c0c0c0'};
+  const grps={};
+  sR.forEach(p=>{
+    const pos=p.pos||'Unknown';
+    if(!grps[pos])grps[pos]=[];
+    grps[pos].push({x:p.x+(Math.random()*.38-.19),y:p.y+(Math.random()*.38-.19),name:p.name,dept:p.dept});
+  });
+  new Chart(document.getElementById('chartPeopleScatter'),{
+    type:'scatter',
+    data:{datasets:Object.entries(grps).map(([pos,pts])=>({
+      label:pos,data:pts,
+      backgroundColor:(pC[pos]||'#aaa')+'aa',borderColor:pC[pos]||'#aaa',
+      borderWidth:1,pointRadius:5,pointHoverRadius:7
+    }))},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{position:'top',labels:{font:{size:10},boxWidth:10}},
+        tooltip:{callbacks:{label:ctx=>{
+          const p=ctx.raw;
+          return[' '+p.name,' '+(p.dept||'—'),' Sessions: '+Math.round(p.x)+'  Series: '+Math.round(p.y)];
+        }}}
+      },
+      scales:{
+        x:{min:.5,ticks:{stepSize:1},grid:{color:'#e0f0f1'},title:{display:true,text:'Sessions attended',font:{size:10}}},
+        y:{min:.5,ticks:{stepSize:1},grid:{color:'#e0f0f1'},title:{display:true,text:'Distinct series attended',font:{size:10}}}
+      }
+    }
+  });
+
+  // Rank bar
+  const rC=rankLabels.map((_,i)=>P[i*3%P.length]);
+  new Chart(document.getElementById('chartRanks'),{
+    type:'bar',
+    data:{labels:rankLabels,datasets:[{label:'People',data:rankData,backgroundColor:rC.map(c=>c+'cc'),borderColor:rC,borderWidth:1,borderRadius:5}]},
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#e0f0f1'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
+  });
+
+  // Position doughnut
+  const pL=__POS_LABELS__,pD=__POS_DATA__;
+  new Chart(document.getElementById('chartPos'),{
+    type:'doughnut',
+    data:{labels:pL,datasets:[{data:pD,backgroundColor:[C1+'cc',C2+'cc',C3+'cc',C5+'cc',C4+'cc'],borderColor:[C1,C2,C3,C5,C4],borderWidth:2}]},
+    options:{responsive:true,cutout:'52%',plugins:{legend:{position:'bottom',labels:{padding:12}}}}
+  });
+}
+
+// ── DIRECTORY ─────────────────────────────────────────────────────────────────
+let _sC=5,_sD=-1;
+function initDir(){updateDirCount();}
+function filterDir(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const dept=document.getElementById('deptFilter').value;
+  const pos=document.getElementById('posFilter').value;
+  const rank=document.getElementById('rankFilter').value;
+  let shown=0;
+  document.querySelectorAll('#dirBody tr').forEach(tr=>{
+    const m=(!q||tr.textContent.toLowerCase().includes(q))&&
+            (!dept||tr.dataset.dept===dept)&&
+            (!pos||tr.dataset.pos===pos)&&
+            (!rank||tr.dataset.rank===rank);
+    tr.style.display=m?'':'none';
+    if(m)shown++;
+  });
+  document.getElementById('dirCount').textContent=shown+' shown';
+}
+function updateDirCount(){
+  document.getElementById('dirCount').textContent=document.querySelectorAll('#dirBody tr').length+' people';
+}
+function sortDir(col){
+  if(_sC===col){_sD*=-1;}else{_sC=col;_sD=col===5?-1:1;}
+  document.querySelectorAll('thead th').forEach(th=>th.classList.remove('sorted-asc','sorted-desc'));
+  document.querySelectorAll('thead th')[col].classList.add(_sD===1?'sorted-asc':'sorted-desc');
+  const tbody=document.getElementById('dirBody');
+  Array.from(tbody.querySelectorAll('tr')).sort((a,b)=>{
+    let av=a.cells[col]?a.cells[col].textContent.trim():'';
+    let bv=b.cells[col]?b.cells[col].textContent.trim():'';
+    if(col===5){av=parseFloat(av)||0;bv=parseFloat(bv)||0;return _sD*(av-bv);}
+    return _sD*av.localeCompare(bv);
+  }).forEach(r=>tbody.appendChild(r));
+}
+window.addEventListener('DOMContentLoaded',()=>{sortDir(5);updateDirCount();});
+</script>
+</body>
+</html>

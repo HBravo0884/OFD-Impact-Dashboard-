@@ -1,0 +1,13 @@
+# Mac system files
+.DS_Store
+
+# Do NOT ignore CSV/XLSX or Data exports! 
+# We need GitHub to receive the data so the GitHub Actions cloud runner can process it.
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local only overrides or dev scratchpads
+temp/
+scratch/
