@@ -400,6 +400,21 @@ if df_master.empty:
     sys.exit(0)
 
 df = df_master.copy()
+
+EMAIL_TOPIC_ALIASES = {
+    '"All of Us" Training: Session 2 (AM)': '"All of Us" Workbench Pre-Session',
+    '"All of Us" Training: Session 2 (PM)': '"All of Us" Workbench Pre-Session',
+    '"All of Us" Training: Session 3 (PM)': '"All of Us" Workbench Pre-Session',
+    'APT Process for CLINICIANS': 'APT Process for Clinicians',
+    'FACULTY TOOLS WORKSHOPS': 'FACULTY TOOLS WORKSHOP: Research Budgets',
+    'HUCM Faculty Meeting and APT Criteria Vote': 'Faculty Meeting and APT Criteria Vote',
+    'HUCM Investigators and Administrators Meeting': 'HUCM Investigators and Research Administrators Biweekly Meeting',
+    'HUCM Summer Write-A-Thon (SWAT) 2025': 'HUCM Summer Write-A-Thon (SWAT)',
+    'HUCM Writing Accountability Group (WAG) Fall 2025': 'Writing Accountability Group (WAG)',
+    'Loan Repayment Seminar - How to get your loans PAID': 'Loan Repayment Seminar',
+    "The Dean's Dynamic Duo Lecture Series": "Dean's Dynamic Duo Lecture Series"
+}
+df['topic'] = df['topic'].replace(EMAIL_TOPIC_ALIASES)
 df['date'] = pd.to_datetime(df['date'])
 
 # ---- CATEGORY EXCLUSION FILTER ----

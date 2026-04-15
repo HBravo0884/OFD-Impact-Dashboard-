@@ -410,6 +410,10 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
       </div>
       <canvas id="chartDrilldownPerson"></canvas>
       <div class="dir-wrap" id="personDatesWrap" style="display:none; margin-top:20px; overflow-x:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h4 style="margin:0;color:var(--c1)">Meeting History Log</h4>
+          <button onclick="downloadPersonDatesCSV()" class="export-btn" title="Download Data">CSV dataset</button>
+        </div>
         <table id="personDatesTable">
           <thead>
             <tr>
@@ -1415,6 +1419,28 @@ function showCSVPreview(evt, cid) {
 function hideCSVPreview() {
     const tooltip = document.getElementById('csv-preview-tooltip');
     if (tooltip) tooltip.style.display = 'none';
+}
+
+function downloadPersonDatesCSV() {
+    const p = document.getElementById('drilldownPerson').value;
+    if (!p || !personDatesMap[p] || personDatesMap[p].length === 0) return;
+    
+    let csv = "Date,Series,Topic,Duration (min)\n";
+    personDatesMap[p].forEach(ev => {
+        csv += `"${ev.date}","${(ev.series || '').replace(/"/g, '""')}","${(ev.topic || '').replace(/"/g, '""')}",${ev.dur || 0}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    
+    const safeName = p.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    link.setAttribute("download", `${safeName}_event_history.csv`);
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 window.addEventListener('DOMContentLoaded',()=>{sortDir(6);updateDirCount();addExportButtons();});
 </script>
