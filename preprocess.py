@@ -1352,6 +1352,21 @@ else:
             return f"{parts[-1]}, " + " ".join(parts[:-1])
         return n
 
+    def person_opts():
+        opts = ['<option value="">Search or Select Attendee...</option>']
+        plist = []
+        for p in D.get('table', []):
+            n = p['name']
+            ui_name = format_name_for_ui(n)
+            deg = p.get('degree', '').strip()
+            if deg:
+                ui_name += f", {deg}"
+            plist.append((ui_name, n))
+        plist.sort(key=lambda x: x[0].lower())
+        for ui_n, val_n in plist:
+            opts.append(f'<option value="{val_n}">{ui_n}</option>')
+        return '\n'.join(opts)
+
     def dir_rows():
         rows = []
         for p in D['table']:
@@ -1428,9 +1443,7 @@ else:
         '__DEPT_OPTS__':          '\n'.join(['<option value="">All Departments</option>'] +
                                   [f'<option value="{d}">{d}</option>'
                                    for d in sorted(D['dept_list']) if d]),
-        '__PERSON_OPTS__':        '\n'.join(['<option value="">Search or Select Attendee...</option>'] +
-                                  [f'<option value="{p}">{p}</option>'
-                                   for p in sorted(D.get('person_list', [])) if p]),
+        '__PERSON_OPTS__':        person_opts(),
         '__DIVISION_OPTS__':      '\n'.join(['<option value="">All Divisions</option>'] +
                                   [f'<option value="{d}">{d}</option>'
                                    for d in sorted(D.get('division_list', [])) if d]),
