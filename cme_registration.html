@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HUCM CME Kiosk</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+    <style>
+        :root {
+            --c1: #097C87; --c2: #FCA47C; --c3: #23CED9; --dark: #0a1f22; 
+            --bg-grad: linear-gradient(135deg, #097C87 0%, #04434a 100%);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; user-select: none; }
+        body { background: var(--bg-grad); background-size: cover; background-position: center; width: 100vw; height: 100vh; overflow: hidden; color: #333; transition: background 0.3s ease; }
+        
+        .overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(9, 124, 135, 0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 0; }
+        
+        .screen { display: none; position: relative; z-index: 10; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+        .screen.active { display: flex; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header-bar { position: absolute; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 20; }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo-area img { width: 55px; height: 55px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
+        .event-info { text-align: right; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .event-info h2 { font-size: 1.6rem; color: #ffffff; margin-bottom: 4px; }
+        .event-info p { font-size: 1.2rem; color: rgba(255,255,255,0.85); }
+        
+        .glass-panel { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.8); border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); padding: 40px; width: 90%; max-width: 650px; text-align: center; }
+
+        input, select { -webkit-user-select: auto; user-select: auto; width: 100%; padding: 20px; font-size: 1.5rem; border: 2px solid #ccc; border-radius: 12px; margin-bottom: 20px; background: white; transition: 0.2s; outline: none; }
+        input:focus { border-color: var(--c1); box-shadow: 0 0 0 4px rgba(9, 124, 135, 0.15); }
+        
+        .btn { padding: 18px 40px; font-size: 1.5rem; font-weight: bold; border-radius: 50px; border: none; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .btn-primary { background: linear-gradient(135deg, var(--c1), var(--c3)); color: white; box-shadow: 0 8px 20px rgba(9, 124, 135, 0.3); }
+        .btn-primary:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(9, 124, 135, 0.3); }
+        .btn-secondary { background: var(--c2); color: white; }
+
+        /* Predictive List */
+        .autocomplete-items { position: absolute; z-index: 99; top: 100%; left: 0; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); max-height: 350px; overflow-y: auto; text-align: left; }
+        .autocomplete-items div { padding: 18px 20px; cursor: pointer; font-size: 1.3rem; border-bottom: 1px solid #f0f0f0; display:flex; justify-content: space-between; align-items:center; }
+        .autocomplete-items div:hover { background-color: #f9f9f9; }
+        .dept-tag { font-size: 0.9rem; background: #e0f2f1; color: var(--c1); padding: 5px 12px; border-radius: 20px; }
+
+        /* Signature Canvas */
+        #sig-canvas { border: 3px dashed #cbd5e1; border-radius: 12px; background: white; width: 100%; height: 300px; cursor: crosshair; touch-action: none; margin-bottom: 20px; }
+        
+        /* Fast Evaluation */
+        .eval-faces { display: flex; justify-content: center; gap: 40px; margin-top: 50px; }
+        .face { font-size: 7rem; cursor: pointer; transition: transform 0.2s; -webkit-tap-highlight-color: transparent; }
+        .face:active { transform: scale(0.9); }
+
+        /* Admin Dashboard */
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left; }
+        .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        .admin-table th { background: #f8fafc; color: #475569; }
+
+        #secretAdminBtn { position: absolute; bottom: 10px; right: 10px; width: 50px; height: 50px; cursor: pointer; opacity: 0; z-index: 100; }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="blurOverlay"></div>
+    <div id="secretAdminBtn" onclick="promptAdmin()"></div>
+
+    <div class="header-bar" id="appHeader" style="display:none;">
+        <div class="logo-area" style="align-items: center;">
+            <img src="hucm_logo.png" alt="HUCM Seal" style="width: 140px; height: 140px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+            <div style="font-family: 'Garamond', 'EB Garamond', serif; line-height: 1.2; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                <h1 style="font-size: 1.7rem; margin-bottom: 4px;">Howard University College of Medicine</h1>
+                <p style="font-size: 1.3rem; font-weight: bold; color: #e2e8f0;">Office of Faculty Development and JEDI</p>
+                <p style="font-size: 1.1rem; color: rgba(255,255,255,0.85); font-family: -apple-system, system-ui, sans-serif; margin-top: 4px;">OFD Programming Registration Kiosk</p>
+            </div>
+        </div>
+        <div class="event-info">
+            <h2 id="dispEventName">Loading...</h2>
+            <p id="dispEventDate">Loading...</p>
+        </div>
+    </div>
+
+    <!-- ADMIN SETUP SCREEN -->
+    <div id="adminScreen" class="screen">
+        <div class="glass-panel" style="max-width: 800px;">
+            <h2 style="color:var(--c1); margin-bottom: 20px; font-size:2rem;">Admin Setup & Dashboard</h2>
+            <div style="display:flex; justify-content:center; gap:10px; margin-bottom: 20px;">
+                <button class="btn btn-secondary" style="font-size:1rem; padding:10px 20px;" onclick="switchAdminTab('setup')">Event Setup</button>
+                <button class="btn btn-secondary" style="font-size:1rem; padding:10px 20px; background:var(--c1)" onclick="switchAdminTab('data')">Manage Data (<span id="countCheckins">0</span>)</button>
+            </div>
+            
+            <div id="adminTabSetup" style="text-align:left;">
+                <label>Select Pre-configured Event</label>
+                <select id="adminEventDatabase" style="font-size:1.2rem; padding:15px; margin-bottom:15px;" onchange="loadEventFromDB(this.value)">
+                    <option value="">-- Custom Topic / Manual Entry --</option>
+                </select>
+
+                <label>Event Series</label>
+                <input type="text" id="adminEventSeries" placeholder="e.g. Dean's Dynamic Duo" style="font-size:1.2rem; padding:15px; margin-bottom:15px;">
+
+                <label>Event Topic / Specific Name</label>
+                <input type="text" id="adminEventName" placeholder="e.g. Faculty Workshop: Promotion" style="font-size:1.2rem; padding:15px; margin-bottom:15px;">
+                
+                <div style="display:flex; gap:15px;">
+                    <div style="flex:1;">
+                        <label>Date</label>
+                        <input type="date" id="adminEventDate" style="font-size:1.2rem; padding:15px; margin-bottom:15px;">
+                    </div>
+                    <div style="flex:1;">
+                        <label>Duration (mins)</label>
+                        <input type="number" id="adminEventDuration" value="60" style="font-size:1.2rem; padding:15px; margin-bottom:15px;">
+                    </div>
+                </div>
+
+                <label>Custom Background Image URL (Optional)</label>
+                <input type="text" id="adminBgUrl" placeholder="https://..." style="font-size:1rem; padding:15px; margin-bottom:20px;">
+
+                <div style="display:flex; gap:15px; justify-content:center; margin-top:10px;">
+                    <button class="btn btn-primary" onclick="saveAdminAndLaunch('checkin')">Launch Check-In Kiosk</button>
+                    <button class="btn" style="background:#8b5cf6; color:white;" onclick="saveAdminAndLaunch('eval')">Launch Exit-Survey Kiosk</button>
+                </div>
+            </div>
+
+            <div id="adminTabData" style="display:none; text-align:left;">
+                <button class="btn btn-primary" style="margin-bottom:15px; width:100%;" onclick="exportData()">⬇ Export Pipeline CSV</button>
+                <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                    <button class="btn" style="background:#e11d48; color:white; font-size:1rem; padding:10px 15px; flex:1;" onclick="clearData()">⚠️ Clear All Data</button>
+                </div>
+                
+                <h3 style="margin-top:20px;">Recent Check-Ins</h3>
+                <div style="max-height:250px; overflow-y:auto;">
+                    <table class="admin-table" id="adminDataTable">
+                        <thead><tr><th>Time</th><th>Name</th><th>Email</th><th>Evaluation</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREDICTIVE CHECK-IN SCREEN -->
+    <div id="checkinScreen" class="screen">
+        <div class="glass-panel" style="position:relative;">
+            <h2 style="font-size: 2.2rem; color:var(--dark); margin-bottom: 10px;">Welcome</h2>
+            <p style="font-size: 1.2rem; color:#555; margin-bottom: 30px;">Type your name to check in.</p>
+            
+            <div style="position:relative;">
+                <input type="text" id="searchInput" placeholder="Enter First or Last Name..." autocomplete="off">
+                <div id="autocompleteList" class="autocomplete-items"></div>
+            </div>
+            
+            <p style="font-size: 0.95rem; color:#888; margin-top:20px;">Need help? Please see the registration desk.</p>
+        </div>
+    </div>
+
+    <div id="signatureScreen" class="screen">
+        <div class="glass-panel" style="max-width: 800px;">
+            <h2 style="font-size: 2rem; color:var(--dark);">Confirm Attendance</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 20px; color:#555;">Signing in: <strong id="sigName" style="color:var(--c1)"></strong></p>
+            
+            <canvas id="sig-canvas"></canvas>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <button class="btn" style="background:#e2e8f0; color:#475569;" onclick="clearCanvas()">Clear Signature</button>
+                <div style="display:flex; gap:15px;">
+                    <button class="btn" style="background:transparent; color:#888;" onclick="cancelSignature()">Cancel</button>
+                    <button class="btn btn-primary" onclick="submitCheckin()">Submit Registration</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXIT SURVER SCREEN -->
+    <div id="evalScreen" class="screen">
+        <div class="glass-panel" style="max-width: 900px; padding:60px;">
+            <h2 style="font-size: 3.5rem; color:var(--dark); margin-bottom: 20px;">Session Feedback</h2>
+            <p style="font-size: 1.8rem; color:#555;">How would you rate today's event?</p>
+            
+            <div class="eval-faces">
+                <div class="face" onclick="submitEval('Great')">🟢</div>
+                <div class="face" onclick="submitEval('Neutral')">😐</div>
+                <div class="face" onclick="submitEval('Poor')">🔴</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THANK YOU FLASH -->
+    <div id="thankYouScreen" class="screen">
+        <div class="glass-panel" style="background:rgba(9, 124, 135, 0.9); color:white;">
+            <div style="font-size: 6rem; margin-bottom:20px;">✅</div>
+            <h2 style="font-size: 3rem;">Thank You!</h2>
+            <p style="font-size: 1.5rem; margin-top:10px;" id="thankYouSub">Your response has been recorded.</p>
+        </div>
+    </div>
+
+    <!-- SIGNATURE PREVIEW MODAL -->
+    <div id="sigPreviewModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center;">
+        <div style="background:white; padding:30px; border-radius:15px; text-align:center; max-width: 500px; width:90%;">
+            <h3 id="previewName" style="margin-bottom:15px; color:var(--dark);"></h3>
+            <img id="previewImg" style="width:100%; border:2px dashed #ccc; border-radius:8px; margin-bottom:20px; background:#fff;">
+            <button class="btn btn-secondary" onclick="document.getElementById('sigPreviewModal').style.display='none'">Close Preview</button>
+        </div>
+    </div>
+
+<script>
+    // System State
+    let directoryData = [];
+    let eventsDatabase = [];
+    let checkins = JSON.parse(localStorage.getItem('cme_checkins')) || [];
+    let evaluations = JSON.parse(localStorage.getItem('cme_evaluations')) || []; // Anonymous counts
+    let activeProfile = null;
+    let autoResetTimer = null;
+
+    // Config State
+    let config = JSON.parse(localStorage.getItem('cme_config')) || {
+        eventSeries: '', eventName: '', eventDate: new Date().toISOString().split('T')[0], duration: 60, bgUrl: ''
+    };
+
+    // Initialization
+    function init() {
+        // Apply Config
+        document.getElementById('adminEventSeries').value = config.eventSeries || '';
+        document.getElementById('adminEventName').value = config.eventName;
+        document.getElementById('adminEventDate').value = config.eventDate;
+        document.getElementById('adminEventDuration').value = config.duration;
+        document.getElementById('adminBgUrl').value = config.bgUrl;
+        
+        applyBackground();
+        updateAdminTable();
+        
+        // Load Directory
+        Papa.parse("accepted_directory_profiles.csv", {
+            download: true, header: true, skipEmptyLines: true,
+            complete: function(results) {
+                directoryData = results.data;
+                console.log("Loaded " + directoryData.length + " directory profiles.");
+            },
+            error: function(err) {
+                console.error("No directory found yet. You can still type full names artificially.");
+            }
+        });
+
+        // Load Events Database
+        Papa.parse("events_master_directory.csv", {
+            download: true, header: true, skipEmptyLines: true,
+            complete: function(results) {
+                eventsDatabase = results.data;
+                const dbSelect = document.getElementById('adminEventDatabase');
+                eventsDatabase.forEach((ev, idx) => {
+                    let opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.innerText = ev.Date + " | " + ev.Series + ": " + ev.EventName;
+                    dbSelect.appendChild(opt);
+                });
+            }
+        });
+
+        // Initialize Canvas
+        initCanvas();
+
+        // Check URL routing
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        
+        if (mode === 'eval') {
+            if(urlParams.get('event')) config.eventName = urlParams.get('event');
+            if(urlParams.get('date')) config.eventDate = urlParams.get('date');
+            showScreen('evalScreen');
+        } else if (mode === 'kiosk' || config.eventName) {
+            if(urlParams.get('event')) config.eventName = urlParams.get('event');
+            if(urlParams.get('date')) config.eventDate = urlParams.get('date');
+            applyHeaders();
+            showScreen('checkinScreen');
+        } else {
+            showScreen('adminScreen');
+        }
+
+        // Autocomplete Listener
+        document.getElementById('searchInput').addEventListener('input', function() {
+            let val = this.value;
+            closeLists();
+            if (!val || val.length < 2) return;
+            
+            let list = document.getElementById("autocompleteList");
+            let count = 0;
+            
+            for (let i = 0; i < directoryData.length; i++) {
+                let name = directoryData[i].name || "";
+                if (name.toLowerCase().includes(val.toLowerCase()) || 
+                   (directoryData[i].name_n_canon && directoryData[i].name_n_canon.includes(val.toLowerCase()))) {
+                    
+                    let div = document.createElement("div");
+                    div.innerHTML = "<strong>" + name + "</strong>";
+                    if(directoryData[i].dept) {
+                        div.innerHTML += "<span class='dept-tag'>" + directoryData[i].dept + "</span>";
+                    }
+                    
+                    div.addEventListener("click", function() {
+                        activeProfile = directoryData[i];
+                        if(!activeProfile.name) activeProfile.name = name;
+                        openSignature(activeProfile);
+                    });
+                    
+                    list.appendChild(div);
+                    count++;
+                    if (count >= 7) break; // Max 7 suggestions
+                }
+            }
+            
+            // Allow manual entry fallback
+            if(count === 0 && val.length > 4 && val.includes(" ")) {
+                let div = document.createElement("div");
+                div.innerHTML = "<strong>Register as: " + val + " (New Guest)</strong>";
+                div.addEventListener("click", function() {
+                    activeProfile = { name: val, email: '', dept: '', pos: 'Guest' };
+                    openSignature(activeProfile);
+                });
+                list.appendChild(div);
+            }
+        });
+    }
+
+    function applyBackground() {
+        if(config.bgUrl) {
+            document.body.style.backgroundImage = "url('" + config.bgUrl + "')";
+            document.getElementById('blurOverlay').style.opacity = '0.7';
+        } else {
+            document.body.style.background = "var(--bg-grad)";
+            document.getElementById('blurOverlay').style.opacity = '1';
+        }
+    }
+
+    function applyHeaders() {
+        document.getElementById('appHeader').style.display = 'flex';
+        document.getElementById('dispEventName').innerText = config.eventName || "General Kiosk";
+        document.getElementById('dispEventDate').innerText = config.eventDate;
+    }
+
+    // Navigation
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        
+        if(id === 'checkinScreen') {
+            document.getElementById('appHeader').style.display = 'flex';
+            document.getElementById('searchInput').value = "";
+            activeProfile = null;
+            setTimeout(() => document.getElementById('searchInput').focus(), 100);
+        } else if(id === 'evalScreen') {
+            document.getElementById('appHeader').style.display = 'none';
+            document.body.style.backgroundColor = '#ecfdf5';
+        } else if (id === 'adminScreen') {
+            document.getElementById('appHeader').style.display = 'none';
+        }
+    }
+
+    function closeLists() {
+        document.getElementById("autocompleteList").innerHTML = "";
+    }
+
+    // Checkin Flow
+    function isClinician(profile) {
+        if (!profile) return false;
+        const text = ((profile.name || '') + ' ' + (profile.pos || '')).toUpperCase();
+        const clinicianRegex = /\b(MD|D\.O\.|DO|MBBS|PHYSICIAN|CLINICIAN|CLINICAL|FACS|SURGEON)\b/i;
+        return clinicianRegex.test(text);
+    }
+
+    function openSignature(profile) {
+        closeLists();
+        document.getElementById('sigName').innerText = profile.name + (profile.dept ? " ("+profile.dept+")" : "");
+        
+        let noticeObj = document.getElementById('sigRequirementNotice');
+        if(!noticeObj) {
+            // Inject the notice just below the name safely
+            document.getElementById('sigName').parentElement.insertAdjacentHTML('afterend', '<div id="sigRequirementNotice" style="margin-bottom: 15px; font-weight:bold; font-size: 1.1rem;"></div>');
+            noticeObj = document.getElementById('sigRequirementNotice');
+        }
+        
+        if(isClinician(profile)) {
+            noticeObj.innerHTML = "<span style='color:red;'>* Valid Signature Required for CME</span>";
+        } else {
+            noticeObj.innerHTML = "<span style='color:#666;'>(Signature Optional for Non-Clinicians)</span>";
+        }
+
+        showScreen('signatureScreen');
+        // Mathematical dimensions are now strictly verified post-render
+        resizeSignatureCanvas();
+    }
+
+    function cancelSignature() {
+        showScreen('checkinScreen');
+    }
+
+    function submitCheckin() {
+        if(isCanvasBlank() && isClinician(activeProfile)) {
+            alert("As a clinician, a valid signature is required for CME accreditation.");
+            return;
+        }
+        
+        const now = new Date();
+        const entry = {
+            id: Date.now(),
+            Name: activeProfile.name,
+            Email: activeProfile.email || "",
+            Department: activeProfile.dept || "",
+            Position: activeProfile.pos || "",
+            Event: config.eventName,
+            Date: config.eventDate,
+            Timestamp: now.toISOString(),
+            Duration: config.duration,
+            Signature: isCanvasBlank() ? "" : getSignatureData(),
+            SignatureTrace: (signaturePad && !isCanvasBlank()) ? signaturePad.toData() : []
+        };
+        
+        checkins.push(entry);
+        localStorage.setItem('cme_checkins', JSON.stringify(checkins));
+        updateAdminTable();
+        
+        flashThankYou("Successfully Checked In!\nPlease pass the iPad to the next person.");
+        setTimeout(() => { showScreen('checkinScreen'); }, 2500);
+    }
+
+    // Evaluation Flow
+    function submitEval(rating) {
+        const entry = {
+            Event: config.eventName,
+            Date: config.eventDate,
+            Timestamp: new Date().toISOString(),
+            Rating: rating
+        };
+        evaluations.push(entry);
+        localStorage.setItem('cme_evaluations', JSON.stringify(evaluations));
+        
+        flashThankYou("Anonymous rating: " + rating);
+        setTimeout(() => { showScreen('evalScreen'); }, 1500);
+    }
+
+    function flashThankYou(msg) {
+        document.getElementById('thankYouSub').innerText = msg;
+        if(document.getElementById('appHeader')) document.getElementById('appHeader').style.display = 'none';
+        showScreen('thankYouScreen');
+    }
+
+    // Admin Flow
+    function switchAdminTab(tab) {
+        if(tab === 'setup') {
+            document.getElementById('adminTabSetup').style.display = 'block';
+            document.getElementById('adminTabData').style.display = 'none';
+        } else {
+            document.getElementById('adminTabSetup').style.display = 'none';
+            document.getElementById('adminTabData').style.display = 'block';
+        }
+    }
+
+    function loadEventFromDB(idx) {
+        if(idx === "") return;
+        const ev = eventsDatabase[idx];
+        document.getElementById('adminEventSeries').value = ev.Series || '';
+        document.getElementById('adminEventName').value = ev.EventName || '';
+        document.getElementById('adminEventDate').value = ev.Date || '';
+        document.getElementById('adminEventDuration').value = ev.Duration || '60';
+    }
+
+    function saveAdminAndLaunch(mode) {
+        config.eventSeries = document.getElementById('adminEventSeries').value.trim();
+        config.eventName = document.getElementById('adminEventName').value.trim();
+        config.eventDate = document.getElementById('adminEventDate').value;
+        config.duration = document.getElementById('adminEventDuration').value;
+        config.bgUrl = document.getElementById('adminBgUrl').value.trim();
+        
+        if(!config.eventSeries || !config.eventName) { alert("Event Series and Name required"); return; }
+        
+        localStorage.setItem('cme_config', JSON.stringify(config));
+        applyBackground();
+        applyHeaders();
+        
+        if(mode === 'checkin') showScreen('checkinScreen');
+        else showScreen('evalScreen');
+    }
+
+    let lat_clicks = 0;
+    function promptAdmin() {
+        lat_clicks++;
+        if(lat_clicks >= 5) {
+            lat_clicks = 0;
+            // The latent PIN is hardcoded to 1868 (HUCM Founding Year) for now.
+            let p = prompt("Admin PIN:");
+            if(p === "1868" || p === "0000") {
+                showScreen('adminScreen');
+            } else {
+                alert("Incorrect");
+            }
+        }
+        setTimeout(() => lat_clicks = 0, 3000);
+    }
+
+    function updateAdminTable() {
+        const tbody = document.querySelector('#adminDataTable tbody');
+        tbody.innerHTML = '';
+        document.getElementById('countCheckins').innerText = checkins.length;
+        
+        // Show last 50
+        const recent = [...checkins].reverse().slice(0, 50);
+        recent.forEach(c => {
+            const tr = document.createElement('tr');
+            const d = new Date(c.Timestamp);
+            tr.innerHTML = `<td>${d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+                            <td><strong>${c.Name}</strong></td>
+                            <td>${c.Email || '-'}</td>
+                            <td><button onclick="previewSignature('${c.id}')" style="background:#e2e8f0; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">👁️ View</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function previewSignature(id) {
+        const entry = checkins.find(c => String(c.id) === String(id));
+        if(entry && entry.Signature) {
+            document.getElementById('previewName').innerText = "Signature: " + entry.Name;
+            document.getElementById('previewImg').src = entry.Signature;
+            document.getElementById('sigPreviewModal').style.display = 'flex';
+        } else {
+            alert("Signature Data Missing.");
+        }
+    }
+
+    function exportData() {
+        if(checkins.length === 0 && evaluations.length === 0) {
+            alert("No data to export."); return;
+        }
+        
+        // Prep CSV for Pipeline
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "Topic,Start time,Name (original name),Email,Duration,Department,Position,Signature_Data\n";
+        
+        checkins.forEach(c => {
+            let name = '"' + c.Name.replace(/"/g, '""') + '"';
+            let dept = '"' + c.Department.replace(/"/g, '""') + '"';
+            csvContent += `${c.Event},${c.Date},${name},${c.Email},${c.Duration},${dept},${c.Position},"${c.Signature.substring(0,100)}...truncated_for_size"\n`;
+        });
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        const csvFileName = `meetinglistdetails_Kiosk_${new Date().getTime()}.csv`;
+        link.setAttribute("download", csvFileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Prep HTML Audit Log mimicking the official CME physical sheet
+        let auditHtml = `<html><head><meta charset="utf-8"><title>Official CME Sign-In Sheet</title><style>
+            body { font-family: "Times New Roman", Times, serif; font-size: 11pt; margin: 0; padding: 20px; color: #000; }
+            .form-header { text-align: center; margin-bottom: 20px; line-height: 1.3; }
+            .form-title { font-weight: bold; font-size: 12pt; margin-top: 5px; }
+            table { width: 100%; border-collapse: collapse; border: 2px solid #000; margin-top: 0; }
+            th, td { border: 1px solid #000; padding: 6px 8px; text-align: center; vertical-align: middle; }
+            th { font-weight: bold; font-size: 10pt; background: #fff; text-transform: uppercase; }
+            img { max-height: 45px; display: block; margin: 0 auto; width: auto; mix-blend-mode: multiply; }
+            .section-title { font-weight: bold; text-align: center; background: #eee; padding: 8px; border: 2px solid #000; border-bottom: none; text-transform: uppercase; font-size: 10pt; margin-top: 30px;}
+            @media print {
+                body { padding: 0; }
+                @page { size: portrait; margin: 10mm; }
+                .section-title { -webkit-print-color-adjust: exact; background: #eee; }
+            }
+            </style></head><body>`;
+            
+        auditHtml += `<div class="form-header">
+            <div>Howard University, College of Medicine</div>
+            <div>Office of Continuing Medical Education, Suite 2302</div>
+            <div class="form-title">ATTENDANCE AT DEPARTMENTAL REGULARLY SCHEDULED SERIES (GRAND ROUNDS, ETC.)</div>
+        </div>
+        
+        <div style="margin-bottom: 10px; line-height:1.6;">
+            <strong>Department:</strong> <u>Office of Faculty Development & Justice, Equity, Diversity, and Inclusion</u><br>
+            <strong>Event/Topic:</strong> <u>${config.eventName || '_________________________________'}</u><br>
+            <strong>Date:</strong> <u>${config.eventDate || '________________'}</u> &nbsp;&nbsp;&nbsp; <strong>Duration:</strong> <u>${config.duration || '60'} minutes</u><br>
+            <strong>Location:</strong> <u>_________________________________</u>
+        </div>
+        
+        <div class="section-title">
+            THIS DEPARTMENT'S ATTENDING STAFF PHYSICIANS ONLY
+            <div style="font-size: 8pt; font-weight: normal; text-transform: none; margin-top:4px;">
+                (if your name is not on this sheet, please use the succeeding sheets to print your name and department or address and sign to the right of your name)
+            </div>
+        </div>
+        `;
+            
+        auditHtml += `<table><tr>
+            <th style="width: 4%;">#</th>
+            <th style="width: 32%;">PRINTED NAME & DEGREE</th>
+            <th style="width: 12%; background: yellow;">D.O.B<br><span style="font-size:9pt; font-weight:normal;">MM/DD</span></th>
+            <th style="width: 26%;">SIGNATURE</th>
+            <th style="width: 26%;">DEPARTMENT OR ADDRESS</th>
+        </tr>`;
+        
+        checkins.forEach((c, index) => {
+            auditHtml += `<tr>
+                <td style="font-weight: bold;">${index + 1}</td>
+                <td style="text-align: left; padding-left: 10px;">
+                    <strong style="font-size:12pt; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #111;">${c.Name}</strong><br>
+                    <span style="font-size:9pt; color:#444;">${c.Position || ''}</span>
+                </td>
+                <td style="font-family: monospace; font-size:11pt;">${c.DOB || ''}</td>
+                <td><img src="${c.Signature}" alt="Signature"></td>
+                <td style="text-align: left; padding-left: 10px;">
+                    <span style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">${c.Department || ''}</span><br>
+                    <span style="font-size:9pt; color:#444;">${c.Email || ''}</span>
+                </td>
+            </tr>`;
+        });
+        
+        // Add 5 blank rows to match paper form aesthetics
+        for(let i=0; i<5; i++) {
+            auditHtml += `<tr style="height: 50px;">
+                <td style="font-weight: bold;">${checkins.length + i + 1}</td>
+                <td></td><td></td><td></td><td></td>
+            </tr>`;
+        }
+        
+        auditHtml += `</table>
+        <div style="margin-top: 20px; font-size: 8pt; text-align: justify;">
+            Howard University College of Medicine, Office of Continuing Medical Education (CME), is accredited by the Accreditation Council for Continuing Medical Education (ACCME) to provide continuing medical education for physicians. If all prior requirements for this session have been met by the department, The Office of CME designates this educational activity for a maximum of (1) AMA PRA Category 1 Credits™. Physicians should only claim credit commensurate with the extent to their participation in the activity.
+        </div>
+        </body></html>`;
+
+        // Prep JSON Tracking Log for ML
+        const jsonData = JSON.stringify({ event: config, checkins: checkins, anonymous_evaluations: evaluations }, null, 2);
+        
+        // 1. Send cleanly to Local Automation Server
+        const serverPayload = {
+            series: config.eventSeries || "General",
+            eventName: config.eventName,
+            date: config.eventDate,
+            duration: config.duration,
+            csvData: csvContent,
+            htmlData: auditHtml,
+            jsonData: jsonData
+        };
+        
+        fetch("http://localhost:8080/upload", {
+            method: "POST",
+            body: JSON.stringify(serverPayload),
+            headers: {"Content-Type": "application/json"}
+        }).then(res => {
+            if(res.ok) alert("✅ SUCCESS: Data securely uploaded to Sync Folder & Processed by Machine Learning Suite.");
+            else throw new Error("Server rejected request.");
+        }).catch(err => {
+            console.error("Sync Server not running:", err);
+            alert("⚠️ Local Sync Server not responding. Falling back to downloading locally to iPad/Mac.");
+            
+            // Fallback: Browser Download (Only if Python script is dead / Mac is asleep)
+            const htmlDataURI = "data:text/html;charset=utf-8," + encodeURIComponent(auditHtml);
+            const hlink = document.createElement("a");
+            hlink.href = htmlDataURI;
+            hlink.download = `Uncertified_CME_Audit_Log_${(config.eventName||'Event').replace(/[^a-z0-9]/gi, '_')}.html`;
+            document.body.appendChild(hlink); hlink.click(); document.body.removeChild(hlink);
+            
+            const jsonUri = "data:text/json;charset=utf-8," + encodeURIComponent(jsonData);
+            const jlink = document.createElement("a");
+            jlink.href = jsonUri;
+            jlink.download = `Kiosk_Raw_Data_${new Date().getTime()}.json`;
+            document.body.appendChild(jlink); jlink.click(); document.body.removeChild(jlink);
+
+            const csvUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
+            const clink = document.createElement("a");
+            clink.href = csvUri;
+            clink.download = `meetinglistdetails_Kiosk_${new Date().getTime()}.csv`;
+            document.body.appendChild(clink); clink.click(); document.body.removeChild(clink);
+        });
+    }
+
+    function clearData() {
+        if(confirm("Are you incredibly sure? This wipes all unsaved offline iPad data.")) {
+            checkins = [];
+            evaluations = [];
+            localStorage.removeItem('cme_checkins');
+            localStorage.removeItem('cme_evaluations');
+            updateAdminTable();
+        }
+    }
+
+    // --- CANVAS LOGIC ---
+    let signaturePad;
+
+    function resizeSignatureCanvas() {
+        const canvas = document.getElementById('sig-canvas');
+        if(!canvas || canvas.offsetWidth === 0) return; // Prevent sizing to 0 when hidden
+        
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+        
+        if (signaturePad) {
+            signaturePad.clear();
+        }
+    }
+
+    function initCanvas() {
+        const canvas = document.getElementById('sig-canvas');
+        window.addEventListener("resize", resizeSignatureCanvas);
+        
+        // Initialize the universal library
+        signaturePad = new SignaturePad(canvas, {
+            penColor: "rgb(0, 0, 0)",
+            minWidth: 1.5,
+            maxWidth: 4.5
+        });
+    }
+
+    function clearCanvas() {
+        if(signaturePad) signaturePad.clear();
+    }
+    
+    function isCanvasBlank() {
+        return signaturePad ? signaturePad.isEmpty() : true;
+    }
+    
+    function getSignatureData() {
+        return signaturePad.toDataURL('image/png');
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

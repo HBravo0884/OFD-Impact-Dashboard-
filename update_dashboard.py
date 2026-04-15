@@ -74,6 +74,13 @@ def series_tags(series_str):
 
 # ── Helper: directory table rows ────────────────────────────
 def dir_rows():
+    def format_name_for_ui(n):
+        n = re.sub(r'^Dr\.?\s+', '', str(n).strip(), flags=re.IGNORECASE).strip()
+        parts = n.split(' ')
+        if len(parts) >= 2:
+            return f"{parts[-1]}, " + " ".join(parts[:-1])
+        return n
+
     rows = []
     for p in D['table']:
         deg   = f'<span class="deg-inline">{p["degree"]}</span>' if p.get('degree') else ''
@@ -88,10 +95,13 @@ def dir_rows():
         ser   = series_tags(p.get('series', ''))
         first = p.get('first_seen', '')[:7]
         last  = p.get('last_seen',  '')[:7]
+        ui_name = format_name_for_ui(p["name"])
+        link = f'<a href="#" onclick="drilldownToPerson(\\\'{p["name"]}\\\'); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1)">{ui_name}</a>'
+        
         rows.append(
             f'<tr data-dept="{dept}" data-pos="{pos}" '
             f'data-rank="{rank}" data-sessions="{sess}">\n'
-            f'  <td><span class="name-cell">{p["name"]}</span>{deg}</td>\n'
+            f'  <td>{link}{deg}</td>\n'
             f'  <td>{title}</td>\n'
             f'  <td>{dept}</td>\n'
             f'  <td>{divis}</td>\n'
@@ -113,10 +123,13 @@ def top_table_rows():
     top10 = sorted_p[:10]
     rows = []
     for i, p in enumerate(top10):
+        ui_name = format_name_for_ui(p["name"])
+        link = f'<a href="#" onclick="drilldownToPerson(\\\'{p["name"]}\\\'); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1)">{ui_name}</a>'
+        
         rows.append(
             f'<tr>\n'
             f'  <td style="font-weight:700; color:var(--c1d)">#{i+1}</td>\n'
-            f'  <td class="name-cell">{p["name"]}</td>\n'
+            f'  <td>{link}</td>\n'
             f'  <td>{p.get("dept","")}</td>\n'
             f'  <td class="num" style="color:var(--c2d); font-size:1.1rem">{p.get("session_count",0)}</td>\n'
             f'  <td class="num">{p.get("cumulative_minutes",0)}</td>\n'
@@ -195,6 +208,7 @@ replacements = {
     '__TIMELINE_SERIES__':    json.dumps([s.get('series', '') for s in D['timeline']]),
     '__DEPT_SERIES_MAP__':    json.dumps(D.get('dept_series', {})),
     '__PERSON_SERIES_MAP__':  json.dumps(D.get('person_series', {})),
+    '__PERSON_DATES_MAP__':   json.dumps(D.get('person_dates', {})),
 }
 
 # Advanced KPIs (Calculated on the fly from payload data)

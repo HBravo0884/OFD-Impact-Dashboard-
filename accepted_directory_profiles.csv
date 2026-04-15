@@ -1,242 +1,271 @@
 name,email,dept,division,rank,degree,pos,admin_title,session_count,cumulative_minutes,first_seen,last_seen
-Abay Gobezie,abayayu123@yahoo.com,Internal Medicine,,,MD,Staff,Medical Resident,1,58,2026-01-21,2026-01-21
-Abiodun Otolorin,abiodun.otolorin@howard.edu,Community & Family Medicine,,,MD,Clinical Faculty,Clinical Assistant Professor,4,176,2025-04-16,2025-08-20
-Adeyinka Laiyemo,adeyinka.laiyemo@howard.edu,Internal Medicine,Gastroenterology,Professor,MD,Clinical Faculty,Professor,5,251,2025-03-19,2026-02-18
-Adora Okogbule Wonodi,adora.wonodi@howard.edu,Pediatrics & Child Health,,Associate Professor,BS,Clinical Faculty,Clinical Associate Professor,3,176,2025-04-16,2026-02-06
-Ahmed Ebeid,amohamed-ebeid@huhosp.org,Internal Medicine,,,MD,Staff,,1,61,2026-01-21,2026-01-21
-Alani Miller,alani.miller@bison.howard.edu,Anatomy,,,,Student,,2,120,2025-03-19,2025-04-16
+Anjanette Antonio,,Dean's Office / COM Admin,Finance & Operations,,,Investigators & Admin,Director of Procurement & Contracting,9,570,2025-07-11,2026-02-06
+Sudha Shar,sudha.sharma@howard.edu,Biochemistry & Molecular Biology,,Professor,PhD,Basic Science Faculty,Professor,9,567,2025-03-19,2026-02-20
+Tiffany Williams,,Dean's Office / COM Admin,Finance & Operations,,,Director of AP Operations & Disbursements,Director of AP Operations & Disbursements,9,447,2025-07-11,2026-02-20
+Patricia Coleman,,Community & Family Medicine,,,MD*,Clinical Faculty,,9,403,2025-07-11,2026-01-23
 Alem Mehari,alem.mehari@howard.edu,Internal Medicine,Pulmonary,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,8,489,2025-04-16,2026-02-20
-Alexander Evans,alex.evans@howard.edu,Surgery,Trauma,Associate Professor,MD,Staff,,1,50,2026-01-21,2026-01-21
-Ali Chand,achand@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,52,2026-01-21,2026-01-21
-Ali Ramadan,ali.m.ramadan@howard.edu,Pathology,,,MD,Clinical Faculty,Clinical Associate Professor,3,102,2025-04-16,2026-02-18
-Ali Zia,azia@huhosp.org,Internal Medicine,,,MD,Student,"Medical Resident, Internal Medicine",1,33,2026-01-21,2026-01-21
-Alicia Thomas,alicia.thomas@howard.edu,Internal Medicine,Pulmonary,Associate Professor,MBBS,Clinical Faculty,FPP At Risk,3,174,2025-07-11,2026-02-18
-Amira Abdelgawwad,amira.abdelgawwa@bison.howard.edu,Physiology & Biophysics,,,PhD,Student,Graduate Assistant-  Research,1,39,2025-10-17,2025-10-17
-Amna Bhatti,amna.bhatti@bison.howard.edu,Pharmacology,,,MD,Student,Graduate Assistant - Stipend,2,109,2025-03-19,2026-01-21
-Amro Abdellatief,aabdellatief@huhosp.org,Internal Medicine,,,MD,Staff,Medical Resident,1,30,2025-03-19,2025-03-19
-Andrea Hayes Dixon,andreaa.hayes@howard.edu,Dean's Office / COM Admin,Oncology,Professor,MD,Basic Science Faculty,,4,185,2025-08-20,2026-02-18
-Angel Byrd,angel.byrd@howard.edu,Dermatology,,,"MD, PhD",Clinical Faculty,Associate Professor,17,1037,2025-03-19,2026-02-20
-Angel Nkwain,,GHUCCTS Clinical Research Unit,,,,Unknown,Program Coordinator,11,902,2025-07-11,2025-10-31
-Angela Sharples,angela.sharples@howard.edu,Psychiatry and Behavioral Sciences,,,,Staff,Administrative Program Manager,13,1053,2025-07-11,2026-02-20
-Angesom Kibreab,a_kibreab@howard.edu,Internal Medicine,,Associate Professor,MD,Clinical Faculty,Physician,5,313,2025-03-19,2026-01-21
-Anietie Andy,anietie.andy@howard.edu,External / Non-HUCM,,,PhD,Basic Science Faculty,Assistant Professor,1,11,2026-02-18,2026-02-18
-Aseah Montambault,aseah.montambault@bison.howard.edu,External / Non-HUCM,,,Biology,Student,,1,34,2025-04-16,2025-04-16
-Ashley Nordhagen,,Dermatology,,,,Guest,Research Coordinator,5,164,2025-10-03,2026-01-23
-Ayra Ali,ayra.ali@howard.edu,CIDMAR (Research Center),,,BA,Staff,Coordinator,1,64,2026-01-21,2026-01-21
-Babak Shokrani,bshokrani@huhosp.org,Pathology,"Surgical Pathology &Cytopathology, Autopsy",Associate Professor,MD,Clinical Faculty,Associate Professor,2,123,2025-03-19,2025-10-17
-Barbara Harrison,bwharrison@howard.edu,Pediatrics & Child Health,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,56,2025-08-20,2025-08-20
-Basheer Qolomany,basheer.qolomany@howard.edu,Internal Medicine,CASDA,Assistant Professor,PhD,Clinical Faculty,Assistant Professor,14,901,2025-03-19,2026-02-19
-Benita Banks,benita.banks@howard.edu,Radiology,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,62,2026-02-18,2026-02-18
-Bernard Kwabi Addo,bkwabi-addo@howard.edu,Biochemistry & Molecular Biology,,Associate Professor,PhD,Basic Science Faculty,Professor,10,776,2025-03-19,2026-02-20
-Betelehem Atalay,batalay@huhosp.org,Internal Medicine,,,Resident,Student,"Medical Resident, Internal Medicine",1,54,2026-01-21,2026-01-21
-Betelihem Tobo,betelihem.tobo@howard.edu,Health Affairs,,,PhD,Staff,Assistant Professor,10,661,2025-03-19,2025-09-17
-Bonnie Davis,bdavis@huhosp.org,Radiology,Body Imaging,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,3,271,2025-03-19,2026-02-18
-Bonnie Harris,bonnie.harris@howard.edu,Community & Family Medicine,,,B Arch,Staff,Program Manager,14,728,2025-07-11,2026-02-20
-Bria Moore,bria.moore@bison.howard.edu,Dean's Office / COM Admin,,,M.D,Student,,1,64,2026-02-18,2026-02-18
-Bruk Getachew,bruk.getachew@howard.edu,Pharmacology,,,PhD,Staff,Research Associate-Grant,1,34,2025-03-19,2025-03-19
-Byron Ford,byron.ford@howard.edu,Anatomy,,Professor,PhD,Basic Science Faculty,Professor,16,917,2025-03-19,2026-02-20
-Caliyah Helliger,caliyah.helliger@bison.howard.edu,External / Non-HUCM,,,Biology,Student,,1,41,2025-04-16,2025-04-16
-Candrice,,Dermatology,,"Director, Pediatric Dermatology",,Guest,,1,52,2026-01-23,2026-01-23
-Candrice Heath,candrice.heath@howard.edu,Dermatology,Pediatric Derm,Associate Professor,MD,Clinical Faculty,Associate Professor,22,2162,2025-04-16,2026-02-19
-Carla Davis,carla.davis@howard.edu,Pediatrics & Child Health,,Professor,MD,Clinical Faculty,Professor,13,559,2025-03-19,2026-02-18
-Carla Williams,cdwilliams@howard.edu,Internal Medicine,,Associate Professor,PhD,Clinical Faculty,Assistant Professor,1,61,2026-02-18,2026-02-18
-Carla Williams,,Medicine,,Associate Professor of Medicine & Public Health,PhD,Basic Science Faculty,,5,251,2025-07-11,2026-02-20
-Carlen Engmann,carlen.engmann@bison.howard.edu,Office of Faculty Development,,,,Guest,Federal Work Study(On Campus),6,351,2026-02-06,2026-02-20
-Celia Maxwell,cmaxwell@howard.edu,Internal Medicine,Infectious Disease,Professor,MD,Clinical Faculty,Professor,1,63,2026-01-21,2026-01-21
-Chibuzor Nwachukwu,chnwachukwu@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,55,2026-01-21,2026-01-21
-Christian Parry,christian.parry@howard.edu,Microbiology,,Assistant Professor,PhD,Basic Science Faculty,Assistant Professor,28,1936,2025-04-16,2026-02-12
-Christina Copeland,christina.copeland@bison.howard.edu,External / Non-HUCM,,,Associate in arts in,Student,Student Undergrad Assistant,1,63,2025-03-19,2025-03-19
-Christina Harris,cmharris29@gmail.com,Dean's Office / COM Admin,,,MD,Student,,1,70,2026-02-18,2026-02-18
-Christine Nembhard,,Surgery,Colon & Rectal,Assistant Professor,MD,Guest,Clinical Instructor,1,138,2025-08-19,2025-08-19
-Christopher McGinley,christopher.mcginley@bison.howard.edu,Anatomy,,,PhD,Student,Student Employee,4,247,2025-03-19,2025-10-17
-Coleman Smith,colemansmith1946@gmail.com,Internal Medicine,,,MD,Clinical Faculty,,1,58,2025-04-16,2025-04-16
-Collis Brown,collisbrown66@gmail.com,Pharmacology,,,PhD,Student,Post-Doctoral Associate,1,58,2025-04-16,2025-04-16
-Cynthia Morgan,cynthia40@verizon.net,Internal Medicine,,Assistant Professor,MD,Clinical Faculty,SEA Physician,6,361,2025-03-19,2026-02-18
-Dagmawi Wale,dwale@huhosp.org,Internal Medicine,,,DO,Staff,"Medical Resident, Internal Medicine",1,37,2026-01-21,2026-01-21
-Daniel Holguin,daniel.holguin@bison.howard.edu,Dean's Office / COM Admin,,,MS,Student,Tutor,1,26,2026-02-18,2026-02-18
-Daniel Larbi,daniel.larbi@howard.edu,Internal Medicine,Internal Medicine,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,6,317,2025-08-20,2026-02-19
-David Bowman,david.bowman@howard.edu,Pediatrics & Child Health,General Peds,Assistant Professor,MD,Clinical Faculty,Director,6,523,2025-08-19,2026-02-18
-David Rose,darose@howard.edu,Surgery,Cardiovascular,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,5,342,2025-03-19,2026-02-19
+Tywanda Mclaurin-jones,tmclaurin-jones@howard.edu,Community & Family Medicine,,,PhD,Clinical Faculty,,7,1181,2025-07-03,2025-08-19
+Sayan Nandi,sayan.nandi@howard.edu,Anatomy,,Assistant Professor,PhD*,Basic Science Faculty,Assistant Professor,7,569,2025-07-17,2025-09-17
+Forough Saadatmand,frough.saadatmand@howard.edu,Pediatrics & Child Health,,"Assistant Professor, RT",PhD,Clinical Faculty,Clinical Assistant Professor,7,566,2025-03-19,2026-02-19
 Dawit Kidane,dawit.kidane-mulat@howard.edu,Physiology & Biophysics,,,"Ph.D, DABT",Basic Science Faculty,,7,549,2025-04-16,2026-02-18
-Debra Ford,dhford@howard.edu,Surgery,Colon & Rectal,Associate Professor,MD,Clinical Faculty,Associate Professor,4,292,2025-08-19,2026-02-19
-Delisha Stewart,delisha.stewart@howard.edu,Microbiology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,15,878,2025-03-19,2026-02-19
-Denise Bailey,den_bailey@howard.edu,Internal Medicine,,,M.ED,Staff,Project Manager,1,22,2025-03-19,2025-03-19
-Denise Scott,d_m_scott@howard.edu,Pediatrics,,Associate Professor,PhD,Guest,Director - Grant,12,841,2025-07-11,2026-02-20
-Dexter Lee,dllee@howard.edu,Physiology & Biophysics,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,4,153,2025-07-11,2026-02-19
-Diane Romo Thomas,diane.thomas@howard.edu,Faculty Services and Accreditation,,,,Unknown,,1,25,2026-02-12,2026-02-12
-Doyin Akintobi,dadeyeye-akintobi@huhosp.org,Internal Medicine,,,DO,Clinical Faculty,,1,57,2026-01-21,2026-01-21
-Dr Mirza Baig,mibaig@huhosp.org,Internal Medicine,,,Medical Degree,Staff,,1,56,2026-01-21,2026-01-21
-Dylan Welborne,dylan.welborne@gmail.com,External / Non-HUCM,,,BS,Student,,1,59,2025-04-16,2025-04-16
-Ebony Copeland,ebony.copeland@howard.edu,Community & Family Medicine,,Assistant Professor,MD,Clinical Faculty,Clinical Director,2,131,2025-08-20,2025-10-17
-Elizabeth Fernandes,quinta.fernandes1@gmail.com,Internal Medicine,,,DO,Staff,"Medical Resident, Internal Medicine",1,50,2026-01-21,2026-01-21
-Emily Lawson,emily.lawson@howard.edu,Dermatology,,,MA,Staff,Dermatology,11,669,2025-07-11,2026-02-20
-Emmanuel Ocampo,emmanuel.ocampo@bison.howard.edu,Surgery,,,Student,Student,,1,63,2025-10-17,2025-10-17
-Ezekiah Bacchus,ebacchus16@gmail.com,Radiology,,,MD,Student,,1,59,2026-02-18,2026-02-18
-Farshad Aduli,farshad.aduli@howard.edu,Internal Medicine,Gastroenterology,Professor,MD,Clinical Faculty,Clinical Professor,2,107,2025-04-16,2026-02-12
-Fatemeh Homayounieh,fhomayounieh@huhosp.org,Internal Medicine,,,MD,Staff,Medical Resident,1,56,2026-01-21,2026-01-21
-Fatima Barnes,fatima.barnes@howard.edu,External / Non-HUCM,,,MPH,Staff,,6,241,2025-03-19,2025-08-08
-Fayo Oyolola,oluwafayokemi.oyolo@bison.howard.edu,Anatomy,,,PhD,Student,,4,174,2025-03-19,2025-09-17
-Feremusu Kamara,,Community & Family Medicine,,Assistant Professor,MD,Clinical Faculty,Assistant Professor,1,59,2025-08-19,2025-08-19
-Finie Richardson,fkhunter@howard.edu,Community & Family Medicine,,Assistant Professor,MD,Clinical Faculty,Assistant Professor,15,709,2025-07-11,2026-02-12
-Folake Adeleye,fadeleye@huhosp.org,Internal Medicine,,,MD,Staff,Medical Resident,1,59,2026-01-21,2026-01-21
-Frough Saadatmand,frough.saadatmand@howard.edu,Pediatrics & Child Health,,,PhD,Clinical Faculty,"Assistant Professor, RT",7,566,2025-03-19,2026-02-19
-gail kerr,gail.kerr@va.gov,Internal Medicine,Rheumatology,Professor,MD,Clinical Faculty,Affiliate Clinical Professor,1,38,2025-08-20,2025-08-20
-Gail Nunlee Bland,gnunlee-bland@howard.edu,Internal Medicine,Endocrinology,Professor,MD,Clinical Faculty,Professor,1,70,2025-04-16,2025-04-16
-Gebeyaw Shiferaw,gebeyawalemne@gmail.com,Internal Medicine,,,MD,Student,Medical Resident,1,53,2026-01-21,2026-01-21
-Georges Haddad,ghaddad@howard.edu,Physiology & Biophysics,,Professor,PhD,Basic Science Faculty,Professor,1,50,2026-01-21,2026-01-21
-Gezahegn Gorfu Tolla,gezahegngorfu.tolla@howard.edu,Pathology,,Associate Professor,MD,Clinical Faculty,,5,300,2025-03-19,2026-02-12
-Ghosh,sghosh@Howard.edu,Pediatrics & Child Health,,Associate Professor,MD,Guest,,1,25,2025-11-14,2025-11-14
-Gianna Haskin,gianna.haskin@bison.howard.edu,Internal Medicine,,,BS,Student,,1,58,2025-10-17,2025-10-17
-Ginette Okoye,ginette.okoye@howard.edu,Dermatology,Chair,Professor,MD,Clinical Faculty,Professor,2,111,2025-09-17,2025-10-17
-Goulda Downer,gdowner@howard.edu,Internal Medicine,Research,Associate Professor,PhD,Clinical Faculty,Associate Professor,13,1328,2025-03-19,2026-02-18
-Habib Shariat,hshariat@howard.edu,Pediatrics & Child Health,,,MD,Clinical Faculty,,4,224,2025-08-19,2026-02-18
-Haijun Gao,haijun.gao@howard.edu,Physiology & Biophysics,Research,Associate Professor,PhD,Basic Science Faculty,Associate Professor with Indefinite Tenure,4,235,2025-03-19,2026-02-18
-Harshini Adimoulame,harshiniadimoulame@gmail.com,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,41,2026-01-21,2026-01-21
-Hassan Ashktorab,hashktorab@Howard.edu,Medicine,,Professor,PhD,Basic Science Faculty,,3,167,2025-07-25,2026-02-20
-Hassan Ashktorab,hashktorab@howard.edu,Internal Medicine,,Professor,PhD,Clinical Faculty,Professor,7,322,2025-03-19,2026-02-18
-Hassan Brim,hbrim@howard.edu,Pathology,,Professor,PhD,Clinical Faculty,Professor,7,393,2025-03-19,2026-02-18
-Hector Bravo,hector.bravorivera@howard.edu,Office of Faculty Development,,,PhD,Staff,,10,589,2025-10-17,2026-02-06
-Heera Tesfaye Erega,herega@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,36,2026-01-21,2026-01-21
-Hetu Patel,hetupatel121195@gmail.com,Internal Medicine,,,DO,Staff,Medical Resident,1,57,2026-01-21,2026-01-21
-Ifeoma Anaya,ianaya@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,57,2026-01-21,2026-01-21
-Iman Omer,iomer@huhodp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,55,2026-01-21,2026-01-21
-Inez Reeves,ireeves@howard.edu,Pediatrics & Child Health,Neonatology,Associate Professor,MD,Clinical Faculty,Associate Professor,4,256,2025-04-16,2026-02-18
-Jacob Lustgarten,jacob.lustgarten@howard.edu,Surgery,Cardiovascular,Assistant Professor,MD,Clinical Faculty,Clinical Associate Professor,1,59,2025-08-20,2025-08-20
-Jadyn Wheaton,jadyn.wheaton@bison.howard.edu,Internal Medicine,,,MD,Student,,1,22,2026-01-21,2026-01-21
-Jahn Oneil,jahn.oneil@howard.edu,Physiology & Biophysics,,Assistant Professor,PhD,Basic Science Faculty,Assistant Professor,11,1407,2025-03-19,2026-02-18
-James Taylor,james.taylor2@howard.edu,Internal Medicine,Sickle Cell,Professor,MD,Clinical Faculty,Professor,5,261,2025-03-19,2026-02-18
-Janelle Hartwell,janelle.hartwell@bison.howard.edu,Dean's Office / COM Admin,,,MD,Student,,1,72,2026-02-18,2026-02-18
-Jaya Perera,jsingh@huhosp.org,Internal Medicine,,,MD,Student,,1,45,2026-01-21,2026-01-21
-Jensara Clay,,OB/GYN,,Assistant Professor,PhD,Basic Science Faculty,Clinical Assistant Professor,1,61,2025-08-19,2025-08-19
-Jhansi Gajjala,jhansi.gajjala@howard.edu,Internal Medicine,Infectious Disease,Associate Professor,MD,Clinical Faculty,Associate Professor,2,120,2026-01-21,2026-02-18
-Joanne Allard,joanne.allard@howard.edu,Physiology & Biophysics,,,PhD,Basic Science Faculty,Associate Professor,11,686,2025-03-19,2026-02-19
-John Stubbs Iii,jstubbs@howard.edu,Microbiology,,,PhD,Basic Science Faculty,,3,157,2025-04-16,2026-02-06
-Jordan Greene,jordan.greene@bison.howard.edu,External / Non-HUCM,,,Associate,Staff,Student Tutor,1,61,2026-01-21,2026-01-21
-Joseph Maramba,jomaramba@huhosp.rg,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,43,2026-01-21,2026-01-21
-Joseph Tran,joseph.tran@bison.howard.edu,Dean's Office / COM Admin,,,MD,Student,,1,64,2025-10-17,2025-10-17
-Juan Carlos Santiago Gonzalez,jsantiago-gonzalez@huhosp.org,Internal Medicine,,,MD,Staff,,1,31,2025-03-19,2025-03-19
-Julia Biantey,julia.biantey@bison.howard.edu,Physiology & Biophysics,,,PhD,Student,Research Assistant - Hourly,1,45,2025-10-17,2025-10-17
-Julius Ngwa,julius.ngwa@howard.edu,Internal Medicine,,Assistant Professor,MD,Clinical Faculty,,1,64,2025-08-20,2025-08-20
-Justice Arhinful,jarhinful@huhosp.org,Internal Medicine,,,MD,Staff,,1,54,2025-03-19,2025-03-19
-Kaelyn Gordon,kaelyn.gordon@bison.howard.edu,Dean's Office / COM Admin,,,BS,Student,Student Tutor,1,53,2026-01-21,2026-01-21
-Kanwal Gambhir,kgambhir@howard.edu,Internal Medicine,,Professor,PhD,Clinical Faculty,Professor,4,256,2025-04-16,2026-02-18
-Karl Thompson,,Microbiology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,2,114,2025-07-11,2025-11-14
-Kashaf Zahra,kzahra@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,56,2026-01-21,2026-01-21
-Kate Hsieh,dudu1019@gmail.com,Biostatistics,,,Master,Guest,,1,54,2026-02-18,2026-02-18
-Katrina Chin Loy,katrina.chinloy@howard.edu,Ophthalmology,,Assistant Professor,PhD,Basic Science Faculty,Assistant Professor,1,69,2025-08-19,2025-08-19
-Kebreten Manaye,kmanaye@howard.edu,Physiology & Biophysics,,Professor,MD,Basic Science Faculty,Professor,7,410,2025-03-19,2026-02-19
-Kenneth Ssebambulidde,kssebambulidde@gmail.com,Internal Medicine,,,MD,Student,"Medical Resident, Internal Medicine",1,57,2026-01-21,2026-01-21
-Kijana Nix,kijanan@yahoo.com,Pediatrics & Child Health,,Assistant Professor,MBBS,Clinical Faculty,,1,23,2025-04-16,2025-04-16
-Kimberlei Richardson,,Pharmacology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,1,71,2025-08-08,2025-08-08
-Kristin Slater,kslater@huhosp.org,Internal Medicine,,,DO,Guest,"Medical Resident, Internal Medicine",1,54,2026-01-21,2026-01-21
-Kristine Dettloff,kristine.dettloff@howard.edu,Radiology,Mammography,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,69,2026-02-18,2026-02-18
-Kunle Kassim,kkassim@howard.edu,Microbiology,,Professor,PhD,Basic Science Faculty,Professor,1,53,2025-03-19,2025-03-19
-Lamiaa Rougui,lamiaa.rougui1@howard.edu,Internal Medicine,,,MD,Clinical Faculty,Assistant Professor,7,418,2025-08-19,2026-02-18
-Lekidelu Taddesse Heath,ltaddesse-heath@howard.edu,Pathology,Surgical Pathology & Hematology,Associate Professor,MD,Clinical Faculty,Associate Professor,1,59,2026-01-21,2026-01-21
-Leroy Richardson,lepari1051@gmail.com,External / Non-HUCM,,,MD,Guest,,1,17,2025-10-17,2025-10-17
-Lindsey Koper,,Anatomy,,Assistant Professor,PhD,Basic Science Faculty,Instructor,1,83,2025-08-14,2025-08-14
-Luisa Pisigan Gales,luisa.pisigangales@howard.edu,Physiology & Biophysics,,,BSC-Accounting,Staff,Physiology and Biophysics,5,221,2025-10-17,2026-02-20
-Luisa Pisigangales,luisa.pisigangales@howard.edu,Physiology & Biophysics,,Administrative Coordinator,,Guest,,5,303,2025-10-03,2026-01-23
-Magdalena Misiak,magdalena.misiak@howard.edu,Physiology & Biophysics,,,PhD,Basic Science Faculty,Assistant Professor,6,582,2025-03-19,2026-02-18
-Mahbubur Sumon,mahbubur.sumon@howard.edu,Internal Medicine,Pulmonary/CC,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,3,146,2025-04-16,2026-01-21
-Manuel Jean,manuel.jean1@howard.edu,Data Analysis Center,,,,Unknown,Director DAC,1,63,2025-08-20,2025-08-20
-Marian Guzman,marianenid.guzmn@howard.edu,Physiology & Biophysics,,,BS,Staff,,1,69,2025-10-17,2025-10-17
-Mariette Asare,mariette.asare@howard.edu,Pathology,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,55,2025-04-16,2025-04-16
-Marina Jerebtsova,marina.jerebtsova@howard.edu,Microbiology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,12,1171,2025-03-19,2026-02-18
-Marjorie Gondré Lewis,mgondre-lewis@howard.edu,Anatomy,,,PhD,Basic Science Faculty,,54,4164,2025-03-19,2026-02-20
-Mark Johnson,mark.johnson@howard.edu,Community & Family Medicine,,Professor,MD,Clinical Faculty,Professor,4,235,2025-04-16,2026-01-21
-Marshall Mendoza,marshall.mendoza@bison.howard.edu,Dean's Office / COM Admin,,,DO,Student,,1,73,2026-02-18,2026-02-18
-Mary Davis,,Grants Director,,,,Unknown,Grants Director,10,407,2025-07-11,2026-02-20
-Maryam Foroughi,maryam.foroughi@howard.edu,Pathology,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,31,2025-03-19,2025-03-19
-Maurice Fluitt,maurice.fluitt@howard.edu,Internal Medicine,Endocrinology,Assistant Professor,PhD,Clinical Faculty,Assistant Professor,3,173,2025-04-16,2026-01-21
-Md Rahman,md.rahman@howard.edu,Physiology & Biophysics,,,PhD,Staff,Post Doctoral Fellow,1,70,2025-10-17,2025-10-17
-Miriam Michael,michaelclarkefamily@gmail.com,Internal Medicine,Nephrology,Associate Professor,MD,Clinical Faculty,FPP At Risk,2,24,2025-08-20,2026-02-12
-Mosunmola Oyawusi,m_oyawusi@howard.edu,Neurology,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,2,99,2025-09-17,2026-01-21
-Musa Khalil,mkhalil@huhosp.org,Internal Medicine,,,MD,Student,"Medical Resident, Internal Medicine",1,42,2026-01-21,2026-01-21
-Najealicka Armstrong,,Microbiology,,Assistant Professor,PhD,Basic Science Faculty,Assistant Professor,3,227,2025-08-14,2026-02-06
-Nakul Ganju,drnakulganju@gmail.com,Internal Medicine,,,MD,Student,"Medical Resident, Internal Medicine",1,57,2026-01-21,2026-01-21
-nam nguyen,nam.nguyen@howard.edu,Radiation Oncology,Radiation Oncology,Professor,MD,Clinical Faculty,Professor,1,65,2025-08-20,2025-08-20
-Namita Kumari,namita.kumari@howard.edu,Internal Medicine,,Assistant Professor,PhD,Clinical Faculty,Assistant Professor,3,179,2025-04-16,2025-10-17
-Nicholas Nwabuisi Azinge,nicholas.azinge@howard.edu,Internal Medicine,,Assistant Professor,MD,Clinical Faculty,,3,299,2025-08-19,2026-01-21
-Nnenna Kalu,n_kalu@howard.edu,Psychiatry and Behavioral Sciences,,,,Unknown,Senior Project Coordinator,11,585,2025-07-11,2026-02-20
-Noor Malik,noor.malik@howard.edu,Surgery,Neurosurgery,Assistant Professor,MD,Clinical Faculty,Clinical Instructor,2,85,2025-08-20,2025-09-17
-Ogenna Chike,ogenna.chike@bison.howard.edu,Dean's Office / COM Admin,,,BS,Student,,1,64,2025-10-17,2025-10-17
-Oladunni Filani,oladunni.filani@howard.edu,Orthopedic Surgery,,,MD,Clinical Faculty,SEA Physician,1,16,2025-10-17,2025-10-17
-olga joos,olga.joos@howard.edu,Pathology,,,MD,Clinical Faculty,Managing Director,10,504,2025-07-25,2026-02-06
-Olivia Griswold,olivia.griswold@bison.howard.edu,Internal Medicine,,,MD,Student,,1,56,2026-01-21,2026-01-21
-Ozra Dehkordi,odehkordi@howard.edu,Neurology,,Associate Professor,MD,Guest,Associate Professor,2,130,2026-01-23,2026-02-19
-pamela coleman,pamela.coleman@howard.edu,Surgery,Urology,Professor,MD,Clinical Faculty,Clinical Professor,1,44,2025-08-20,2025-08-20
-Paola Correa,paola.correaalfo@bison.howard.edu,Anatomy,,,PhD,Student,,2,149,2025-04-16,2025-08-20
-Paola Correa Alfonzo,paolacorreaalfonzo@gmail.com,Dean's Office / COM Admin,,,Anatomy,Student,Graduate Assistant - Stipend,1,53,2025-10-17,2025-10-17
-Papa Midley,papa.midley@bison.howard.edu,Dean's Office / COM Admin,,,MD,Student,,1,66,2025-10-17,2025-10-17
-Paul Wang,pwang@howard.edu,Radiology,,Professor,PhD,Clinical Faculty,Professor,1,71,2026-02-18,2026-02-18
-Peter Whitesell,peter.whitesell@howard.edu,Internal Medicine,,Assistant Professor,MD,Student,Clinical Assistant Professor,3,98,2025-12-12,2026-01-21
-Ph D #Howarduniversity Muneer Abbas,m_abbas@howard.edu,Microbiology,,Associate Professor,PhD,Basic Science Faculty,,5,409,2025-03-19,2026-01-23
-Prosper Ngouemo,prosper.ngouemo@howard.edu,Physiology and Biophysics,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,3,373,2025-08-14,2026-02-12
-Qiyi Tang,qiyi.tang@howard.edu,Microbiology,,Professor,PhD,Basic Science Faculty,Professor,6,262,2025-03-19,2026-02-19
-Quinn Capers,quinn.capers@howard.edu,Internal Medicine,,Professor,MD,Clinical Faculty,,1,60,2025-08-20,2025-08-20
-Raymond Young,raymond.young@howard.edu,Internal Medicine,Cardiology,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,1,57,2026-01-21,2026-01-21
-Regine Charles,regine.charles@bison.howard.edu,External / Non-HUCM,,,Biology,Student,Research Associate,1,59,2025-04-16,2025-04-16
-Richard Nyamekye,rnyamekye@huhosp.org,Internal Medicine,,,MD,Staff,Medical Resident,1,43,2026-01-21,2026-01-21
-Richard Schottenfeld,richard.schottenfeld@howard.edu,Psychiatry & Behavioral Sciences,,Professor,MD,Clinical Faculty,Professor,4,199,2025-03-19,2025-10-17
-Robin Williams,,Surgery,Breast Oncology,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,14,1077,2025-07-02,2025-08-15
-Roger Lin,rlin@huhosp.org,Radiology,,Assistant Professor,"MD, PhD",Clinical Faculty,Clinical Assistant Professor,2,152,2025-08-19,2026-02-18
-Safia Mohamud,safia.mohamud@howard.edu,Neurology,,Assistant Professor,MD,Clinical Faculty,Interim Residency Program Director,2,151,2025-07-10,2025-08-20
-Sam Daniel,sam.daniel@bison.howard.edu,Dean's Office / COM Admin,,,BS,Student,,1,73,2026-02-18,2026-02-18
-Samra Zulfiqar,szulfiqar@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,52,2026-01-21,2026-01-21
-Samrawit Zinabu,szinabu@huhosp.org,Internal Medicine,,,MD,Student,"Medical Resident, Internal Medicine",1,41,2026-01-21,2026-01-21
-Sayan Nandi,sayan.nandi@howard.edu,Anatomy,,Assistant Professor,PhD,Basic Science Faculty,Assistant Professor,7,569,2025-07-17,2025-09-17
-Sayan Nandi,sayan.nandi@howard.edu,Anatomy,,Assistant Professor,PhD,Basic Science Faculty,,6,640,2025-08-01,2025-11-07
-Sergei Nekhai,snekhai@howard.edu,Pharmacology,,Professor,PhD,Basic Science Faculty,Professor,12,750,2025-04-16,2026-02-18
-Shaharyar Naeem,snaeem@huhosp.org,Internal Medicine,,,MD,Student,"Medical Resident, Internal Medicine",1,52,2026-01-21,2026-01-21
-Shahzad Zafar,szafar@huhosp.org,Internal Medicine,,,MD,Guest,"Medical Resident, Internal Medicine",1,57,2026-01-21,2026-01-21
-Shantol Grahamhyatt,shantol.grahamhyat@bison.howard.edu,Microbiology,,,Microbiology,Student,,1,64,2025-03-19,2025-03-19
-Shelly Mcdonald Pinkett,smcdonald-pinkett@howard.edu,Internal Medicine,Internal Medicine,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,1,66,2025-04-16,2025-04-16
-Shelton McKenzie,,Orthopedic Surgery,Foot and Ankle,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,26,2025-08-19,2025-08-19
-Siham Mahgoub,siham.mahgoub@howard.edu,Internal Medicine,Infectious Disease,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,12,1175,2025-07-10,2026-02-18
-Sima Tarzami,sima.tarzami@howard.edu,Physiology & Biophysics,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,3,174,2025-03-19,2026-01-21
-Somiranjan Ghosh,sghosh@howard.edu,Pediatrics & Child Health,,Assistant Professor,PhD,Clinical Faculty,Sr Research Associate,15,1490,2025-04-16,2026-02-20
-Sonya Sobrian,ssobrian@howard.edu,Pharmacology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,1,60,2025-04-16,2025-04-16
-Stacey,,Physiology & Biophysics,,Associate Professor,PhD,Guest,,1,17,2026-01-23,2026-01-23
-Stafford Battle,sbattle@hwoard.edu,Curriculum Office,,,,Unknown,D Account - Webmaster,1,66,2025-08-20,2025-08-20
-Stan Andrisse,stanley@howard.edu,Physiology & Biophysics,,,PhD,Basic Science Faculty,,1,68,2025-10-17,2025-10-17
-Stephanie Rolin,,Psychiatry & Behavioral Sciences,,Assistant Professor,MD,Clinical Faculty,Assistant Professor,7,282,2025-08-19,2025-12-12
-Steven Johnson,stjohnson@huhosp.org,Internal Medicine,,,MD,Staff,Consultant/Contractor,1,41,2026-01-21,2026-01-21
-Sudha Sharma,sudha.sharma@howard.edu,Biochemistry & Molecular Biology,,Professor,PhD,Basic Science Faculty,Professor,9,567,2025-03-19,2026-02-20
-Syed Khundmiri,syed.khundmiri@howard.edu,Physiology & Biophysics,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,2,115,2025-09-17,2025-10-17
-Tadlo Belete,tbelete@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,53,2026-01-21,2026-01-21
-Tamaro Hudson,t_hudson@howard.edu,Pharmacology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,10,559,2025-03-19,2026-02-18
-Tanmoy Mondal,tanmoy.mondal@howard.edu,External / Non-HUCM,,,PhD,Staff,Post Doctoral Fellow,3,186,2025-04-16,2026-02-19
-Tatiana Sanses,tatiana.sanses@howard.edu,OB/GYN,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,2,89,2025-08-19,2026-01-09
-Taylor Bell,belltaylor14@gmail.com,Internal Medicine,,,BS,Student,,1,53,2026-01-21,2026-01-21
-Tayseer Haroun,tayseer.haroun@howard.edu,Internal Medicine,,,MD,Clinical Faculty,Clinical Assistant Professor,6,312,2025-03-19,2026-01-21
-Teletia Taylor,t_r_taylor@howard.edu,Community & Family Medicine,,Associate Professor,PhD,Clinical Faculty,Associate Professor,23,1540,2025-03-19,2026-02-18
-Tessy Okobokekeimei,tessy.okobokekeimei@howard.edu,Community & Family Medicine,,,MSN,Staff,Nurse Practitioner,1,45,2025-03-19,2025-03-19
+Daniel Larbi,daniel.larbi@howard.edu,Internal Medicine,General Internal Medicine,,MD,Clinical Faculty,,7,533,2025-08-19,2026-02-19
+Yasmine Kanaan,,Microbiology,,,PhD,Unknown,,7,455,2025-08-08,2026-02-06
 Thomas Heinbockel,theinbockel@howard.edu,Anatomy,,Professor,PhD,Basic Science Faculty,Professor,7,427,2025-03-19,2025-09-17
-Tom Mellman,tmellman@howard.edu,Clinical Trials Unit,,,,Unknown,Project Assistant,1,114,2025-08-20,2025-08-20
-Tom Tu,tom.tu@howard.edu,Dean's Office / COM Admin,,,Master's in Biology,Staff,Senior Research Scientist,1,70,2026-02-18,2026-02-18
-Tsang Wei Tu,tsangwei.tu@howard.edu,Radiology,,Assistant Professor,PhD,Clinical Faculty,Associate Professor,1,81,2026-02-18,2026-02-18
-Tsebelu Shirshawa,tshirshawa@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,51,2026-01-21,2026-01-21
-Uchechi Nwaneri,unwaneri1@gmail.com,Internal Medicine,,,Medicine,Clinical Faculty,"Medical Resident, Internal Medicine",1,41,2026-01-21,2026-01-21
-Valentine Nofong,,Surgery,Critial Care/Trauma,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,45,2025-08-19,2025-08-19
-Vance Powell Ph D,vance.powell@Howard.edu,Anatomy,,Instructor,PhD,Basic Science Faculty,,1,261,2025-08-14,2025-08-14
-Vashta Fields,,Psychiatry and Behavioral Sciences,,,,Unknown,Clinical Supervisor,1,30,2025-08-08,2025-08-08
-Veronica Bruce,veronica.bruce@howard.edu,Office of Faculty Development,,,,Staff,Assoc. Dean for Faculty Development,51,8402,2025-03-19,2026-02-20
-Victor Scott,vscott@howard.edu,Internal Medicine,,Professor,MD,Clinical Faculty,Professor - Emeritus,1,59,2025-03-19,2025-03-19
-Vijaya Ganta,vaganta@howard.edu,Internal Medicine,Endocrinology,Professor,MD,Clinical Faculty,Clinical Professor,3,327,2025-04-16,2026-01-21
-Vinesh Kumar,vikumar@huhosp.org,Internal Medicine,,,MD,Staff,"Medical Resident, Internal Medicine",1,45,2026-01-21,2026-01-21
-Vishal Poddar,,Internal Medicine,Pulmonary,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,1,31,2025-08-19,2025-08-19
-W Malcolm Byrnes,wbyrnes@howard.edu,Biochemistry & Molecular Biology,,Associate Professor,PhD,Basic Science Faculty,,1,38,2025-03-19,2025-03-19
-Wai Lim Ku,wailim.ku@howard.edu,Internal Medicine,,,PhD,Clinical Faculty,Assistant Professor,10,629,2025-08-08,2026-02-20
-Wail Alsafi,walsafi@huhosp.org,Internal Medicine,,,MD,Staff,Medical Resident,1,39,2026-01-21,2026-01-21
-Walter Bland,wbland@howard.edu,Psychiatry,General,Associate Professor,PhD,Basic Science Faculty,Clinical Associate Professor,1,36,2026-02-06,2026-02-06
-Wardah Bajwa,drwardabajwa@gmail.com,Internal Medicine,,,MBBS,Student,,3,179,2025-08-20,2026-01-21
-Whitney Dolan,whitney.dolan@howard.edu,Dean's Office / COM Admin,,,PhD,Staff,Research Scientist,2,179,2026-01-21,2026-02-18
-William Southerland,wsoutherland@howard.edu,Biochemistry & Molecular Biology,,Professor,PhD,Basic Science Faculty,Professor,1,49,2025-04-16,2025-04-16
-William Tu,tut@howard.edu,Radiology,,,PhD,Clinical Faculty,,2,104,2025-03-19,2025-04-16
-Xiping Zhan,xiping.zhan@howard.edu,Physiology & Biophysics,,Assistant Professor,PhD,Basic Science Faculty,Research Assistant Professor,2,140,2025-07-25,2026-01-23
-Yasmine Kanaan,ymkanaan@howard.edu,Microbiology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,3,187,2025-03-19,2026-02-18
-Yayin Fang,yfang@howard.edu,Biochemistry & Molecular Biology,,Professor,PhD,Basic Science Faculty,Professor,4,238,2025-04-16,2026-01-21
-Yousef Tizabi,ytizabi@howard.edu,Pharmacology,,Professor,PhD,Basic Science Faculty,Professor,4,260,2025-03-19,2026-01-21
-Zainab Abdul Karim,zabdulkarim@huhosp.org,Internal Medicine,,,MD,Student,Medical Resident,1,40,2026-01-21,2026-01-21
+Lamiaa Rougui,lamiaa.rougui1@howard.edu,Internal Medicine,,Assistant Professor,MD,Clinical Faculty,Assistant Professor,7,418,2025-08-19,2026-02-18
+Kebreten Manaye,kmanaye@howard.edu,Physiology & Biophysics,,Professor,MD,Basic Science Faculty,Professor,7,410,2025-03-19,2026-02-19
+Hassan Brim,hbrim@howard.edu,Pathology,,Professor,PhD,Clinical Faculty,Professor,7,393,2025-03-19,2026-02-18
+Ariel Walker,,Dean's Office / COM Admin,Finance & Operations,,,Travel Manager,Travel Manager,7,361,2025-07-11,2026-01-09
+Jacquelyne Pryor,,Dean's Office / COM Admin,Office of Research,,,Assistant Director of Post Award,Assistant Director of Post Award,7,326,2025-09-05,2026-02-06
+Hassan Ashktorab,hashktorab@howard.edu,Internal Medicine,,Professor,PhD,Clinical Faculty,Professor,7,322,2025-03-19,2026-02-18
+Stephanie Rolin,,Psychiatry & Behavioral Sciences,,Assistant Professor,MD*,Clinical Faculty,Assistant Professor,7,282,2025-08-19,2025-12-12
+Magdalena Misiak,magdalena.misiak@howard.edu,Physiology & Biophysics,,Assistant Professor,PhD,Basic Science Faculty,Assistant Professor,6,582,2025-03-19,2026-02-18
+David Bowman,david.bowman@howard.edu,Pediatrics & Child Health,General Peds,Assistant Professor,MD,Clinical Faculty,Director,6,523,2025-08-19,2026-02-18
+Jaquion Gholston,,Dean's Office / COM Admin,Office of Research,,,Assistant Vice President,"Assistant Vice President, Sponsored Programs Office - Post Award",6,484,2025-07-11,2026-02-20
+Cynthia Morgan,cynthia40@verizon.net,Internal Medicine,,Assistant Professor,MD,Clinical Faculty,SEA Physician,6,361,2025-03-19,2026-02-18
+Carlen Engmann,carlen.engmann@bison.howard.edu,Dean's Office / COM Admin,Office of Faculty Development,,,Student,Federal Work Study(On Campus),6,351,2026-02-06,2026-02-20
+Thyagarajan Subramanian,,Neurology,,,MD,Guest,,6,339,2025-07-02,2026-02-12
+Tayseer Haroun,tayseer.haroun@howard.edu,Internal Medicine,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,6,312,2025-03-19,2026-01-21
+David Walker,,Dean's Office / COM Admin,Office of Research,,,Senior Director of Pre-Award,Senior Director of Pre-Award,6,268,2025-10-17,2026-02-20
+Qiyi Tang,qiyi.tang@howard.edu,Microbiology,,Professor,PhD,Basic Science Faculty,Professor,6,262,2025-03-19,2026-02-19
+Fatima Barnes,fatima.barnes@howard.edu,Dean's Office / COM Admin,Office of Faculty Development,,,Admin,,6,241,2025-03-19,2025-08-08
+Marjorie Gondré Lewis,mgondre-lewis@howard.edu,Dean's Office / COM Admin,,Professor,PhD,Dean of the OFD,,54,4164,2025-03-19,2026-02-20
+Veronica Bruce,veronica.bruce@howard.edu,Dean's Office / COM Admin,Office of Faculty Development,,,Program Coordinator,Assoc. Dean for Faculty Development,51,8402,2025-03-19,2026-02-20
+Miriam Michael,michaelclarkefamily@gmail.com,Internal Medicine,Nephrology,Associate Professor,MD*,Clinical Faculty,FPP At Risk,5,690,2025-08-11,2026-02-12
+Muneer Abbas,m_abbas@howard.edu,Microbiology,,Associate Professor,Ph.D.,Basic Science Faculty,Associate Professor,5,409,2025-03-19,2026-01-23
+Najealicka Armstrong,,Microbiology,,Assistant Professor,PhD*,Basic Science Faculty,Assistant Professor,5,350,2025-08-14,2026-02-19
+David Rose,darose@howard.edu,Surgery,Cardiovascular,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,5,342,2025-03-19,2026-02-19
+Angesom Kibreab,a_kibreab@howard.edu,Internal Medicine,,Associate Professor,MD,Clinical Faculty,Physician,5,313,2025-03-19,2026-01-21
+Gezahegn Tolla,gezahegngorfu.tolla@howard.edu,Pathology,,Associate Professor,PhD,Clinical Faculty,Associate Professor,5,300,2025-03-19,2026-02-12
+Kala Venkiteswaran,kala.venkiteswaran@howard.edu,Dean's Office / COM Admin,Office of Research,,,Guest,,5,283,2025-12-12,2026-02-18
+Ebony Caldwell,ebony.caldwell@howard.edu,Psychiatry & Behavioral Sciences,General,Assistant Professor,MD*,Clinical Faculty,Clinical Assistant Professor,5,282,2025-08-08,2026-01-23
+Alexander Evans,alex.evans@howard.edu,Surgery,Trauma,Associate Professor,MD,Staff,,5,271,2025-08-01,2026-02-12
+James Taylor,james.taylor2@howard.edu,Internal Medicine,Sickle Cell,Professor,MD,Clinical Faculty,Professor,5,261,2025-03-19,2026-02-18
+Adeyinka Laiyemo,adeyinka.laiyemo@howard.edu,Internal Medicine,Gastroenterology,Professor,MD,Clinical Faculty,Professor,5,251,2025-03-19,2026-02-18
+Carla Williams,,Internal Medicine,General Internal Medicine,,PhD,Guest,,5,251,2025-07-11,2026-02-20
 Zaki Sherif,zaki.sherif@howard.edu,Biochemistry & Molecular Biology,,Professor,PhD,Basic Science Faculty,Professor,5,246,2025-03-19,2026-02-18
+Ashley Nordhagen,,Dermatology,,,,Guest,Research Coordinator,5,164,2025-10-03,2026-01-23
+Danielle Hairston,danielle.hairston@howard.edu,Psychiatry & Behavioral Sciences,,,MD,Clinical Faculty,,4,353,2025-07-25,2025-10-17
+Debra Ford,dhford@howard.edu,Surgery,Colon & Rectal,Associate Professor,MD*,Clinical Faculty,Associate Professor,4,292,2025-08-19,2026-02-19
+Lauren Ferrell,,Dean's Office / COM Admin,Office of Research,,,Assistant VP of Sponsored Programs,Assistant Vice President of Sponsored Programs Office Pre-Award,4,263,2025-07-25,2026-02-20
+Yousef Tizabi,ytizabi@howard.edu,Pharmacology,,Professor,PhD,Basic Science Faculty,Professor,4,260,2025-03-19,2026-01-21
+Inez Reeves,ireeves@howard.edu,Pediatrics & Child Health,Neonatology,Associate Professor,MD,Clinical Faculty,Associate Professor,4,256,2025-04-16,2026-02-18
+Kanwal Gambhir,kgambhir@howard.edu,Internal Medicine,,Professor,PhD,Clinical Faculty,Professor,4,256,2025-04-16,2026-02-18
+Christopher Mcginley,christopher.mcginley@bison.howard.edu,Medical Students,,Student,PhD,Student,Student Employee,4,247,2025-03-19,2025-10-17
+Ya Yin Fang,yfang@howard.edu,Biochemistry & Molecular Biology,,Professor,PhD,Basic Science Faculty,,4,238,2025-04-16,2026-01-21
+Haijun Gao,haijun.gao@howard.edu,Physiology & Biophysics,Research,Associate Professor,Ph.D.,Basic Science Faculty,Associate Professor with Indefinite Tenure,4,235,2025-03-19,2026-02-18
+Mark Johnson,mark.johnson@howard.edu,Community & Family Medicine,,Professor,MD,Clinical Faculty,Professor,4,235,2025-04-16,2026-01-21
+Habib Shariat,hshariat@howard.edu,Pediatrics & Child Health,,,MD,Clinical Faculty,,4,224,2025-08-19,2026-02-18
+Janiere Pereira,,Dean's Office / COM Admin,Office of Research,,,Sponsored Programs Analyst,Sponsored Programs Analyst,4,223,2025-09-05,2025-12-12
+Michaela Spears,,Dean's Office / COM Admin,Office of Research,,,Research Associate,Research Associate (Exempt),4,222,2025-08-08,2025-08-15
+Ebony Copeland,ebony.copeland@howard.edu,Community & Family Medicine,,Assistant Professor,MD*,Clinical Faculty,Clinical Director,4,215,2025-08-20,2026-02-12
+Valerie Boahene,,Dean's Office / COM Admin,Finance & Operations,,,Purchasing Manager,Purchasing Manager,4,215,2025-07-25,2026-02-20
+Martha Mabiala,,Dean's Office / COM Admin,Office of Research,,,Financial Manager,Financial Manager,4,202,2026-01-09,2026-02-20
+Richard Schottenfeld,richard.schottenfeld@howard.edu,Psychiatry & Behavioral Sciences,,Professor,MD,Clinical Faculty,Professor,4,199,2025-03-19,2025-10-17
+Andrea Hayes-dixon,andreaa.hayes@howard.edu,Dean's Office / COM Admin,Oncology,Professor,MD,Basic Science Faculty,,4,185,2025-08-20,2026-02-18
+Abiodun Otolorin,abiodun.otolorin@howard.edu,Community & Family Medicine,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,4,176,2025-04-16,2025-08-20
+Fayo Oyolola,oluwafayokemi.oyolo@bison.howard.edu,Medical Students,,Student,PhD,Student,,4,174,2025-03-19,2025-09-17
+Nichelle Brooks,,Dean's Office / COM Admin,Office of Research,,,Post Award Analyst,Post Award Analyst,4,160,2025-10-17,2026-02-20
+Dexter Lee,dllee@howard.edu,Physiology & Biophysics,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,4,153,2025-07-11,2026-02-19
+Prosper Ngouemo,prosper.ngouemo@howard.edu,Physiology & Biophysics,,Associate Professor,PhD*,Basic Science Faculty,Associate Professor,3,373,2025-08-14,2026-02-12
+Vijaya Ganta,vaganta@howard.edu,Internal Medicine,Endocrinology,Professor,MD,Clinical Faculty,Clinical Professor,3,327,2025-04-16,2026-01-21
+Crystal Umaru,,Dean's Office / COM Admin,Office of Research,,,Sr. Director of Pre-Award,Sr. Director of Pre-Award,3,299,2025-07-25,2026-02-20
+Nicholas Nwabuisi Azinge,nicholas.azinge@howard.edu,Internal Medicine,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,3,299,2025-08-19,2026-01-21
+Bonnie Davis,bdavis@huhosp.org,Radiology,Body Imaging,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,3,271,2025-03-19,2026-02-18
+Paola Correa,paola.correaalfo@bison.howard.edu,Medical Students,,Student,PhD,Student,,3,202,2025-04-16,2025-10-17
+Tanmoy Mondal,tanmoy.mondal@howard.edu,External / Non-HUCM,,Staff,PhD,Staff,Post Doctoral Fellow,3,186,2025-04-16,2026-02-19
+Patricia Houston,phouston@howard.edu,Dean's Office / COM Admin,Office of Research,,,Grant - Project Director,Grant - Project Director,3,185,2025-07-25,2025-10-03
+Namita Kumari,namita.kumari@howard.edu,Internal Medicine,,Assistant Professor,PhD,Clinical Faculty,Assistant Professor,3,179,2025-04-16,2025-10-17
+Wardah Bajwa,drwardabajwa@gmail.com,Medical Students,,Student,MBBS,Student,,3,179,2025-08-20,2026-01-21
+Adora Okogbule Wonodi,adora.wonodi@howard.edu,Pediatrics & Child Health,,Associate Professor,BS,Clinical Faculty,Clinical Associate Professor,3,176,2025-04-16,2026-02-06
+Alicia Thomas,alicia.thomas@howard.edu,Internal Medicine,Pulmonary,Associate Professor,MBBS,Clinical Faculty,FPP At Risk,3,174,2025-07-11,2026-02-18
+Si Tarzami,sima.tarzami@howard.edu,Physiology & Biophysics,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,3,174,2025-03-19,2026-01-21
+Maurice Fluitt,maurice.fluitt@howard.edu,Internal Medicine,Endocrinology,Assistant Professor,PhD,Clinical Faculty,Assistant Professor,3,173,2025-04-16,2026-01-21
+Shungdong Bi,,Anatomy,,Professor,PhD*,Guest,,3,167,2026-01-23,2026-02-12
+John Stub Iii,jstubbs@howard.edu,Microbiology,,,PhD,Basic Science Faculty,,3,157,2025-04-16,2026-02-06
+Lila Hurst Brooks,,Dean's Office / COM Admin,Office of Research,,,Assistant VP of Research Operations,Assistant Vice President of Research Operations & Business Strategy,3,148,2025-10-31,2026-01-09
+Mahbubur Sumon,mahbubur.sumon@howard.edu,Internal Medicine,Pulmonary/CC,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,3,146,2025-04-16,2026-01-21
+Maria Hipolito,,Dean's Office / COM Admin,Office of Research,,,Research Coordinator,Research Coordinator,3,116,2025-07-25,2026-01-23
+Ali Ramadan,ali.m.ramadan@howard.edu,Pathology,,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,3,102,2025-04-16,2026-02-18
+Peter Whitesell,peter.whitesell@howard.edu,Medical Students,,Assistant Professor,MD,Student,Clinical Assistant Professor,3,98,2025-12-12,2026-01-21
+Christian Parry,christian.parry@howard.edu,Microbiology,,Assistant Professor,PhD,Basic Science Faculty,Assistant Professor,28,1936,2025-04-16,2026-02-12
+Candrice Heath,candrice.heath@howard.edu,Dermatology,Pediatric Dermatology,Associate Professor,MD,Clinical Faculty,Associate Professor,23,2214,2025-04-16,2026-02-19
+Teletia Taylor,t_r_taylor@howard.edu,Community & Family Medicine,,Associate Professor,PhD,Clinical Faculty,Associate Professor,23,1540,2025-03-19,2026-02-18
+Whitney Dolan,whitney.dolan@howard.edu,Dean's Office / COM Admin,,Staff,PhD,Staff,Research Scientist,2,179,2026-01-21,2026-02-18
+Roger Lin,rlin@huhosp.org,Radiology,,Assistant Professor,"MD, PhD",Clinical Faculty,Clinical Assistant Professor,2,152,2025-08-19,2026-02-18
+Safia Mohamud,safia.mohamud@howard.edu,Neurology,,Assistant Professor,MD*,Clinical Faculty,Interim Residency Program Director,2,151,2025-07-10,2025-08-20
+Benita King,benita.king@howard.edu,Dean's Office / COM Admin,Center for Innovation,,,Unknown,,2,150,2025-08-08,2025-08-08
+Xiping Zhan,xiping.zhan@howard.edu,Physiology & Biophysics,,Assistant Professor,Ph.D.,Basic Science Faculty,Research Assistant Professor,2,140,2025-07-25,2026-01-23
+Nosimot Buhari,,Medical Students,,Student,,Student,,2,132,2025-08-08,2025-08-11
+Ozra Dehkordi,odehkordi@howard.edu,Neurology,,Associate Professor,MD*,Guest,Associate Professor,2,130,2026-01-23,2026-02-19
+Babak Shokrani,bshokrani@huhosp.org,Pathology,"Surgical Pathology &Cytopathology, Autopsy",Associate Professor,MD,Clinical Faculty,Associate Professor,2,123,2025-03-19,2025-10-17
+Joanne Adelberg,joanne.adelberg@howard.edu,Pediatrics & Child Health,,,,Family Advocate,Family Advocate,2,122,2025-08-20,2026-01-23
+Alani Miller,alani.miller@bison.howard.edu,Medical Students,,Student,,Student,,2,120,2025-03-19,2025-04-16
+Jhansi Gajjala,jhansi.gajjala@howard.edu,Internal Medicine,Infectious Disease,Associate Professor,MD,Clinical Faculty,Associate Professor,2,120,2026-01-21,2026-02-18
+Syed Khundmiri,syed.khundmiri@howard.edu,Physiology & Biophysics,,Associate Professor,PhD*,Basic Science Faculty,Associate Professor,2,115,2025-09-17,2025-10-17
+Karl Thompson,,Microbiology,,Associate Professor,PhD*,Basic Science Faculty,Associate Professor,2,114,2025-07-11,2025-11-14
+Ginette Okoye,ginette.okoye@howard.edu,Dermatology,Chair,Professor,MD*,Clinical Faculty,Professor,2,111,2025-09-17,2025-10-17
+Emily Lawson,,Dermatology,,,MD*,Clinical Faculty,,2,110,2025-07-25,2025-08-08
+Amna Bhatti,amna.bhatti@bison.howard.edu,Medical Students,,Student,MD,Student,Graduate Assistant - Stipend,2,109,2025-03-19,2026-01-21
+Farshad Aduli,farshad.aduli@howard.edu,Internal Medicine,Gastroenterology,Professor,MD,Clinical Faculty,Clinical Professor,2,107,2025-04-16,2026-02-12
+William Tu,tut@howard.edu,Radiology,,,PhD,Clinical Faculty,,2,104,2025-03-19,2025-04-16
+Erika Cooksey,ecooksey@huhosp.org,Dean's Office / COM Admin,Finance & Operations,Program Manager,MD*,Program Manager,Program Manager,2,99,2025-10-03,2026-01-23
+Mosunmola Oyawusi,m_oyawusi@howard.edu,Neurology,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,2,99,2025-09-17,2026-01-21
+Tatiana Sanses,tatiana.sanses@howard.edu,Obstetrics & Gynecology,Urogynecology,Associate Professor,MD,Clinical Faculty,Associate Professor,2,89,2025-08-19,2026-01-09
+Jeremy Gunnoe,,Dean's Office / COM Admin,Finance & Operations,,,Assistant Director,Assistant Director,2,87,2025-07-11,2025-08-08
+Noor Malik,noor.malik@howard.edu,Surgery,Neurosurgery,Assistant Professor,MD,Clinical Faculty,Clinical Instructor,2,85,2025-08-20,2025-09-17
+Byron Ford,byron.ford@howard.edu,Anatomy,,Professor,PhD,Basic Science Faculty,Professor,16,917,2025-03-19,2026-02-20
+Somiranjan Ghosh,sghosh@howard.edu,Pediatrics & Child Health,,Assistant Professor,Ph.D.,Clinical Faculty,Sr Research Associate,15,1490,2025-04-16,2026-02-20
+Delisha Stewart,delisha.stewart@howard.edu,Microbiology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,15,878,2025-03-19,2026-02-19
+Finie Richardson,fkhunter@howard.edu,Community & Family Medicine,,Assistant Professor,MD*,Clinical Faculty,Assistant Professor,15,709,2025-07-11,2026-02-12
+Siham Mahgoub,siham.mahgoub@howard.edu,Internal Medicine,Infectious Disease,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,14,1520,2025-07-10,2026-02-18
+Lynn Mckinley-grant,,Dermatology,,,MD,Clinical Faculty,,14,1171,2025-07-02,2025-10-23
+Robin Willia,,Surgery,Breast Oncology,Assistant Professor,MD*,Clinical Faculty,Clinical Assistant Professor,14,1077,2025-07-02,2025-08-15
+Basheer Qolomany,basheer.qolomany@howard.edu,Internal Medicine,CASDA,Assistant Professor,PhD,Clinical Faculty,Assistant Professor,14,901,2025-03-19,2026-02-19
+Bonnie Harris,bonnie.harris@howard.edu,Community & Family Medicine,,Staff,B Arch,Staff,Program Manager,14,728,2025-07-11,2026-02-20
+Goulda Downer,gdowner@howard.edu,Internal Medicine,Research,Associate Professor,PhD,Clinical Faculty,Associate Professor,13,1328,2025-03-19,2026-02-18
+Angela Sharples,angela.sharples@howard.edu,Psychiatry & Behavioral Sciences,,Staff,,Staff,Administrative Program Manager,13,1053,2025-07-11,2026-02-20
+Nnenna Kalu,n_kalu@howard.edu,Psychiatry & Behavioral Sciences,,,MD*,Clinical Faculty,Senior Project Coordinator,13,729,2025-07-11,2026-02-20
+Carla Davis,carla.davis@howard.edu,Pediatrics & Child Health,,Professor,MD,Clinical Faculty,Professor,13,559,2025-03-19,2026-02-18
+Saher Iqbal,,Dean's Office / COM Admin,Office of Research,,,Grants Administrator,Grants Administrator,13,422,2025-07-11,2026-02-20
+Marina Jerebtsova,marina.jerebtsova@howard.edu,Microbiology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,12,1171,2025-03-19,2026-02-18
+Denise Scott,d_m_scott@howard.edu,Pediatrics & Child Health,,Associate Professor,MD*,Guest,Director - Grant,12,841,2025-07-11,2026-02-20
+Sergei Nekhai,snekhai@howard.edu,Pharmacology,,Professor,Ph.D.,Basic Science Faculty,Professor,12,750,2025-04-16,2026-02-18
+Marline Brown,,Dean's Office / COM Admin,Office of Research,,,Research Administration Manager,College Research Administration Manager,12,546,2025-07-11,2026-02-20
+Jahn Oneil,jahn.oneil@howard.edu,Physiology & Biophysics,,Assistant Professor,PhD*,Basic Science Faculty,Assistant Professor,11,1407,2025-03-19,2026-02-18
+Marcus Moon,,Dean's Office / COM Admin,Office of Research,,,Research Administration Manager,College Research Administration Manager,11,905,2025-07-11,2026-02-20
+Angel Nkwain,,Dean's Office / COM Admin,GHUCCTS,,,Program Manager,Program Coordinator,11,902,2025-07-11,2025-10-31
+Joanne Allard,joanne.allard@howard.edu,Physiology & Biophysics,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,11,686,2025-03-19,2026-02-19
+Luisa Pisigan Gales,luisa.pisigangales@howard.edu,Physiology & Biophysics,,Staff,BSC-Accounting,Staff,Physiology and Biophysics,11,634,2025-07-25,2026-02-20
+Mariah Preston,,Dean's Office / COM Admin,Office of Research,,,Manager I,Manager I,11,531,2025-08-22,2026-02-20
+Bernard Kwabi Ad,bkwabi-addo@howard.edu,Biochemistry & Molecular Biology,,Associate Professor,PhD*,Basic Science Faculty,Professor,10,776,2025-03-19,2026-02-20
+Betelihem Tobo,betelihem.tobo@howard.edu,Dean's Office / COM Admin,Health Affairs,Assistant Professor,PhD,Staff,Assistant Professor,10,661,2025-03-19,2025-09-17
+Wai Lim Ku,wailim.ku@howard.edu,Internal Medicine,,Assistant Professor,PhD,Clinical Faculty,Assistant Professor,10,629,2025-08-08,2026-02-20
+Hector Bravo,hector.bravorivera@howard.edu,Dean's Office / COM Admin,Office of Faculty Development,,PhD,Program Director RWJF Grant,,10,589,2025-10-17,2026-02-06
+Tamaro Hudson,t_hudson@howard.edu,Pharmacology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,10,559,2025-03-19,2026-02-18
+Olga Joos,olga.joos@howard.edu,Pathology,,,MD*,Clinical Faculty,Managing Director,10,504,2025-07-25,2026-02-06
+Mary Davis,,Dean's Office / COM Admin,Office of Research,,,Unknown,Grants Director,10,407,2025-07-11,2026-02-20
+Vance Powell,vance.powell@Howard.edu,Anatomy,,Instructor,PhD,Basic Science Faculty,Instructor,1,261,2025-08-14,2025-08-14
+Christine Nembhard,,Surgery,Colon & Rectal,Assistant Professor,MD*,Guest,Clinical Instructor,1,138,2025-08-19,2025-08-19
+Thomas Mellman,tmellman@howard.edu,Dean's Office / COM Admin,GHUCCTS,Project Assistant,MD,Unknown,Professor,1,114,2025-08-20,2025-08-20
+Lindsey Koper,,Anatomy,,Assistant Professor,PhD*,Basic Science Faculty,Instructor,1,83,2025-08-14,2025-08-14
+Tsang Wei Tu,tsangwei.tu@howard.edu,Radiology,,Assistant Professor,PhD,Clinical Faculty,Associate Professor,1,81,2026-02-18,2026-02-18
+Pamela Clarke,pamela.a.clarke@howard.edu,Dean's Office / COM Admin,Office of Research,Senior Director of Research Development and Strategic Research Partnerships,,Senior Director of Research,Senior Director of Research Development and Strategic Research Partnerships,1,76,2026-01-23,2026-01-23
+Marshall Mendoza,marshall.mendoza@bison.howard.edu,Medical Students,,Student,DO,Student,,1,73,2026-02-18,2026-02-18
+Sam Daniel,sam.daniel@bison.howard.edu,Medical Students,,Student,BS,Student,,1,73,2026-02-18,2026-02-18
+Janelle Hartwell,janelle.hartwell@bison.howard.edu,Medical Students,,Student,MD,Student,,1,72,2026-02-18,2026-02-18
+Kakra Hughes,,Surgery,,Professor,MD*,Clinical Faculty,Professor,1,72,2025-08-19,2025-08-19
+Kimberlei Richardson,,Pharmacology,,Associate Professor,PhD*,Basic Science Faculty,Associate Professor,1,71,2025-08-08,2025-08-08
+Paul Wang,pwang@howard.edu,Radiology,,Professor,PhD,Clinical Faculty,Professor,1,71,2026-02-18,2026-02-18
+Christina Harris,cmharris29@gmail.com,Medical Students,,Student,MD,Student,,1,70,2026-02-18,2026-02-18
+Gail Nunlee Bland,gnunlee-bland@howard.edu,Internal Medicine,Endocrinology,Professor,MD,Clinical Faculty,Professor,1,70,2025-04-16,2025-04-16
+Rahman,md.rahman@howard.edu,Physiology & Biophysics,,Staff,PhD,Staff,Post Doctoral Fellow,1,70,2025-10-17,2025-10-17
+Tom Tu,tom.tu@howard.edu,Dean's Office / COM Admin,,Staff,Master's in Biology,Staff,Senior Research Scientist,1,70,2026-02-18,2026-02-18
+Katrina Chin Loy,katrina.chinloy@howard.edu,Ophthalmology,,Assistant Professor,PhD*,Basic Science Faculty,Assistant Professor,1,69,2025-08-19,2025-08-19
+Kristine Dettloff,kristine.dettloff@howard.edu,Radiology,Mammography,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,69,2026-02-18,2026-02-18
+Marian Guzman,marianenid.guzmn@howard.edu,Physiology & Biophysics,,Staff,BS,Staff,,1,69,2025-10-17,2025-10-17
+Stanley Andrisse,stanley@howard.edu,Physiology & Biophysics,,Assistant Professor,BA,Basic Science Faculty,Assistant Professor,1,68,2025-10-17,2025-10-17
+Papa Midley,papa.midley@bison.howard.edu,Medical Students,,Student,MD,Student,,1,66,2025-10-17,2025-10-17
+Shelly Mcdonald Pinkett,smcdonald-pinkett@howard.edu,Internal Medicine,Internal Medicine,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,1,66,2025-04-16,2025-04-16
+Stafford Battle,sbattle@hwoard.edu,Dean's Office / COM Admin,Curriculum Office,,,Unknown,D Account - Webmaster,1,66,2025-08-20,2025-08-20
+Nam Nguyen,nam.nguyen@howard.edu,Radiation Oncology,Radiation Oncology,Professor,MD*,Clinical Faculty,Professor,1,65,2025-08-20,2025-08-20
+Ayra Ali,ayra.ali@howard.edu,Internal Medicine,CIDMAR,Staff,BA,Staff,Coordinator,1,64,2026-01-21,2026-01-21
+Bria Moore,bria.moore@bison.howard.edu,Medical Students,,Student,M.D,Student,,1,64,2026-02-18,2026-02-18
+Joseph Tran,joseph.tran@bison.howard.edu,Medical Students,,Student,MD,Student,,1,64,2025-10-17,2025-10-17
+Julius Ngwa,julius.ngwa@howard.edu,Internal Medicine,,Assistant Professor,MD*,Clinical Faculty,Clinical Assistant Professor,1,64,2025-08-20,2025-08-20
+Ogenna Chike,ogenna.chike@bison.howard.edu,Medical Students,,Student,BS,Student,,1,64,2025-10-17,2025-10-17
+Shantol Grahamhyatt,shantol.grahamhyat@bison.howard.edu,Medical Students,,Student,Microbiology,Student,,1,64,2025-03-19,2025-03-19
+Celia Maxwell,cmaxwell@howard.edu,Internal Medicine,Infectious Disease,Professor,MD,Clinical Faculty,Professor,1,63,2026-01-21,2026-01-21
+Christina Copeland,christina.copeland@bison.howard.edu,Medical Students,,Student,Associate in arts in,Student,Student Undergrad Assistant,1,63,2025-03-19,2025-03-19
+Emmanuel Ocampo,emmanuel.ocampo@bison.howard.edu,Medical Students,,Student,Student,Student,,1,63,2025-10-17,2025-10-17
+Manuel Jean,manuel.jean1@howard.edu,Dean's Office / COM Admin,Data Analysis Center,,,Unknown,Director DAC,1,63,2025-08-20,2025-08-20
+Benita Banks,benita.banks@howard.edu,Psychiatry & Behavioral Sciences,Psychiatry,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,62,2026-02-18,2026-02-18
+Ah Ebeid,amohamed-ebeid@huhosp.org,Internal Medicine,,Staff,MD,Staff,,1,61,2026-01-21,2026-01-21
+Carla Willia,cdwilliams@howard.edu,Internal Medicine,Cancer Center,Associate Professor,PhD,Clinical Faculty,Assistant Professor,1,61,2026-02-18,2026-02-18
+Jensara Clay,,Obstetrics & Gynecology,Minimally Invasive Gynecologic Surgery,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,61,2025-08-19,2025-08-19
+Jordan Greene,jordan.greene@bison.howard.edu,External / Non-HUCM,,Staff,Associate,Staff,Student Tutor,1,61,2026-01-21,2026-01-21
+Quinn Capers,quinn.capers@howard.edu,Internal Medicine,,Professor,MD*,Clinical Faculty,Clinical Professor,1,60,2025-08-20,2025-08-20
+Sonya Sobrian,ssobrian@howard.edu,Pharmacology,,Associate Professor,PhD,Basic Science Faculty,Associate Professor,1,60,2025-04-16,2025-04-16
+Dylan Welborne,dylan.welborne@gmail.com,Medical Students,,Student,BS,Student,,1,59,2025-04-16,2025-04-16
+Ezekiah Bacchus,ebacchus16@gmail.com,Medical Students,,Student,MD,Student,,1,59,2026-02-18,2026-02-18
+Feremusu Kamara,,Community & Family Medicine,,Assistant Professor,MD*,Clinical Faculty,Assistant Professor,1,59,2025-08-19,2025-08-19
+Folake Adeleye,fadeleye@huhosp.org,Internal Medicine,,Staff,MD,Staff,Medical Resident,1,59,2026-01-21,2026-01-21
+Jacob Lustgarten,jacob.lustgarten@howard.edu,Surgery,Cardiovascular,Assistant Professor,MD*,Clinical Faculty,Clinical Associate Professor,1,59,2025-08-20,2025-08-20
+Lekidelu Taddesse Heath,ltaddesse-heath@howard.edu,Pathology,Surgical Pathology & Hematology,Associate Professor,MD,Clinical Faculty,Associate Professor,1,59,2026-01-21,2026-01-21
+Regine Charles,regine.charles@bison.howard.edu,Medical Students,,Student,Biology,Student,Research Associate,1,59,2025-04-16,2025-04-16
+Victor Scott,vscott@howard.edu,Internal Medicine,,Professor,MD,Clinical Faculty,Professor - Emeritus,1,59,2025-03-19,2025-03-19
+Abay Gobezie,abayayu123@yahoo.com,Internal Medicine,,Staff,MD,Staff,Medical Resident,1,58,2026-01-21,2026-01-21
+Coleman Smith,colemansmith1946@gmail.com,Internal Medicine,,,MD,Clinical Faculty,,1,58,2025-04-16,2025-04-16
+Collis Brown,collisbrown66@gmail.com,Medical Students,,Student,PhD,Student,Post-Doctoral Associate,1,58,2025-04-16,2025-04-16
+Gianna Haskin,gianna.haskin@bison.howard.edu,Medical Students,,Student,BS,Student,,1,58,2025-10-17,2025-10-17
+Doyin Akintobi,dadeyeye-akintobi@huhosp.org,Internal Medicine,,,DO,Clinical Faculty,,1,57,2026-01-21,2026-01-21
+Hetu Patel,hetupatel121195@gmail.com,Internal Medicine,,Staff,DO,Staff,Medical Resident,1,57,2026-01-21,2026-01-21
+Ifeo Anaya,ianaya@huhosp.org,Internal Medicine,,,MD,Clinical Faculty,"Medical Resident, Internal Medicine",1,57,2026-01-21,2026-01-21
+Kenneth Ssebambulidde,kssebambulidde@gmail.com,Medical Students,,Student,MD,Student,"Medical Resident, Internal Medicine",1,57,2026-01-21,2026-01-21
+Nakul Ganju,drnakulganju@gmail.com,Medical Students,,Student,MD,Student,"Medical Resident, Internal Medicine",1,57,2026-01-21,2026-01-21
+Raymond Young,raymond.young@howard.edu,Internal Medicine,Cardiology,Associate Professor,MD,Clinical Faculty,Clinical Associate Professor,1,57,2026-01-21,2026-01-21
+Shahzad Zafar,szafar@huhosp.org,Internal Medicine,,,MD,Guest,"Medical Resident, Internal Medicine",1,57,2026-01-21,2026-01-21
+Barbara Harrison,bwharrison@howard.edu,Pediatrics & Child Health,,Assistant Professor,MD*,Clinical Faculty,Clinical Assistant Professor,1,56,2025-08-20,2025-08-20
+Dr Mirza Baig,mibaig@huhosp.org,Internal Medicine,,Staff,Medical Degree,Staff,,1,56,2026-01-21,2026-01-21
+Fatemeh Homayounieh,fhomayounieh@huhosp.org,Internal Medicine,,Staff,MD,Staff,Medical Resident,1,56,2026-01-21,2026-01-21
+Kashaf Zahra,kzahra@huhosp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,56,2026-01-21,2026-01-21
+Olivia Griswold,olivia.griswold@bison.howard.edu,Medical Students,,Student,MD,Student,,1,56,2026-01-21,2026-01-21
+Chibuzor Nwachukwu,chnwachukwu@huhosp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,55,2026-01-21,2026-01-21
+Iman Omer,iomer@huhodp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,55,2026-01-21,2026-01-21
+Mariette Asare,mariette.asare@howard.edu,Pathology,Pathology,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,55,2025-04-16,2025-04-16
+Betelehem Atalay,batalay@huhosp.org,Medical Students,,Student,Resident,Student,"Medical Resident, Internal Medicine",1,54,2026-01-21,2026-01-21
+Justice Arhinful,jarhinful@huhosp.org,Internal Medicine,,Staff,MD,Staff,,1,54,2025-03-19,2025-03-19
+Kate Hsieh,dudu1019@gmail.com,Biostatistics,,,Master,Guest,,1,54,2026-02-18,2026-02-18
+Kristin Slater,kslater@huhosp.org,Internal Medicine,,,DO,Guest,"Medical Resident, Internal Medicine",1,54,2026-01-21,2026-01-21
+Gebeyaw Shiferaw,gebeyawalemne@gmail.com,Medical Students,,Student,MD,Student,Medical Resident,1,53,2026-01-21,2026-01-21
+Kaelyn Gordon,kaelyn.gordon@bison.howard.edu,Medical Students,,Student,BS,Student,Student Tutor,1,53,2026-01-21,2026-01-21
+Kunle Kassim,kkassim@howard.edu,Microbiology,,Professor,PhD,Basic Science Faculty,Professor,1,53,2025-03-19,2025-03-19
+Tadlo Belete,tbelete@huhosp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,53,2026-01-21,2026-01-21
+Taylor Bell,belltaylor14@gmail.com,Medical Students,,Student,BS,Student,,1,53,2026-01-21,2026-01-21
+Ali Chand,achand@huhosp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,52,2026-01-21,2026-01-21
+Samra Zulfiqar,szulfiqar@huhosp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,52,2026-01-21,2026-01-21
+Shaharyar Naeem,snaeem@huhosp.org,Medical Students,,Student,MD,Student,"Medical Resident, Internal Medicine",1,52,2026-01-21,2026-01-21
+Tsebelu Shirshawa,tshirshawa@huhosp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,51,2026-01-21,2026-01-21
+Elizabeth Fernandes,quinta.fernandes1@gmail.com,Internal Medicine,,Staff,DO,Staff,"Medical Resident, Internal Medicine",1,50,2026-01-21,2026-01-21
+Georges Haddad,ghaddad@howard.edu,Physiology & Biophysics,,Professor,PhD,Basic Science Faculty,Professor,1,50,2026-01-21,2026-01-21
+William Southerland,wsoutherland@howard.edu,Biochemistry & Molecular Biology,,Professor,PhD,Basic Science Faculty,Professor,1,49,2025-04-16,2025-04-16
+Florencia Gonzalez,,Internal Medicine,Cancer Center,,,Guest,Program Manager,1,47,2026-02-06,2026-02-06
+Jaya Perera,jsingh@huhosp.org,Medical Students,,Student,MD,Student,,1,45,2026-01-21,2026-01-21
+Julia Biantey,julia.biantey@bison.howard.edu,Medical Students,,Student,PhD,Student,Research Assistant - Hourly,1,45,2025-10-17,2025-10-17
+Tessy Okobokekeimei,tessy.okobokekeimei@howard.edu,Community & Family Medicine,,Staff,MSN,Staff,Nurse Practitioner,1,45,2025-03-19,2025-03-19
+Valentine Nofong,,Surgery,Critial Care/Trauma,Assistant Professor,MD*,Clinical Faculty,Clinical Assistant Professor,1,45,2025-08-19,2025-08-19
+Vinesh Kumar,vikumar@huhosp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,45,2026-01-21,2026-01-21
+Pamela Coleman,pamela.coleman@howard.edu,Surgery,Urology,Professor,MD*,Clinical Faculty,Clinical Professor,1,44,2025-08-20,2025-08-20
+Joseph Mara,jomaramba@huhosp.rg,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,43,2026-01-21,2026-01-21
+Richard Nyamekye,rnyamekye@huhosp.org,Internal Medicine,,Staff,MD,Staff,Medical Resident,1,43,2026-01-21,2026-01-21
+Musa Khalil,mkhalil@huhosp.org,Medical Students,,Student,MD,Student,"Medical Resident, Internal Medicine",1,42,2026-01-21,2026-01-21
+Caliyah Helliger,caliyah.helliger@bison.howard.edu,Medical Students,,Student,Biology,Student,,1,41,2025-04-16,2025-04-16
+Harshini Adimoulame,harshiniadimoulame@gmail.com,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,41,2026-01-21,2026-01-21
+Samrawit Zinabu,szinabu@huhosp.org,Medical Students,,Student,MD,Student,"Medical Resident, Internal Medicine",1,41,2026-01-21,2026-01-21
+Steven Johnson,stjohnson@huhosp.org,Internal Medicine,,Staff,MD,Staff,Consultant/Contractor,1,41,2026-01-21,2026-01-21
+Uchechi Nwaneri,unwaneri1@gmail.com,Internal Medicine,,,Medicine,Clinical Faculty,"Medical Resident, Internal Medicine",1,41,2026-01-21,2026-01-21
+Zainab Abdul Karim,zabdulkarim@huhosp.org,Medical Students,,Student,MD,Student,Medical Resident,1,40,2026-01-21,2026-01-21
+Amira Abdelgawwad,amira.abdelgawwa@bison.howard.edu,Medical Students,,Student,PhD,Student,Graduate Assistant-  Research,1,39,2025-10-17,2025-10-17
+Wail Alsafi,walsafi@huhosp.org,Internal Medicine,,Staff,MD,Staff,Medical Resident,1,39,2026-01-21,2026-01-21
+Gail Kerr,gail.kerr@va.gov,Internal Medicine,Rheumatology,Professor,MD*,Clinical Faculty,Affiliate Clinical Professor,1,38,2025-08-20,2025-08-20
+W Malcolm Byrnes,wbyrnes@howard.edu,Biochemistry & Molecular Biology,,Associate Professor,PhD,Basic Science Faculty,,1,38,2025-03-19,2025-03-19
+Dagmawi Wale,dwale@huhosp.org,Internal Medicine,,Staff,DO,Staff,"Medical Resident, Internal Medicine",1,37,2026-01-21,2026-01-21
+Heera Tesfaye Erega,herega@huhosp.org,Internal Medicine,,Staff,MD,Staff,"Medical Resident, Internal Medicine",1,36,2026-01-21,2026-01-21
+Walter Bland,wbland@howard.edu,Psychiatry & Behavioral Sciences,General,Associate Professor,MD*,Clinical Faculty,Clinical Associate Professor,1,36,2026-02-06,2026-02-06
+Aseah Montambault,aseah.montambault@bison.howard.edu,Medical Students,,Student,Biology,Student,,1,34,2025-04-16,2025-04-16
+Bruk Getachew,bruk.getachew@howard.edu,Pharmacology,,Staff,PhD,Staff,Research Associate-Grant,1,34,2025-03-19,2025-03-19
+Ali Zia,azia@huhosp.org,Medical Students,,Student,MD,Student,"Medical Resident, Internal Medicine",1,33,2026-01-21,2026-01-21
+Juan Carlos Santiago Gonzalez,jsantiago-gonzalez@huhosp.org,Internal Medicine,,Staff,MD,Staff,,1,31,2025-03-19,2025-03-19
+Maryam Foroughi,maryam.foroughi@howard.edu,Pathology,,Assistant Professor,MD,Clinical Faculty,Clinical Assistant Professor,1,31,2025-03-19,2025-03-19
+Vishal Poddar,,Internal Medicine,Pulmonary,Associate Professor,MD*,Clinical Faculty,Clinical Associate Professor,1,31,2025-08-19,2025-08-19
+Amro Abdellatief,aabdellatief@huhosp.org,Internal Medicine,,Staff,MD,Staff,Medical Resident,1,30,2025-03-19,2025-03-19
+Vashta Fields,,Psychiatry & Behavioral Sciences,,,MD*,Clinical Faculty,Clinical Supervisor,1,30,2025-08-08,2025-08-08
+Daniel Holguin,daniel.holguin@bison.howard.edu,Medical Students,,Student,MS,Student,Tutor,1,26,2026-02-18,2026-02-18
+Shelton Mckenzie,,Orthopedic Surgery,Foot and Ankle,Assistant Professor,MD*,Clinical Faculty,Clinical Assistant Professor,1,26,2025-08-19,2025-08-19
+Diane Romo Thomas,diane.thomas@howard.edu,Dean's Office / COM Admin,Faculty Services,,,Unknown,,1,25,2026-02-12,2026-02-12
+Ghosh,sghosh@Howard.edu,Pediatrics & Child Health,,Associate Professor,MD*,Guest,,1,25,2025-11-14,2025-11-14
+Kijana Nix,kijanan@yahoo.com,Pediatrics & Child Health,,Assistant Professor,MBBS,Clinical Faculty,Clinical Assistant Professor,1,23,2025-04-16,2025-04-16
+Denise Bailey,den_bailey@howard.edu,Internal Medicine,,Staff,M.ED,Staff,Project Manager,1,22,2025-03-19,2025-03-19
+Jadyn Wheaton,jadyn.wheaton@bison.howard.edu,Medical Students,,Student,MD,Student,,1,22,2026-01-21,2026-01-21
+Leroy Richardson,lepari1051@gmail.com,External / Non-HUCM,,,MD,Guest,,1,17,2025-10-17,2025-10-17
+Oladunni Filani,oladunni.filani@howard.edu,Orthopedic Surgery,,,MD,Clinical Faculty,SEA Physician,1,16,2025-10-17,2025-10-17
+Anietie Andy,anietie.andy@howard.edu,External / Non-HUCM,,Assistant Professor,PhD,Basic Science Faculty,Assistant Professor,1,11,2026-02-18,2026-02-18

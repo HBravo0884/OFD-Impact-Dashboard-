@@ -133,17 +133,18 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
 <body>
 
 <header>
-  <div class="logo-mark">OFD</div>
+  <img src="hucm_logo.png" style="width:90px; height:90px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.2));" alt="HUCM Seal">
   <div>
-    <h1>Office of Faculty Development — Impact Dashboard</h1>
-    <p>Howard University College of Medicine · CME &amp; Programming Engagement</p>
+    <h1 style="font-family: 'Garamond', 'EB Garamond', serif; font-size: 1.4rem;">Howard University College of Medicine — Impact Dashboard</h1>
+    <p>Office of Faculty Development and JEDI · Programming Tracker</p>
   </div>
   <div class="hdr-badge">
     __KPI_RECORDS__ attendance records<br>
     __KPI_PEOPLE__ unique participants · __KPI_MEETINGS__ sessions<br>
     <div style="display:flex; gap:8px; margin-top:8px; justify-content:flex-end;">
+      <a href="cme_registration.html" target="_blank" style="padding:4px 10px; background:#8b5cf6; color:#fff; text-decoration:none; border-radius:4px; font-weight:700; font-size:0.75rem; border:none;">📱 Launch iPad Kiosk</a>
       <button onclick="window.print()" class="master-dl-btn" style="padding:4px 10px; background:#04434a; color:#fff; border:none; border-radius:4px; font-weight:700; font-size:0.75rem; cursor:pointer;">🖨️ Download Graphs (PDF)</button>
-      <a href="raw_master_dataset.csv" download="raw_master_dataset.csv" class="master-dl-btn" style="padding:4px 10px; background:var(--c1); color:#fff; text-decoration:none; border-radius:4px; font-weight:700; font-size:0.75rem;">⬇ Raw Data CSV</a>
+      <a href="accepted_directory_profiles.csv" download="HUCM_Faculty_Directory.csv" class="master-dl-btn" style="padding:4px 10px; background:var(--c1); color:#fff; text-decoration:none; border-radius:4px; font-weight:700; font-size:0.75rem;">⬇ Clean Directory CSV</a>
       <button onclick="document.getElementById('dataModal').style.display='flex'" style="padding:4px 10px; background:#FCA47C; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:700; font-size:0.75rem;">⚙️ Manage Data</button>
     </div>
   </div>
@@ -176,6 +177,7 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
   <button class="tab-btn" onclick="switchTab('activity',this)">By Series</button>
   <button class="tab-btn" onclick="switchTab('engagement',this)">Engagement</button>
   <button class="tab-btn" onclick="switchTab('drilldown',this)">Impact Drilldown</button>
+  <button class="tab-btn" onclick="switchTab('roster',this)">Event Roster</button>
   <button class="tab-btn" onclick="switchTab('directory',this)">Directory</button>
   <button class="tab-btn" onclick="switchTab('methods',this)">Data &amp; Methods</button>
 </div>
@@ -249,8 +251,44 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
 
 <!-- BY SERIES -->
 <div id="tab-activity" class="tab-pane">
-  <div class="sec">Session-by-Session Attendance</div>
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
+    <div class="sec" style="margin:0">Session-by-Session Attendance</div>
+    <button id="togglePercentBtn" onclick="togglePercentage()" style="padding:4px 12px; font-size:0.85rem; border:1px solid var(--c2); background:white; color:var(--c2d); border-radius:4px; cursor:pointer; font-weight:600;">% Show Percentages</button>
+  </div>
+  
   <div class="series-tabs" id="seriesTabs"></div>
+
+  <div class="charts-grid" style="margin-bottom:12px; grid-template-columns: 1fr;">
+    <div class="chart-card" style="position:relative; min-height: 420px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div>
+          <h3 id="distChartTitle">Composition & Penetration Strategy</h3>
+          <div class="sub">Left: Absolute representation of who attended. Right: Baseline interest gaps across the entire roster.</div>
+        </div>
+        <select id="seriesDistType" onchange="renderSeriesDist(); renderSeries(_activeSeriesName, _activeSeriesIdx);" style="padding:6px 14px; border-radius:6px; background:#f0f4f8; border:1px solid #ccc; font-weight:600; font-size:0.85rem; cursor:pointer;">
+            <option value="depts" selected>By Department</option>
+            <option value="divisions">By Division</option>
+            <option value="ranks">By Rank</option>
+            <option value="positions">By Position</option>
+        </select>
+      </div>
+      
+      <div style="display:flex; position:relative; width:100%; height:340px; gap: 20px; align-items: stretch;">
+        <div style="width:200px; position:relative; display:flex; flex-direction:column;">
+           <div style="font-size:0.75rem; font-weight:700; color:#475569; text-transform:uppercase; text-align:center; margin-bottom:6px;">Audience Composition</div>
+           <div style="flex:1; position:relative;">
+               <canvas id="chartSeriesComp"></canvas>
+           </div>
+        </div>
+        <div style="flex:1; position:relative; display:flex; flex-direction:column; border-left: 2px dashed #e2e8f0; padding-left: 20px;">
+           <div style="font-size:0.75rem; font-weight:700; color:#475569; text-transform:uppercase; text-align:center; margin-bottom:6px;">Roster Penetration (Engaged vs Missing)</div>
+           <div style="flex:1; position:relative;">
+               <canvas id="chartSeriesPen"></canvas>
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="avg-legend" id="avgLegend"></div>
   <div class="chart-card" style="max-width:900px;margin-bottom:22px">
     <h3 id="activityChartTitle">Sessions</h3>
@@ -321,8 +359,7 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
     <label>Position:</label>
     <select id="posFilter" onchange="filterDir()">
       <option value="">All Positions</option>
-      <option>Faculty</option><option>Staff</option>
-      <option>Student / Resident</option><option>External</option>
+      __POS_OPTS__
     </select>
     <label>Rank:</label>
     <select id="rankFilter" onchange="filterDir()">__RANK_OPTS__</select>
@@ -331,16 +368,16 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
   <div class="dir-wrap">
     <table id="dirTable">
       <thead><tr>
-        <th onclick="sortDir(0)">Name / Degree</th>
-        <th onclick="sortDir(1)">Title</th>
-        <th onclick="sortDir(2)">Department</th>
-        <th onclick="sortDir(3)">Division</th>
+        <th onclick="sortDir(0)">Name</th>
+        <th onclick="sortDir(1)">Degree(s)</th>
+        <th onclick="sortDir(2)">Title</th>
+        <th onclick="sortDir(3)">Position</th>
         <th onclick="sortDir(4)">Rank</th>
-        <th onclick="sortDir(5)">Position</th>
-        <th onclick="sortDir(6)">Email</th>
-        <th onclick="sortDir(7)">Minutes Logged</th>
+        <th onclick="sortDir(5)">Department</th>
+        <th onclick="sortDir(6)">Division</th>
+        <th onclick="sortDir(7)">Email</th>
         <th onclick="sortDir(8)">Sessions</th>
-        <th>Series</th>
+        <th onclick="sortDir(9)">Minutes Logged</th>
         <th onclick="sortDir(10)">First</th>
         <th onclick="sortDir(11)">Last</th>
       </tr></thead>
@@ -372,6 +409,50 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
         </select>
       </div>
       <canvas id="chartDrilldownPerson"></canvas>
+      <div class="dir-wrap" id="personDatesWrap" style="display:none; margin-top:20px; overflow-x:auto;">
+        <table id="personDatesTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Series</th>
+              <th>Topic</th>
+              <th class="num">Duration (min)</th>
+            </tr>
+          </thead>
+          <tbody id="personDatesBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT ROSTER -->
+<div id="tab-roster" class="tab-pane">
+  <div class="charts-grid" style="grid-template-columns: 1fr;">
+    <div class="chart-card">
+      <h3>Session Signup Sheet (Event Roster)</h3>
+      <div class="sub">Select a historical session to view the exact final attendance log for that event. Name links jump directly to their master profile.</div>
+      <div class="filter-bar" style="margin: 12px 0 20px;">
+        <select id="rosterEventSelect" onchange="updateRoster()" style="min-width: 350px;">
+          <option value="">Loading Sessions...</option>
+        </select>
+      </div>
+      <div class="dir-wrap" id="rosterWrap" style="display:none; overflow-x:auto;">
+        <table id="rosterTable">
+          <thead>
+            <tr>
+              <th>Attendee Name</th>
+              <th>Rank</th>
+              <th>Position</th>
+              <th>Department</th>
+              <th class="num">Duration (min)</th>
+            </tr>
+          </thead>
+          <tbody id="rosterBody">
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -441,6 +522,21 @@ const P=[
 ];
 function pal(n){return Array.from({length:n},(_,i)=>P[i%P.length]);}
 
+function getStringColor(str, alpha="") {
+    if (!str) return '#888888' + alpha;
+    const s = str.trim();
+    if (s === "OFD" || s.toLowerCase() === "office of faculty development") {
+        return '#64748b' + alpha; // Neutral stealth grey
+    }
+    
+    let hash = 0;
+    for (let i = 0; i < s.length; i++) {
+        hash = s.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % P.length;
+    return P[index] + alpha;
+}
+
 Chart.defaults.font.family="'Segoe UI',Arial,sans-serif";
 Chart.defaults.font.size=11;
 Chart.defaults.plugins.legend.labels.boxWidth=11;
@@ -452,6 +548,8 @@ const seriesAvgSess    =__SERIES_AVG_SESS__;
 const seriesAvgTotals  =__SERIES_AVG_TOTALS__;
 const seriesReachLabels=__SERIES_REACH_JSON__;
 const seriesReachData  =__SERIES_REACH_DATA__;
+const seriesDistribution = __SERIES_DISTRIBUTION__;
+const baselineTotals = __BASELINE_TOTALS__;
 const sessionsBySeriesRaw=__SESSIONS_BY_SERIES__;
 const deptLabels       =__DEPTS_JSON__;
 const deptData         =__DEPTS_DATA__;
@@ -464,7 +562,82 @@ const timelineData     =__TIMELINE_DATA__;
 const timelineDates    =__TIMELINE_DATES__;
 const deptSeriesMap    =__DEPT_SERIES_MAP__;
 const personSeriesMap  =__PERSON_SERIES_MAP__;
+const personDatesMap   =__PERSON_DATES_MAP__;
 const timelineSeries   =__TIMELINE_SERIES__;
+
+function formatNameForUI(n){
+    let str = String(n||'').trim();
+    str = str.replace(/^Dr\.?\s+/i, '').trim();
+    let p = str.split(' ');
+    if(p.length >= 2) return p[p.length-1]+', '+p.slice(0,p.length-1).join(' ');
+    return str;
+}
+
+function goToDirectoryName(name) {
+    const dBtn = document.querySelector('.tab-btn[onclick*="directory"]');
+    if(dBtn) switchTab('directory', dBtn);
+    const sIn = document.getElementById('searchInput');
+    if(sIn) {
+        sIn.value = name;
+        filterDir();
+    }
+}
+
+let rosterMap = {};
+function initRoster(){
+    const sel = document.getElementById('rosterEventSelect');
+    if(!sel) return;
+    sel.innerHTML = '<option value="">Select a Session...</option>';
+    let options = [];
+    for(let sType in sessionsBySeriesRaw){
+        sessionsBySeriesRaw[sType].forEach(s => {
+            const key = s.topic + "_" + s.date;
+            if(!rosterMap[key]) {
+                rosterMap[key] = s.comp && s.comp.attendees ? s.comp.attendees : [];
+                options.push({key: key, text: s.date + ' | ' + s.topic, date: s.date});
+            }
+        });
+    }
+    options.sort((a,b) => b.date.localeCompare(a.date));
+    options.forEach(opt => {
+        sel.innerHTML += `<option value="${opt.key}">${Math.max(0, opt.text.indexOf('undefined') > -1 ? opt.text.replace('undefined','').trim() : opt.text)}</option>`;
+    });
+}
+
+function updateRoster(){
+    const key = document.getElementById('rosterEventSelect').value;
+    const wrap = document.getElementById('rosterWrap');
+    const tbody = document.getElementById('rosterBody');
+    if(!key || !rosterMap[key] || rosterMap[key].length === 0){
+        wrap.style.display = 'none';
+        tbody.innerHTML = '';
+        return;
+    }
+    const attendees = rosterMap[key];
+    const rows = attendees.map(a => {
+        const uin = formatNameForUI(a.name);
+        return `<tr>
+            <td><a href="#" data-name="${a.name}" onclick="goToDirectoryName(this.getAttribute('data-name')); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1)">${uin}</a></td>
+            <td>${a.rank || ''}</td>
+            <td>${a.pos || ''}</td>
+            <td>${a.dept || ''}</td>
+            <td class="num">${a.duration || 0}</td>
+        </tr>`;
+    });
+    tbody.innerHTML = rows.join('');
+    wrap.style.display = 'block';
+}
+
+function drilldownToPerson(name) {
+    const pSel = document.getElementById('drilldownPerson');
+    if (pSel) {
+        pSel.value = name;
+        document.querySelectorAll('.tab-btn').forEach(b => {
+             if(b.textContent.includes('Drilldown')) switchTab('drilldown', b);
+        });
+        updateDrilldown('person');
+    }
+}
 
 // ── Tab switch ────────────────────────────────────────────────────────────────
 function switchTab(id,btn){
@@ -494,6 +667,7 @@ function switchTab(id,btn){
     window._ddB=true;
   }
   if(id==='directory'  &&!window._dB){initDir();           window._dB=true;}
+  if(id==='roster' &&!window._rB){initRoster(); window._rB=true;}
 }
 
 // ── DRILLDOWN logic ───────────────────────────────────────────────────────────
@@ -529,8 +703,12 @@ function updateDrilldown(type){
         backgroundColor:labels.map(l=>getSeriesColor(l,'cc')), borderColor:labels.map(l=>getSeriesColor(l)), borderWidth:1, borderRadius:4
       }]},
       options:{
-        indexAxis:'y', responsive:true, plugins:{legend:{display:false}},
-        scales:{x:{beginAtZero:true, grid:{color:'#e0f0f1'}, ticks:{stepSize:1}}, y:{grid:{display:false}, ticks:{font:{size:10}}}}
+        indexAxis:'y', responsive:true, 
+        plugins:{
+          legend:{display:false},
+          title: {display: !!d, text: d || '', font: {size: 14}}
+        },
+        scales:{x:{beginAtZero:true, grid:{display:false}, ticks:{stepSize:1}}, y:{grid:{display:false}, ticks:{font:{size:10}}}}
       }
     });
   } else if(type === 'person') {
@@ -547,10 +725,32 @@ function updateDrilldown(type){
         backgroundColor:labels.map(l=>getSeriesColor(l,'cc')), borderColor:labels.map(l=>getSeriesColor(l)), borderWidth:1, borderRadius:4
       }]},
       options:{
-        indexAxis:'y', responsive:true, plugins:{legend:{display:false}},
-        scales:{x:{beginAtZero:true, grid:{color:'#e0f0f1'}, ticks:{stepSize:1}}, y:{grid:{display:false}, ticks:{font:{size:10}}}}
+        indexAxis:'y', responsive:true, 
+        plugins:{
+          legend:{display:false},
+          title: {display: !!p, text: p || '', font: {size: 14}}
+        },
+        scales:{x:{beginAtZero:true, grid:{display:false}, ticks:{stepSize:1}}, y:{grid:{display:false}, ticks:{font:{size:10}}}}
       }
     });
+
+    const tbody = document.getElementById('personDatesBody');
+    const wrap = document.getElementById('personDatesWrap');
+    if (p && personDatesMap[p] && personDatesMap[p].length > 0) {
+      const rows = personDatesMap[p].map(ev => {
+          return `<tr>
+              <td>${ev.date}</td>
+              <td>${ev.series}</td>
+              <td>${ev.topic}</td>
+              <td class="num">${ev.duration}</td>
+          </tr>`;
+      });
+      tbody.innerHTML = rows.join('');
+      wrap.style.display = 'block';
+    } else {
+      wrap.style.display = 'none';
+      tbody.innerHTML = '';
+    }
   }
 }
 
@@ -559,17 +759,20 @@ new Chart(document.getElementById('chartSeriesAvg'),{
   type:'bar',
   data:{labels:seriesAvgLabels,datasets:[{
     label:'Avg Attendees/Session',data:seriesAvgData,
-    backgroundColor:P5.map(c=>c+'cc'),borderColor:P5,
+    backgroundColor:seriesAvgLabels.map(l=>getStringColor(l,'cc')),borderColor:seriesAvgLabels.map(l=>getStringColor(l)),
     borderWidth:1,borderRadius:6,borderSkipped:false
   }]},
   options:{
     indexAxis:'y',responsive:true,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{
+    plugins:{
+      legend:{display:false},
+      title:{display:false,text:'Avg_Attendees_Per_Session_by_Series'},
+      tooltip:{callbacks:{label:ctx=>{
       const i=ctx.dataIndex;
       return[' Avg: '+ctx.raw+'/session',' Sessions run: '+seriesAvgSess[i],' Total records: '+seriesAvgTotals[i]];
     }}}},
     scales:{
-      x:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Avg attendees / session',font:{size:10}}},
+      x:{beginAtZero:true,grid:{display:false},title:{display:true,text:'Avg attendees / session',font:{size:10}}},
       y:{grid:{display:false}}
     }
   }
@@ -579,15 +782,15 @@ new Chart(document.getElementById('chartSeriesReach'),{
   type:'bar',
   data:{labels:seriesReachLabels,datasets:[{
     label:'Unique People',data:seriesReachData,
-    backgroundColor:[C1+'cc',C3+'cc',C5+'cc',C2+'cc',C4+'cc'],
-    borderColor:[C1,C3,C5,C2,C4],
+    backgroundColor:seriesReachLabels.map(l=>getStringColor(l,'cc')),
+    borderColor:seriesReachLabels.map(l=>getStringColor(l)),
     borderWidth:1,borderRadius:6,borderSkipped:false
   }]},
   options:{
     indexAxis:'y',responsive:true,
     plugins:{legend:{display:false}},
     scales:{
-      x:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Unique people reached',font:{size:10}}},
+      x:{beginAtZero:true,grid:{display:false},title:{display:true,text:'Unique people reached',font:{size:10}}},
       y:{grid:{display:false}}
     }
   }
@@ -597,13 +800,13 @@ new Chart(document.getElementById('chartDepts'),{
   type:'bar',
   data:{labels:deptLabels,datasets:[{
     label:'People',data:deptData,
-    backgroundColor:pal(deptLabels.length).map(c=>c+'cc'),
-    borderColor:pal(deptLabels.length),borderWidth:1,borderRadius:4
+    backgroundColor:deptLabels.map(l=>getStringColor(l,'cc')),
+    borderColor:deptLabels.map(l=>getStringColor(l)),borderWidth:1,borderRadius:4
   }]},
   options:{
     indexAxis:'y',responsive:true,
-    plugins:{legend:{display:false}},
-    scales:{x:{beginAtZero:true,grid:{color:'#e0f0f1'}},y:{grid:{display:false},ticks:{font:{size:10}}}}
+    plugins:{legend:{display:false},title:{display:false,text:'Departmental_Engagement_Reach'}},
+    scales:{x:{beginAtZero:true,grid:{display:false}},y:{grid:{display:false},ticks:{font:{size:10}}}}
   }
 });
 
@@ -617,16 +820,19 @@ new Chart(document.getElementById('chartLoyalty'),{
   }]},
   options:{
     responsive:true,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.raw+' participants'}}},
+    plugins:{
+      legend:{display:false},
+      title:{display:false,text:'Faculty_Engagement_Depth_Repeat_Attendees'},
+      tooltip:{callbacks:{label:ctx=>' '+ctx.raw+' participants'}}
+    },    
     scales:{
       x:{grid:{display:false}},
-      y:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Participants',font:{size:10}}}
+      y:{beginAtZero:true,grid:{display:false},title:{display:true,text:'Participants',font:{size:10}}}
     }
   }
 });
 
 // ── BY SERIES tab ─────────────────────────────────────────────────────────────
-let _actChart=null;
 function buildActivityTab(){
   const names=Object.keys(sessionsBySeriesRaw);
   const tabsEl=document.getElementById('seriesTabs');
@@ -643,55 +849,303 @@ function buildActivityTab(){
   });
   renderSeries(names[0],0);
 
+  renderEngagementMacro();
+}
+
+let _macroChart = null;
+
+function renderEngagementMacro(filterKey=null, distType=null) {
   function getSeriesColor(seriesName, alpha="") {
-    const idx = seriesAvgLabels.indexOf(seriesName);
-    if(idx !== -1) return P5[idx % 5] + alpha;
-    return '#888' + alpha;
+    return getStringColor(seriesName, alpha);
   }
 
-  new Chart(document.getElementById('chartTimeline'),{
+  let data = [];
+  let yAxisLabel = 'Attendees';
+  
+  if (filterKey && distType) {
+      yAxisLabel = `${filterKey} Engagement %`;
+      const baseline = baselineTotals[distType][filterKey] || 0;
+      data = timeline.map(t => {
+          let c = 0;
+          if (t.comp && t.comp[distType] && t.comp[distType][filterKey]) {
+              c = t.comp[distType][filterKey];
+          }
+          if (baseline > 0) {
+              return parseFloat(((c / baseline) * 100).toFixed(1));
+          }
+          return 0;
+      });
+  } else {
+      data = timelineData;
+  }
+
+  if (_macroChart) _macroChart.destroy();
+  
+  _macroChart = new Chart(document.getElementById('chartTimeline'),{
     type:'bar',
     data:{labels:timelineLabels,datasets:[{
-      label:'Attendees',data:timelineData,
+      label: yAxisLabel, data: data,
       backgroundColor:timelineSeries.map(s => getSeriesColor(s, 'bb')),
       borderColor:timelineSeries.map(s => getSeriesColor(s)),
       borderWidth:1,borderRadius:4
     }]},
     options:{
       responsive:true,
-      plugins:{legend:{display:false},tooltip:{callbacks:{title:ctx=>timelineDates[ctx[0].dataIndex]}}},
+      plugins:{
+          legend:{display:false},
+          title:{display:false,text:'All_Sessions_Chronological_Timeline'},
+          tooltip:{
+              callbacks:{
+                  title:ctx=>timelineDates[ctx[0].dataIndex],
+                  label:ctx => ` ${ctx.dataset.label}: ${ctx.raw}` + (filterKey ? '%' : '')
+              }
+          }
+      },
       scales:{
         x:{grid:{display:false},ticks:{font:{size:8.5},maxRotation:45}},
-        y:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Attendees',font:{size:10}}}
+        y:{beginAtZero:true,grid:{display:false},title:{display:true,text:yAxisLabel,font:{size:10}}}
       }
     }
   });
 }
 
+window._isPercentage = false;
+window.togglePercentage = function() {
+  window._isPercentage = !window._isPercentage;
+  const btn = document.getElementById('togglePercentBtn');
+  if(window._isPercentage) {
+    btn.style.background = 'var(--c2)';
+    btn.style.color = 'white';
+    btn.innerHTML = '% Showing Percentages';
+  } else {
+    btn.style.background = 'white';
+    btn.style.color = 'var(--c2d)';
+    btn.innerHTML = '% Show Percentages';
+  }
+  for(let id in Chart.instances){
+     Chart.instances[id].update();
+  }
+}
+
+let _actChart=null, _barDistChart=null, _ringDistChart=null, _activeSeriesName=null;
+
+let _activeSeriesIdx = 0;
 function renderSeries(name,idx){
+  _activeSeriesName = name;
+  if(idx !== undefined) _activeSeriesIdx = idx;
+  
   const sess=sessionsBySeriesRaw[name];
+  const distType = document.getElementById('seriesDistType') ? document.getElementById('seriesDistType').value : 'depts';
+  const baseline = baselineTotals[distType] || {};
+  
   const vals=sess.map(s=>s.n);
   const avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):0;
-  const col=P5[idx%5];
+  
   document.getElementById('activityChartTitle').textContent=name+' — Individual Sessions';
   document.getElementById('activityChartSub').textContent=sess.length+' sessions · avg '+avg+' attendees / session';
   document.getElementById('avgLegend').innerHTML='Series average: <span class="avg-pill">'+avg+' / session</span>';
+  
+  let allKeys = new Set();
+  sess.forEach(s => {
+      if(s.comp && s.comp[distType]) Object.keys(s.comp[distType]).forEach(k => allKeys.add(k));
+  });
+  
+  let allKeysArr = Array.from(allKeys);
+  const ofdIndexAll = allKeysArr.findIndex(k => k === 'OFD' || String(k).toLowerCase() === 'office of faculty development');
+  let ofdKeyAll = null;
+  if(ofdIndexAll !== -1) {
+      ofdKeyAll = allKeysArr.splice(ofdIndexAll, 1)[0];
+  }
+  allKeysArr.sort();
+  if(ofdKeyAll) allKeysArr.unshift(ofdKeyAll);
+
+  let datasets = [];
+  allKeysArr.forEach((k, i) => {
+      let dataForK = sess.map(s => { return (s.comp && s.comp[distType]) ? (s.comp[distType][k] || 0) : 0; });
+      datasets.push({
+          label: k,
+          data: dataForK,
+          backgroundColor: getStringColor(k, 'ee'),
+          borderColor: getStringColor(k),
+          borderWidth: 1,
+          stack: 'Stack 0'
+      });
+  });
+  
+  // Also push the total line avg
+  datasets.push({label:'Series Avg',data:vals.map(()=>parseFloat(avg)),type:'line',borderColor:'#e07a50',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false});
+
   if(_actChart)_actChart.destroy();
   _actChart=new Chart(document.getElementById('chartActivityDetail'),{
     type:'bar',
     data:{
       labels:sess.map(s=>s.label),
-      datasets:[
-        {label:'Attendees',data:vals,backgroundColor:col+'cc',borderColor:col,borderWidth:1,borderRadius:5,order:2},
-        {label:'Series Avg',data:vals.map(()=>parseFloat(avg)),type:'line',borderColor:'#e07a50',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}
-      ]
+      datasets:datasets
     },
     options:{
       responsive:true,
-      plugins:{legend:{position:'top',labels:{usePointStyle:true}},tooltip:{mode:'index'}},
+      maintainAspectRatio:false,
+      plugins:{
+          legend:{position:'top',labels:{usePointStyle:true}},
+          title:{display:false,text:'Individual_Sessions_Attendance_Detail'},
+          tooltip:{
+              callbacks: {
+                  label: function(ctx) {
+                      if(ctx.dataset.type === 'line') return 'Avg: ' + ctx.raw;
+                      let activeCount = ctx.raw;
+                      let dept = ctx.dataset.label;
+                      
+                      // Calculate the total sum of all stacks for this exact session
+                      let totalSessionAttendees = 0;
+                      ctx.chart.data.datasets.forEach(ds => {
+                          if (ds.type !== 'line') {
+                              totalSessionAttendees += ds.data[ctx.dataIndex] || 0;
+                          }
+                      });
+                      
+                      let p = totalSessionAttendees > 0 ? ((activeCount / totalSessionAttendees)*100).toFixed(1) : 0;
+                      return ` ${dept}: ${activeCount} attendees (${p}% of audience)`;
+                  }
+              }
+          }
+      },
       scales:{
-        x:{grid:{display:false},ticks:{font:{size:9.5},maxRotation:35}},
-        y:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Attendees',font:{size:10}}}
+        x:{stacked:true, grid:{display:false},ticks:{font:{size:9.5},maxRotation:35}},
+        y:{
+            stacked:true, beginAtZero:true,grid:{display:false},
+            title:{display:true,text:'Attendees',font:{size:10}}
+        }
+      }
+    }
+  });
+
+  renderSeriesDist();
+}
+
+function renderSeriesDist() {
+  if(!_activeSeriesName) return;
+  const distType = document.getElementById('seriesDistType').value;
+  const dist = seriesDistribution[_activeSeriesName] || {'depts':{}, 'ranks':{}, 'positions':{}};
+  const typeData = dist[distType] || {};
+  
+  let keysObj = Object.keys(typeData);
+  const ofdIndex = keysObj.findIndex(k => k === 'OFD' || String(k).toLowerCase() === 'office of faculty development');
+  let ofdKey = null;
+  if(ofdIndex !== -1) {
+      ofdKey = keysObj.splice(ofdIndex, 1)[0];
+  }
+  keysObj.sort((a,b)=>typeData[b]-typeData[a]);
+  if(ofdKey) keysObj.unshift(ofdKey);
+  
+  const keys = keysObj;
+  const vals = keys.map(k => typeData[k]);
+  
+  if(_barDistChart) _barDistChart.destroy();
+  if(_ringDistChart) _ringDistChart.destroy();
+
+  // -------- CHART A: AUDIENCE COMPOSITION (Single Stacked Bar) --------
+  const compDatasets = keys.map((k, i) => {
+      return {
+          label: k,
+          data: [typeData[k]],
+          backgroundColor: getStringColor(k, 'ee'),
+          borderColor: getStringColor(k),
+          borderWidth: 1
+      };
+  });
+
+  _barDistChart = new Chart(document.getElementById('chartSeriesComp'),{
+    type:'bar',
+    data: {
+      labels: [_activeSeriesName],
+      datasets: compDatasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title:{display:false,text:'Audience_Composition_by_Series'},
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ' ' + ctx.dataset.label + ': ' + ctx.raw + ' attendees'; }
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, display: false },
+        y: { stacked: true, beginAtZero: true, grid: { display:false } }
+      }
+    }
+  });
+
+  // -------- CHART B: ROSTER ENGAGEMENT 100% GAP --------
+  const baseline = baselineTotals[distType] || {};
+  let penItems = [];
+
+  keys.forEach(k => {
+      const active = typeData[k] || 0;
+      const total = baseline[k] || 0;
+      if (total > 0) {
+          let pE = (active / total) * 100;
+          penItems.push({key: k, pct: pE});
+      }
+  });
+
+  const ofdIndexPen = penItems.findIndex(i => i.key === 'OFD' || String(i.key).toLowerCase() === 'office of faculty development');
+  let ofdPenObj = null;
+  if(ofdIndexPen !== -1) {
+      ofdPenObj = penItems.splice(ofdIndexPen, 1)[0];
+  }
+
+  penItems.sort((a,b)=>b.pct - a.pct); // Sort highest percentage to lowest
+  if(ofdPenObj) penItems.unshift(ofdPenObj);
+
+  const validKeys = penItems.map(i => i.key);
+  const engagedPct = penItems.map(i => i.pct.toFixed(1));
+
+  _ringDistChart = new Chart(document.getElementById('chartSeriesPen'), {
+    type: 'bar',
+    data: {
+      labels: validKeys,
+      datasets: [
+        {
+          label: 'Roster Engagement %',
+          data: engagedPct,
+          backgroundColor: validKeys.map(k => getStringColor(k, 'cc')),
+          borderColor: validKeys.map(k => getStringColor(k)),
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title:{display:false,text:'Roster_Penetration_by_Series'},
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { 
+                const active = typeData[ctx.label] || 0;
+                const total = baselineTotals[distType][ctx.label] || 0;
+                let rawPct = ((active / total) * 100).toFixed(1);
+                return ` Engagement: ${rawPct}% (${active} / ${total} roster members)`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { autoSkip: false, maxRotation: 45, minRotation: 45 }, grid: { display: false } },
+        y: { max: 100, beginAtZero: true, grid: { display: false } }
+      },
+      onClick: (evt, activeElements) => {
+          if (activeElements && activeElements.length > 0) {
+              const idx = activeElements[0].index;
+              const selectedFilter = validKeys[idx];
+              // Fire the interactive hook
+              renderEngagementMacro(selectedFilter, distType);
+          }
       }
     }
   });
@@ -713,14 +1167,15 @@ function buildEngagementTab(){
       responsive:true,
       plugins:{
         legend:{position:'right',labels:{font:{size:9},boxWidth:9,padding:5}},
+        title:{display:false,text:'Departmental_Breadth_Vs_Depth_Bubble'},
         tooltip:{callbacks:{label:ctx=>{
           const d=dB[ctx.datasetIndex];
           return[' '+d.dept,' People: '+d.people,' Avg sessions: '+d.avg_sessions,' Total records: '+d.total];
         }}}
       },
       scales:{
-        x:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Unique people from dept',font:{size:10}}},
-        y:{beginAtZero:true,grid:{color:'#e0f0f1'},title:{display:true,text:'Avg sessions / person',font:{size:10}}}
+        x:{beginAtZero:true,grid:{display:false},title:{display:true,text:'Unique people from dept',font:{size:10}}},
+        y:{beginAtZero:true,grid:{display:false},title:{display:true,text:'Avg sessions / person',font:{size:10}}}
       }
     }
   });
@@ -745,14 +1200,15 @@ function buildEngagementTab(){
       responsive:true,
       plugins:{
         legend:{position:'top',labels:{font:{size:10},boxWidth:10}},
+        title:{display:false,text:'Individual_Attendance_Sessions_Scatter'},
         tooltip:{callbacks:{label:ctx=>{
           const p=ctx.raw;
           return[' '+p.name,' '+(p.dept||'—'),' Sessions: '+Math.round(p.x)+'  Series: '+Math.round(p.y)];
         }}}
       },
       scales:{
-        x:{min:.5,ticks:{stepSize:1},grid:{color:'#e0f0f1'},title:{display:true,text:'Sessions attended',font:{size:10}}},
-        y:{min:.5,ticks:{stepSize:1},grid:{color:'#e0f0f1'},title:{display:true,text:'Distinct series attended',font:{size:10}}}
+        x:{min:.5,ticks:{stepSize:1},grid:{display:false},title:{display:true,text:'Sessions attended',font:{size:10}}},
+        y:{min:.5,ticks:{stepSize:1},grid:{display:false},title:{display:true,text:'Distinct series attended',font:{size:10}}}
       }
     }
   });
@@ -762,7 +1218,7 @@ function buildEngagementTab(){
   new Chart(document.getElementById('chartRanks'),{
     type:'bar',
     data:{labels:rankLabels,datasets:[{label:'People',data:rankData,backgroundColor:rC.map(c=>c+'cc'),borderColor:rC,borderWidth:1,borderRadius:5}]},
-    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#e0f0f1'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},title:{display:false,text:'Attendees_by_Academic_Rank'}},scales:{x:{beginAtZero:true,grid:{display:false}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
   });
 
   // Position doughnut
@@ -770,7 +1226,7 @@ function buildEngagementTab(){
   new Chart(document.getElementById('chartPos'),{
     type:'doughnut',
     data:{labels:pL,datasets:[{data:pD,backgroundColor:[C1+'cc',C2+'cc',C3+'cc',C5+'cc',C4+'cc'],borderColor:[C1,C2,C3,C5,C4],borderWidth:2}]},
-    options:{responsive:true,cutout:'52%',plugins:{legend:{position:'bottom',labels:{padding:12}}}}
+    options:{responsive:true,cutout:'52%',plugins:{legend:{position:'bottom',labels:{padding:12}},title:{display:false,text:'Attendees_by_Position_Type'}}}
   });
 }
 
@@ -799,14 +1255,14 @@ function updateDirCount(){
   document.getElementById('dirCount').textContent=document.querySelectorAll('#dirBody tr').length+' people';
 }
 function sortDir(col){
-  if(_sC===col){_sD*=-1;}else{_sC=col;_sD=col===6?-1:1;}
+  if(_sC===col){_sD*=-1;}else{_sC=col;_sD=(col===8||col===9)?-1:1;}
   document.querySelectorAll('thead th').forEach(th=>th.classList.remove('sorted-asc','sorted-desc'));
   document.querySelectorAll('thead th')[col].classList.add(_sD===1?'sorted-asc':'sorted-desc');
   const tbody=document.getElementById('dirBody');
   Array.from(tbody.querySelectorAll('tr')).sort((a,b)=>{
     let av=a.cells[col]?a.cells[col].textContent.trim():'';
     let bv=b.cells[col]?b.cells[col].textContent.trim():'';
-    if(col===7||col===8){av=parseFloat(av)||0;bv=parseFloat(bv)||0;return _sD*(av-bv);}
+    if(col===8||col===9){av=parseFloat(av)||0;bv=parseFloat(bv)||0;return _sD*(av-bv);}
     return _sD*av.localeCompare(bv);
   }).forEach(r=>tbody.appendChild(r));
 }
@@ -824,8 +1280,13 @@ function addExportButtons(){
 function downloadChartImage(cid){
   const canvas=document.getElementById(cid);
   if(!canvas)return;
+  const chart=Chart.getChart(cid);
+  let prefix = cid;
+  if(chart && chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.display){
+      prefix = chart.config.options.plugins.title.text.replace(/[^a-zA-Z0-9]/g, '_');
+  }
   const link=document.createElement('a');
-  link.download=cid+'_export.png';
+  link.download=prefix+'_export.png';
   const bgCanvas = document.createElement('canvas'); // Pre-fill background white
   bgCanvas.width=canvas.width; bgCanvas.height=canvas.height;
   const ctx = bgCanvas.getContext('2d');
@@ -877,6 +1338,12 @@ function generateChartCSV(cid){
   }
   // 3. Standard Charts (Bar, Pie, Line) -> Transpose to Columns (Prism format)
   else {
+    let titleStr = "";
+    if(chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.display) {
+        titleStr = chart.config.options.plugins.title.text;
+    }
+    if(titleStr) csv += `"Dataset","${titleStr}"\n`;
+
     const labels = chart.config.data.labels || [];
     // Header row = Categories
     csv += labels.map(l => `"${l}"`).join(",") + "\n";
@@ -897,10 +1364,15 @@ function generateChartCSV(cid){
 function downloadChartCSV(cid){
   const csv = generateChartCSV(cid);
   if(!csv) return;
+  const chart=Chart.getChart(cid);
+  let prefix = cid;
+  if(chart && chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.display){
+      prefix = chart.config.options.plugins.title.text.replace(/[^a-zA-Z0-9]/g, '_');
+  }
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const link=document.createElement('a');
   link.setAttribute('href',URL.createObjectURL(blob));
-  link.setAttribute('download',cid+'_data.csv');
+  link.setAttribute('download',prefix+'_data.csv');
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

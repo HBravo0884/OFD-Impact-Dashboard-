@@ -43,6 +43,9 @@ def canon(s):
     s = str(s).strip()
     # Strip parenthetical descriptors entirely (e.g. "Dr. Kerr (Doctor)" -> "Dr. Kerr ")
     s = re.sub(r'\(.*?\)', '', s)
+    # Strip hashtags like #HowardUniversity
+    s = re.sub(r'#\S+', '', s)
+    
     # Destroy prefixes
     if s.lower().startswith('dr. '): s = s[4:]
     if s.lower().startswith('dr '): s = s[3:]
@@ -57,8 +60,8 @@ def canon(s):
         if len(parts) == 2 and 'md' not in parts[1].lower() and 'phd' not in parts[1].lower():
             s = f"{parts[1].strip()} {parts[0].strip()}"
             
-    # Generalized Trailing Degree Scrubber
-    s = re.sub(r'\s+(md|m\.d\.|phd|ph\.d\.|dds|d\.d\.s\.|do|d\.o\.|ms|m\.s\.|ma|m\.a\.|mph|b\.s\.|bs|ba|b\.a\.|crnp|rn|np)$', '', s, flags=re.IGNORECASE)
+    # Claude's Hyper-Specific Degree Stripper Regex (Strips jammed tokens like "Robin WilliamsMD")
+    s = re.sub(r'[,\s]*(M\.?D\.?|Ph\.?D\.?|D\.?O\.?|Pharm\.?D\.?|M\.?P\.?H\.?|M\.?B\.?A\.?|M\.?S\.?N?\.?|M\.?A\.?|B\.?S\.?C?\.?|B\.?A\.?|M\.?B\.?B\.?S\.?|D\.?D\.?S\.?|D\.?A\.?B\.?T\.?|R\.?N\.?|Ed\.?D\.?|M\.?\s*Ed\.?|J\.?D\.?|L\.?M\.?S\.?W\.?)\b\.?', '', s, flags=re.IGNORECASE)
             
     return re.sub(r'\s+', ' ', s.strip().lower())
 
@@ -138,6 +141,7 @@ def norm_dept(raw):
         return ''
     mapping = {
         'gastroenterology': 'Internal Medicine',
+        'pulmonary/cc': 'Internal Medicine',
         'internal medicine': 'Internal Medicine',
         'im ': 'Internal Medicine',
         'medicine': 'Internal Medicine',
@@ -150,14 +154,25 @@ def norm_dept(raw):
         'microbiology': 'Microbiology',
         'pharmacology': 'Pharmacology',
         'pathology': 'Pathology',
+        'path ': 'Pathology',
+        'ob/gyn': 'OB/GYN',
+        'ob-gyn': 'OB/GYN',
+        'obgyn': 'OB/GYN',
         'surgery': 'Surgery',
+        'orthopaedic': 'Orthopedic Surgery',
+        'orthopedic': 'Orthopedic Surgery',
         'dermatology': 'Dermatology',
+        'neurology': 'Neurology',
+        'ophthalmology': 'Ophthalmology',
+        'radiation oncology': 'Radiation Oncology',
         'biochemistry': 'Biochemistry & Molecular Biology',
+        'psychiatry': 'Psychiatry & Behavioral Sciences',
         'community': 'Community & Family Medicine',
         'family medicine': 'Community & Family Medicine',
         'ofd': 'Office of Faculty Development',
         'faculty development': 'Office of Faculty Development',
         'nursing': 'Nursing',
+        'computer science': 'Computer Science',
         'health': 'External / Non-HUCM',
         'ministry': 'External / Non-HUCM',
     }
@@ -193,8 +208,19 @@ for fpath in new_files:
         print(f"    ⚠️  Skipping {fname}: {e}")
         continue
 
+    # --- Hybrid / In-Person Alias Normalization ---
+    if 'Event' in raw.columns and 'Topic' not in raw.columns: raw['Topic'] = raw['Event']
+    if 'Date'  in raw.columns and 'Start time' not in raw.columns: raw['Start time'] = pd.to_datetime(raw['Date'], errors='coerce')
+    if 'Name'  in raw.columns and 'Name (original name)' not in raw.columns: raw['Name (original name)'] = raw['Name']
+    if 'Duration' in raw.columns and 'Duration (minutes).1' not in raw.columns: raw['Duration (minutes).1'] = raw['Duration']
+    
+    if 'Topic' not in raw.columns or 'Start time' not in raw.columns:
+        print(f"    ⚠️  Skipping {fname}: Needs 'Topic' (or 'Event') and 'Start time' (or 'Date')")
+        continue
+
     raw = raw.dropna(subset=['Topic'])
-    raw['Start time'] = pd.to_datetime(raw['Start time'], errors='coerce')
+    if raw['Start time'].dtype == 'O': 
+        raw['Start time'] = pd.to_datetime(raw['Start time'], errors='coerce')
     raw = raw.dropna(subset=['Start time'])
     raw['date_key'] = raw['Start time'].dt.date
 
@@ -204,6 +230,7 @@ for fpath in new_files:
         name = str(row.get('Name (original name)', '')).strip()
         if not name or name.lower() in ('nan', ''):
             continue
+        # Use an index or just name+date for seen tracking on raw imports where ID might be blank
         key = (str(row.get('ID', '')), str(row['date_key']), canon(name))
         if key in seen:
             continue
@@ -390,6 +417,7 @@ df = df[df['duration'].isna() | (df['duration'] >= 10)]
 if original_total > len(df):
     print(f"    ⏱️  Micro-Session Filter burned {original_total - len(df)} ghost entries (<10 minutes).")
 
+merge_dict = {}
 # ---- GOD-MODE MANUAL OVERRIDES ----
 if os.path.exists(OVERRIDES):
     ov = pd.read_csv(OVERRIDES, dtype=str).fillna('')
@@ -451,7 +479,42 @@ for n in unique_names:
 if merged_mapping:
     print(f"    🔗  Fuzzy Match Engine algorithm collapsed {len(merged_mapping)} identity fractures!")
     df['name_n_canon'] = df['name_n_canon'].apply(lambda x: merged_mapping.get(x, x))
-    df['name_canon'] = df['name_n_canon'].str.title()
+
+
+# ---- DNA SUBSTRING SEQUENCE ALIGNMENT ----
+print("    🧬  Executing DNA Sequence Fragment Alignment (Substring Matching)...")
+unmapped_names = [n for n in unique_names if n not in merged_mapping]
+dna_matches = 0
+for i in range(len(unmapped_names)):
+    for j in range(i+1, len(unmapped_names)):
+        n1, n2 = unmapped_names[i], unmapped_names[j]
+        # Ignore small fragments to prevent generic over-matching (e.g. "smith" matching "smithsonian")
+        if len(str(n1)) < 6 or len(str(n2)) < 6: continue
+        
+        # Genetic Sequence Alignment: is one string completely enveloped by the other?
+        if n1 in n2 or n2 in n1:
+            clash = False
+            m_emails, c_emails = conflict_dict[n1]['email'], conflict_dict[n2]['email']
+            m_depts,  c_depts  = conflict_dict[n1]['dept'],  conflict_dict[n2]['dept']
+            
+            # Clash verification
+            if m_emails and c_emails and not set(m_emails).intersection(c_emails): clash = True
+            
+            if not clash:
+                # The larger sequence is the Master Genome
+                master = n1 if len(n1) >= len(n2) else n2
+                cand   = n2 if master == n1 else n1
+                if cand not in merged_mapping:
+                    merged_mapping[cand] = master
+                    conflict_dict[master]['email'].extend(conflict_dict[cand]['email'])
+                    conflict_dict[master]['dept'].extend(conflict_dict[cand]['dept'])
+                    dna_matches += 1
+
+if dna_matches > 0:
+    print(f"    🧬  DNA Engine spliced {dna_matches} fragmented sequence aliases!")
+    df['name_n_canon'] = df['name_n_canon'].apply(lambda x: merged_mapping.get(x, x))
+
+df['name_canon'] = df['name_n_canon'].str.title()
 
 # ---- EMAIL AUTHENTICATION INTERLOCK ----
 print("    📧  Executing strict Email Trust Authentication...")
@@ -585,11 +648,15 @@ if org_data:
     print(f"    🔗  Loaded {len(org_data)} hierarchy references from Org Charts")
 
 # Stage 1: Collapse multiple-joins into single unique events per date/topic
+if 'division' not in df.columns: 
+    df['division'] = ''
+
 session_events = df.groupby(['name_n_canon', 'topic', 'date']).agg(
     name_canon  = ('name_canon',  'first'),
     email       = ('email',       lambda x: next((v for v in x if str(v).strip() and str(v) != 'nan'), '')),
     degree      = ('degree',      'first'),
     dept        = ('dept',        'first'),
+    division    = ('division',    'first'),
     pos         = ('pos',         'first'),
     rank        = ('rank',        'first'),
     admin_title = ('admin_title', 'first'),
@@ -606,6 +673,7 @@ people = session_events.groupby('name_n_canon').agg(
     email       = ('email',       lambda x: next((v for v in x if str(v).strip() and str(v) != 'nan'), '')),
     degree      = ('degree',      'first'),
     dept        = ('dept',        'first'),
+    division    = ('division',    'first'),
     pos         = ('pos',         'first'),
     rank        = ('rank',        'first'),
     admin_title = ('admin_title', 'first'),
@@ -618,6 +686,39 @@ people = session_events.groupby('name_n_canon').agg(
     last_seen   = ('date',        'max'),
     known_aliases = ('raw_names', lambda x: ' | '.join(sorted(set([str(n).strip() for sublist in x for n in sublist if str(n).strip()])))),
 ).reset_index()
+
+# ── PHASE 1.5: GLOBAL ROSTER 0-SESSION INJECTION ──
+missing_records = []
+existing_canons = set(people['name_n_canon'].tolist())
+
+for _name_c, md in master_data.items():
+    name_c = merge_dict.get(_name_c, _name_c)
+    if name_c not in existing_canons:
+        existing_canons.add(name_c)
+        missing_records.append({
+            'name_n_canon': name_c,
+            'name': name_c.title(),
+            'session_count': 0,
+            'cumulative_minutes': 0,
+            'first_seen': pd.NaT,
+            'last_seen': pd.NaT,
+            'dept': md.get('dept', ''),
+            'division': md.get('division', ''),
+            'rank': md.get('rank', ''),
+            'gender': md.get('gender', ''),
+            'ethnicity': md.get('ethnicity', ''),
+            'pos': 'Faculty' if 'professor' in str(md.get('rank', '')).lower() else '',
+            'degree': '',
+            'admin_title': '',
+            'email': '',
+            'series_list': '',
+            'known_aliases': ''
+        })
+
+if missing_records:
+    missing_df = pd.DataFrame(missing_records)
+    people = pd.concat([people, missing_df], ignore_index=True)
+
 
 # Apply overrides from directory_overrides.csv
 people['division'] = ''
@@ -667,10 +768,100 @@ for idx, row in people.iterrows():
                 
     # 5. NORMALIZE DEGREE
     people.at[idx, 'degree'] = norm_degree(people.at[idx, 'degree'])
+    # 4. UNIVERSAL DEPARTMENT ALIAS ALIGNMENT
+    raw_dept_upper = str(people.at[idx, 'dept']).strip().upper()
     
-    # 4. REFINED POSITION CLEANUP & STANDARDIZATION
+    DEPT_ALIAS_MAP = {
+        'BIOCHEMISTRY': 'Biochemistry & Molecular Biology',
+        'BIOCHEMISTY': 'Biochemistry & Molecular Biology',
+        'PSYCHIATRY': 'Psychiatry & Behavioral Sciences',
+        'PEDIATRICS': 'Pediatrics & Child Health',
+        'PEDIATRY': 'Pediatrics & Child Health',
+        'OB/GYN': 'Obstetrics & Gynecology',
+        'ORTHOPAEDIC SURGERY': 'Orthopedic Surgery',
+        'PHYSIOLOGY AND BIOPHYSICS': 'Physiology & Biophysics',
+        'MEDICINE': 'Internal Medicine',
+        'CFM': 'Community & Family Medicine'
+    }
+    
+    if raw_dept_upper in DEPT_ALIAS_MAP:
+        people.at[idx, 'dept'] = DEPT_ALIAS_MAP[raw_dept_upper]
+        
+    # Administrative department folding
+    admin_depts = {
+        'CURRICULUM OFFICE': 'Curriculum Office',
+        'DATA ANALYSIS CENTER': 'Data Analysis Center',
+        'FACULTY SERVICES AND ACCREDITATION': 'Faculty Services',
+        'GHUCCTS CLINICAL RESEARCH UNIT': 'GHUCCTS',
+        'GRANTS DIRECTOR': 'Office of Research',
+        'OFFICE OF FACULTY DEVELOPMENT': 'Office of Faculty Development'
+    }
+    if raw_dept_upper in admin_depts:
+        people.at[idx, 'division'] = admin_depts[raw_dept_upper]
+        people.at[idx, 'dept'] = "Dean's Office / COM Admin"
+        
+    if raw_dept_upper == 'PSYCHIATRY AND BEHAVIORAL SCIENCES':
+        people.at[idx, 'dept'] = 'Psychiatry & Behavioral Sciences'
+        
+    if raw_dept_upper == 'CSCD (SICKLE CELL RESEARCH CTR)':
+        people.at[idx, 'dept'] = 'Internal Medicine'
+        people.at[idx, 'division'] = 'Sickle Cell'
+        
+    if raw_dept_upper == 'CANCER CENTER':
+        people.at[idx, 'dept'] = 'Internal Medicine'
+        people.at[idx, 'division'] = 'Cancer Center'
+
     rank_str = str(people.at[idx, 'rank']).lower()
     current_pos_raw = str(people.at[idx, 'pos']).strip()
+    
+    # Fill rank gaps based on explicit user instruction for clinical tiers and complete titles
+    if not rank_str or rank_str in ['nan', 'none', 'unknown', '']:
+        full_title_scan = (current_pos_raw + " " + str(people.at[idx, 'admin_title'])).lower()
+        if 'associate professor' in full_title_scan or 'clinical associate' in full_title_scan:
+            people.at[idx, 'rank'] = 'Associate Professor'
+            rank_str = 'associate professor'
+        elif 'assistant professor' in full_title_scan or 'clinical assistant' in full_title_scan:
+            people.at[idx, 'rank'] = 'Assistant Professor'
+            rank_str = 'assistant professor'
+        elif 'instructor' in full_title_scan:
+            people.at[idx, 'rank'] = 'Instructor'
+            rank_str = 'instructor'
+        elif 'professor' in full_title_scan:
+            people.at[idx, 'rank'] = 'Professor'
+            rank_str = 'professor'
+            
+    # Student / Staff must be included as Ranks
+    if 'student' in current_pos_raw.lower():
+        people.at[idx, 'dept'] = 'Medical Students'
+        people.at[idx, 'division'] = ''
+        if not rank_str or rank_str in ['nan', 'none', 'unknown', '']:
+            people.at[idx, 'rank'] = 'Student'
+            rank_str = 'student'
+            
+    if 'staff' in current_pos_raw.lower():
+        if not rank_str or rank_str in ['nan', 'none', 'unknown', '']:
+            people.at[idx, 'rank'] = 'Staff'
+            rank_str = 'staff'
+            
+    # Extract Department information from Title or Position Data if missing
+    current_dept_val = str(people.at[idx, 'dept']).strip().lower()
+    if current_dept_val in ['nan', 'none', '', 'unknown']:
+        dept_keywords = {
+            'anatomy': 'Anatomy', 'biochemistry': 'Biochemistry & Molecular Biology',
+            'biostatistics': 'Biostatistics', 'family medicine': 'Community & Family Medicine',
+            'dermatology': 'Dermatology', 'internal medicine': 'Internal Medicine',
+            'microbiology': 'Microbiology', 'neurology': 'Neurology', 
+            'obstetrics': 'Obstetrics & Gynecology', 'ophthalmology': 'Ophthalmology',
+            'orthopedic': 'Orthopedic Surgery', 'pathology': 'Pathology',
+            'pediatrics': 'Pediatrics & Child Health', 'pharmacology': 'Pharmacology',
+            'physiology': 'Physiology & Biophysics', 'psychiatry': 'Psychiatry & Behavioral Sciences',
+            'radiation oncology': 'Radiation Oncology', 'radiology': 'Radiology', 'surgery': 'Surgery'
+        }
+        search_corpus = (current_pos_raw + " " + str(people.at[idx, 'admin_title'])).lower()
+        for kw, actual_dept in dept_keywords.items():
+            if kw in search_corpus:
+                people.at[idx, 'dept'] = actual_dept
+                break
     dept_clean = str(people.at[idx, 'dept']).strip().lower()
     
     clinical_depts = [
@@ -695,16 +886,63 @@ for idx, row in people.iterrows():
     # 5. INTELLIGENT CREDENTIAL INFERENCE 
     final_pos = str(people.at[idx, 'pos']).lower()
     current_degree = str(people.at[idx, 'degree']).strip()
+    em = str(people.at[idx, 'email']).lower()
+    t_rank = str(people.at[idx, 'rank']).lower()
     
+    # Smart Extrapolation rule for Clinical Titles
+    current_admin_title = str(people.at[idx, 'admin_title']).strip()
+    if ('clinical' in final_pos) and (current_admin_title in ['nan', 'none', '', 'unknown']):
+        if 'assistant professor' in t_rank:
+            people.at[idx, 'admin_title'] = 'Clinical Assistant Professor'
+        elif 'associate professor' in t_rank:
+            people.at[idx, 'admin_title'] = 'Clinical Associate Professor'
+        elif 'professor' == t_rank or 'professor' in t_rank and 'assistant' not in t_rank and 'associate' not in t_rank:
+            people.at[idx, 'admin_title'] = 'Clinical Professor'
+
+    # Rule: Bison = Student
+    if '@bison.howard.edu' in em and final_pos != 'staff':
+        people.at[idx, 'pos'] = 'Student'
+        final_pos = 'student'
+
+    # Rule: Post-docs and Research Associates
+    if 'post-doc' in t_rank or 'research associate' in t_rank:
+        people.at[idx, 'pos'] = 'Basic Science Faculty'
+        if not current_degree: people.at[idx, 'degree'] = 'PhD*'
+
+    # Rule: Resident
+    if 'resident' in t_rank:
+        if not current_degree: people.at[idx, 'degree'] = 'MD*'
+    
+    # Generic Professor/Faculty inference fallback
     if not current_degree and ('faculty' in final_pos or is_faculty_rank):
         if final_pos == 'clinical faculty' or dept_clean in clinical_depts:
-            people.at[idx, 'degree'] = 'MD'
+            people.at[idx, 'degree'] = 'MD*'
         else:
-            people.at[idx, 'degree'] = 'PhD'
+            people.at[idx, 'degree'] = 'PhD*'
+
+    # Email Inference fallback for MDs without titles
+    if not current_degree and '@huhosp.org' in em:
+        people.at[idx, 'degree'] = 'MD*'
 
 people['session_count'] = people['session_count'].astype(str)
-people['first_seen']    = people['first_seen'].dt.strftime('%Y-%m-%d')
-people['last_seen']     = people['last_seen'].dt.strftime('%Y-%m-%d')
+people['first_seen']    = people['first_seen'].dt.strftime('%Y-%m-%d').fillna('N/A')
+people['last_seen']     = people['last_seen'].dt.strftime('%Y-%m-%d').fillna('N/A')
+
+# Guarantee mathematically pure identities right before exporting
+people['name'] = people['name'].astype(str).apply(lambda x: ' '.join([word.capitalize() for word in x.split()]))
+people['name_canon_clean'] = people['name'].str.lower().str.strip()
+people = people.sort_values(by=['session_count', 'cumulative_minutes'], ascending=False)
+people = people.drop_duplicates(subset=['name_canon_clean'], keep='first').drop(columns=['name_canon_clean'])
+
+
+
+# ---- STRICT ENGAGEMENT THRESHOLD ----
+original_count = len(people)
+people['cumulative_minutes'] = pd.to_numeric(people['cumulative_minutes'], errors='coerce').fillna(0)
+people_baseline = people.copy()  # Save full org chart strictly for penetration KPI denominator
+people = people[people['cumulative_minutes'] >= 10]
+if original_count > len(people):
+    print(f"    ⏱️  Engagement Filter burned {original_count - len(people)} inactive profiles (< 10 cumulative mins).")
 
 # ---- GENERATE MISSING METADATA TO-DO LIST ----
 print("    📝  Generating missing_metadata_profiles.csv to-do list...")
@@ -732,6 +970,8 @@ if quarantined_names:
     print(f"    🚫  STRICT QUARANTINE: Amputating {len(quarantined_names)} unvetted profiles from UI payload.")
     people = people[~missing_mask]
     df = df[~df['name_n_canon'].isin(quarantined_names)]
+    session_events = session_events[~session_events['name_n_canon'].isin(quarantined_names)]
+    people_baseline = people_baseline[~people_baseline['name_n_canon'].isin(quarantined_names)]
 
 # ---- EXPORT ACCEPTED DIRECTORY ----
 # Export a clean, user-readable CSV of only the profiles that successfully survived quarantine
@@ -744,7 +984,14 @@ print(f"    ✅  Saved → accepted_directory_profiles.csv ({len(export_df)} ver
 alias_cols = ['name', 'name_n_canon', 'known_aliases', 'email', 'dept']
 alias_df = people[[c for c in alias_cols if c in people.columns]].copy()
 alias_df.to_csv(os.path.join(FOLDER, "accepted_members_aliases.csv"), index=False)
-print(f"    ✅  Saved → accepted_members_aliases.csv (Security Audit Trail)")
+# ---- BACK-PROPAGATE VETTED CREDENTIALS ----
+# Ensure all individual session events inherit the final human-vetted organizational mapping
+for col in ['dept', 'division', 'pos', 'rank', 'degree', 'admin_title']:
+    if col in people.columns:
+        # Create a fast lookup dictionary from the fully processed 'people' dataframe
+        vetted_map = people.set_index('name_n_canon')[col].to_dict()
+        session_events[col] = session_events['name_n_canon'].map(vetted_map).fillna(session_events.get(col, ''))
+
 # KPIs
 sessions_per_person = session_events.groupby('name_n_canon')['topic'].count()
 unique_sessions     = session_events.drop_duplicates(subset=['topic', 'date'])
@@ -772,31 +1019,100 @@ series_avg_v   = (series_total / sess_by_series).round(1)
 tl_df = (session_events.groupby(['date','topic','series'])
           .size().reset_index(name='n')
           .sort_values('date'))
-timeline = [{'label': f"{r['date'].strftime('%Y-%m')} · {r['topic'][:35]}",
-             'date':  r['date'].strftime('%Y-%m-%d'),
-             'n':     int(r['n']),
-             'series': str(r['series'])}
-            for _, r in tl_df.iterrows()]
+# --- EVENT METADATA INJECTION ---
+event_metadata_file = os.path.join(FOLDER, "event_metadata.csv")
+event_descriptions = {}
+if os.path.exists(event_metadata_file):
+    try:
+        emf = pd.read_csv(event_metadata_file)
+        if 'Event' in emf.columns and 'Description' in emf.columns:
+            for _, emrow in emf.iterrows():
+                event_descriptions[str(emrow['Event']).strip()] = str(emrow['Description']).strip()
+    except Exception as e:
+        print(f"    ⚠️  Failed to read event_metadata.csv: {e}")
 
 # Sessions list (for session bar chart)
 sessions_list = sorted(
     [{'label': f"{r['date'].strftime('%b %d')}·{r['topic'][:35]}",
       'series': r['series'], 'n': int(r['n']),
       'date_str': r['date'].strftime('%Y-%m-%d'),
-      'topic': r['topic']}
+      'topic': r['topic'],
+      'desc': event_descriptions.get(r['topic'].strip(), "")}
      for _, r in tl_df.iterrows()],
     key=lambda x: x['date_str']
 )
+
+# Build demographic slices per session
+session_comp = {}
+for _, row in session_events.iterrows():
+    # Only map unique people per session to prevent noise
+    dt = row['date'].strftime('%Y-%m-%d')
+    key = f"{row['topic']}_{dt}"
+    if key not in session_comp:
+        session_comp[key] = {'depts': {}, 'ranks': {}, 'positions': {}, 'divisions': {}, 'attendees': []}
+    
+    # We must deduplicate attendees WITHIN a session if they logged in twice
+    # 'session_events' is already mostly deduplicated per session, but to be safe:
+    person_id = row.get('name_n_canon', row.get('name_canon', str(_)))
+    if 'tracked' not in session_comp[key]:
+        session_comp[key]['tracked'] = set()
+    if person_id in session_comp[key]['tracked']:
+        continue
+    session_comp[key]['tracked'].add(person_id)
+
+    session_comp[key]['attendees'].append({
+        'name': str(row.get('name_canon', '')),
+        'dept': str(row.get('dept', '')),
+        'pos': str(row.get('pos', '')),
+        'rank': str(row.get('rank', '')),
+        'duration': float(row.get('duration', 0)) if pd.notna(row.get('duration')) else 0
+    })
+
+    d = str(row.get('dept', '')).strip() or 'Unknown'
+    session_comp[key]['depts'][d] = session_comp[key]['depts'].get(d, 0) + 1
+    
+    r = str(row.get('rank', '')).strip() or 'Unknown'
+    session_comp[key]['ranks'][r] = session_comp[key]['ranks'].get(r, 0) + 1
+    
+    p = str(row.get('pos', '')).strip() or 'Unknown'
+    session_comp[key]['positions'][p] = session_comp[key]['positions'].get(p, 0) + 1
+
+    div = str(row.get('division', '')).strip() or 'Unknown'
+    session_comp[key]['divisions'][div] = session_comp[key]['divisions'].get(div, 0) + 1
+
+# Cleanup 'tracked' sets so JSON serialization succeeds
+for k in session_comp:
+    if 'tracked' in session_comp[k]:
+        del session_comp[k]['tracked']
+    if 'attendees' in session_comp[k]:
+        session_comp[k]['attendees'].sort(key=lambda x: x['name'])
 
 # Sessions by series (for grouped chart)
 sessions_by_series = {}
 for _, row in tl_df.iterrows():
     s = row['series']
+    topic = row['topic']
+    dt = row['date'].strftime('%Y-%m-%d')
+    key = f"{topic}_{dt}"
+    
     if s not in sessions_by_series:
         sessions_by_series[s] = []
-    sessions_by_series[s].append({'label': row['topic'][:30],
-                                   'date': row['date'].strftime('%Y-%m-%d'),
-                                   'n': int(row['n'])})
+    sessions_by_series[s].append({
+        'label': row['topic'][:30],
+        'topic': row['topic'],
+        'desc': event_descriptions.get(row['topic'].strip(), ""),
+        'date': dt,
+        'n': int(row['n']),
+        'comp': session_comp.get(key, {'depts': {}, 'ranks': {}, 'positions': {}, 'divisions': {}})
+    })
+
+# Reconstruct timeline global with composition mapping
+timeline = [{'label': f"{r['date'].strftime('%Y-%m')} · {r['topic'][:35]}",
+             'date':  r['date'].strftime('%Y-%m-%d'),
+             'n':     int(r['n']),
+             'series': str(r['series']),
+             'comp': session_comp.get(f"{r['topic']}_{r['date'].strftime('%Y-%m-%d')}", {'depts': {}, 'ranks': {}, 'positions': {}, 'divisions': {}})}
+            for _, r in tl_df.iterrows()]
 
 # Dept / rank / pos / degree / ethnicity / gender
 def top_n(series_obj, n=12):
@@ -905,7 +1221,57 @@ for _, r in person_series_b.iterrows():
     if p not in person_series_dict: person_series_dict[p] = {}
     person_series_dict[p][s] = int(r['n'])
 
+person_dates_dict = {}
+for _, r in session_events.iterrows():
+    p = str(r['name_canon'])
+    if p not in person_dates_dict: person_dates_dict[p] = []
+    dt_str = r['date'].strftime('%Y-%m-%d') if hasattr(r['date'], 'strftime') else str(r['date'])
+    person_dates_dict[p].append({
+        'date': dt_str,
+        'topic': str(r['topic']),
+        'series': str(r['series']),
+        'duration': float(r['duration']) if pd.notna(r['duration']) else 0
+    })
+for p in person_dates_dict:
+    person_dates_dict[p].sort(key=lambda x: x['date'], reverse=True)
+
+# Series Distribution Matrices (Position & Rank) -> Unique Attendees only!
+series_unique_attendees = session_events.drop_duplicates(subset=['name_canon', 'series'])
+
+series_distribution = {}
+series_pos_b = series_unique_attendees.groupby(['series', 'pos']).size().reset_index(name='n')
+for _, r in series_pos_b.iterrows():
+    s, pos_val = str(r['series']), str(r['pos']) or 'Unknown'
+    if s not in series_distribution: series_distribution[s] = {'positions': {}, 'ranks': {}, 'depts': {}, 'divisions': {}}
+    series_distribution[s]['positions'][pos_val] = int(r['n'])
+
+series_rank_b = series_unique_attendees.groupby(['series', 'rank']).size().reset_index(name='n')
+for _, r in series_rank_b.iterrows():
+    s, rank_val = str(r['series']), str(r['rank']) or 'Unknown'
+    if s not in series_distribution: series_distribution[s] = {'positions': {}, 'ranks': {}, 'depts': {}, 'divisions': {}}
+    series_distribution[s]['ranks'][rank_val] = int(r['n'])
+
+series_dept_b = series_unique_attendees.groupby(['series', 'dept']).size().reset_index(name='n')
+for _, r in series_dept_b.iterrows():
+    s, dept_val = str(r['series']), str(r['dept']) or 'Unknown'
+    if s not in series_distribution: series_distribution[s] = {'positions': {}, 'ranks': {}, 'depts': {}, 'divisions': {}}
+    series_distribution[s]['depts'][dept_val] = int(r['n'])
+
+series_div_b = series_unique_attendees.groupby(['series', 'division']).size().reset_index(name='n')
+for _, r in series_div_b.iterrows():
+    s, div_val = str(r['series']), str(r['division']) or 'Unknown'
+    if s not in series_distribution: series_distribution[s] = {'positions': {}, 'ranks': {}, 'depts': {}, 'divisions': {}}
+    series_distribution[s]['divisions'][div_val] = int(r['n'])
+
+baseline_totals = {
+    'positions': {str(k) or 'Unknown': int(v) for k, v in people_baseline['pos'].value_counts().items()},
+    'ranks':     {str(k) or 'Unknown': int(v) for k, v in people_baseline['rank'].value_counts().items()},
+    'depts':     {str(k) or 'Unknown': int(v) for k, v in people_baseline['dept'].value_counts().items()},
+    'divisions': {str(k) or 'Unknown': int(v) for k, v in people_baseline['division'].value_counts().items()}
+}
+
 payload = {
+    'series_distribution': series_distribution,
     'kpis':     kpis,
     'series':   {'labels': series_total.index.tolist(),
                  'values': [int(v) for v in series_total.values]},
@@ -934,6 +1300,7 @@ payload = {
     'person_list':        person_list,
     'dept_series':        dept_series_dict,
     'person_series':      person_series_dict,
+    'person_dates':       person_dates_dict,
 }
 
 with open(PAYLOAD, 'w') as f:
@@ -963,6 +1330,13 @@ else:
                         f'color:{col};border:1px solid {col}44">{s}</span>')
         return ''.join(tags)
 
+    def format_name_for_ui(n):
+        n = re.sub(r'^Dr\.?\s+', '', str(n).strip(), flags=re.IGNORECASE).strip()
+        parts = n.split(' ')
+        if len(parts) >= 2:
+            return f"{parts[-1]}, " + " ".join(parts[:-1])
+        return n
+
     def dir_rows():
         rows = []
         for p in D['table']:
@@ -971,20 +1345,23 @@ else:
             sfx_cell = f'<span class="suffix-tag">{sfx}</span>' if sfx else ''
             div = p.get('division', '')
             div_cell = f'<span class="division-tag">{div}</span>' if div else ''
+            ui_name = format_name_for_ui(p["name"])
+            link = f'<a href="#" onclick="drilldownToPerson(\\\'{p["name"]}\\\'); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1)">{ui_name}</a>'
+            
             rows.append(
                 f'<tr data-dept="{p.get("dept","")}" data-division="{div}" '
                 f'data-pos="{p.get("pos","")}" '
                 f'data-rank="{p.get("rank","")}" data-sessions="{p.get("session_count",0)}">\n'
-                f'  <td><span class="name-cell">{p["name"]}</span>{deg}</td>\n'
+                f'  <td>{link}</td>\n'
+                f'  <td><span class="deg-inline" style="margin-left:0">{p.get("degree","")}</span></td>\n'
                 f'  <td>{p.get("admin_title","")}</td>\n'
+                f'  <td>{p.get("pos","")}</td>\n'
+                f'  <td>{p.get("rank","")}</td>\n'
                 f'  <td>{p.get("dept","")}</td>\n'
                 f'  <td>{div_cell}</td>\n'
-                f'  <td>{p.get("rank","")}</td>\n'
-                f'  <td>{p.get("pos","")}</td>\n'
                 f'  <td>{p.get("email","")}</td>\n'
-                f'  <td class="num">{p.get("cumulative_minutes","")}</td>\n'
                 f'  <td class="num">{p.get("session_count",0)}</td>\n'
-                f'  <td>{series_tags(p.get("series",""))}</td>\n'
+                f'  <td class="num">{p.get("cumulative_minutes","")}</td>\n'
                 f'  <td>{p.get("first_seen","")[:7]}</td>\n'
                 f'  <td>{p.get("last_seen","")[:7]}</td>\n'
                 f'</tr>'
@@ -996,10 +1373,13 @@ else:
         top10 = sorted_p[:10]
         rows = []
         for i, p in enumerate(top10):
+            ui_name = format_name_for_ui(p["name"])
+            link = f'<a href="#" onclick="drilldownToPerson(\\\'{p["name"]}\\\'); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1)">{ui_name}</a>'
+            
             rows.append(
                 f'<tr>\n'
                 f'  <td style="font-weight:700; color:var(--c1d)">#{i+1}</td>\n'
-                f'  <td class="name-cell">{p["name"]}</td>\n'
+                f'  <td>{link}</td>\n'
                 f'  <td>{p.get("dept","")}</td>\n'
                 f'  <td class="num" style="color:var(--c2d); font-size:1.1rem">{p.get("session_count",0)}</td>\n'
                 f'  <td class="num">{p.get("cumulative_minutes",0)}</td>\n'
@@ -1042,6 +1422,8 @@ else:
         '__RANK_OPTS__':          '\n'.join(['<option value="">All Ranks</option>'] +
                                   [f'<option value="{r}">{r}</option>'
                                    for r in sorted(D['rank_list']) if r]),
+        '__POS_OPTS__':           '\n'.join([f'<option value="{p}">{p}</option>'
+                                   for p in sorted(D['positions'].keys()) if p]),
         '__SERIES_AVG_JSON__':    json.dumps(D['series_avg']['labels']),
         '__SERIES_AVG_DATA__':    json.dumps(D['series_avg']['values']),
         '__SERIES_AVG_SESS__':    json.dumps(D['series_avg']['sessions']),
@@ -1059,6 +1441,9 @@ else:
         '__TIMELINE_SERIES__':    json.dumps([s.get('series', '') for s in D['timeline']]),
         '__DEPT_SERIES_MAP__':    json.dumps(D.get('dept_series', {})),
         '__PERSON_SERIES_MAP__':  json.dumps(D.get('person_series', {})),
+        '__PERSON_DATES_MAP__':   json.dumps(D.get('person_dates', {})),
+        '__SERIES_DISTRIBUTION__':json.dumps(D.get('series_distribution', {})),
+        '__BASELINE_TOTALS__':    json.dumps(baseline_totals),
     }
 
     total_mins = sum([int(p.get('cumulative_minutes', 0)) for p in D['table']])
