@@ -4811,7 +4811,7 @@ function initRoster(){
     }
     options.sort((a,b) => b.date.localeCompare(a.date));
     options.forEach(opt => {
-        sel.innerHTML += `<option value="${opt.key}">${Math.max(0, opt.text.indexOf('undefined') > -1 ? opt.text.replace('undefined','').trim() : opt.text)}</option>`;
+        sel.innerHTML += `<option value="${opt.key}">${opt.text}</option>`;
     });
 }
 
@@ -5493,7 +5493,7 @@ function downloadChartImage(cid){
   if(!canvas)return;
   const chart=Chart.getChart(cid);
   let prefix = cid;
-  if(chart && chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.display){
+  if(chart && chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.text){
       prefix = chart.config.options.plugins.title.text.replace(/[^a-zA-Z0-9]/g, '_');
   }
   const link=document.createElement('a');
@@ -5577,7 +5577,7 @@ function downloadChartCSV(cid){
   if(!csv) return;
   const chart=Chart.getChart(cid);
   let prefix = cid;
-  if(chart && chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.display){
+  if(chart && chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.text){
       prefix = chart.config.options.plugins.title.text.replace(/[^a-zA-Z0-9]/g, '_');
   }
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
