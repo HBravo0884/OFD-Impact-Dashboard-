@@ -1378,11 +1378,16 @@ else:
             ui_name = format_name_for_ui(p["name"])
             link = f'<a href="#" onclick="drilldownToPerson(\\\'{p["name"]}\\\'); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1)">{ui_name}</a>'
             
+            safe_name = p["name"].replace("'", r"\'")
+            safe_dept = p.get("dept", "").replace("'", r"\'")
+            safe_rank = p.get("rank", "").replace("'", r"\'")
+            edit_pencil = f'<span title="Edit Profile" style="cursor:pointer;font-size:1.1rem;color:#ccc;margin-right:6px;" onmouseover="this.style.color=\\\'#097C87\\\'" onmouseout="this.style.color=\\\'#ccc\\\'" onclick="openProfileEditor(\\\'{safe_name}\\\', \\\'{safe_name}\\\', \\\'{safe_dept}\\\', \\\'{safe_rank}\\\')">✎</span>'
+
             rows.append(
                 f'<tr data-dept="{p.get("dept","")}" data-division="{div}" '
                 f'data-pos="{p.get("pos","")}" '
                 f'data-rank="{p.get("rank","")}" data-sessions="{p.get("session_count",0)}">\n'
-                f'  <td>{link}</td>\n'
+                f'  <td style="display:flex;align-items:center;">{edit_pencil}{link}</td>\n'
                 f'  <td><span class="deg-inline" style="margin-left:0">{p.get("degree","")}</span></td>\n'
                 f'  <td>{p.get("admin_title","")}</td>\n'
                 f'  <td>{p.get("pos","")}</td>\n'

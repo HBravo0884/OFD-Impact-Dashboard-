@@ -165,8 +165,50 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
       <p style="margin:0; font-size:0.85rem; color:#666;">The Strict Quarantine area. If an attendee is here, they have been amputated from the UI because the system couldn't verify their credentials. Copy their rows into the overrides CSV to restore them.</p>
     </div>
     
-    <div style="margin-top:25px; text-align:right;">
-      <button onclick="document.getElementById('dataModal').style.display='none'" style="background:#eee; color:#333; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600;">Close</button>
+    <div style="margin-top:25px; display:flex; justify-content:space-between; align-items:center;">
+      <button id="exportEditsBtn" onclick="exportPendingEdits()" style="background:#097C87; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; display:none;">Download Pending Edits (0)</button>
+      <button onclick="document.getElementById('dataModal').style.display='none'" style="background:#eee; color:#333; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600; margin-left:auto;">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Edit Modal -->
+<div id="profileEditModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:30px; border-radius:12px; max-width:450px; width:90%; position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+    <button onclick="document.getElementById('profileEditModal').style.display='none'" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#888;">&times;</button>
+    <h2 style="margin-top:0; color:#097C87; margin-bottom:5px;">Edit Profile</h2>
+    <p style="font-size:0.9rem; color:#666; margin-bottom:20px;">Edits are stored in your browser. Use God Mode to download them later.</p>
+    
+    <input type="hidden" id="editCanonName">
+    
+    <div style="margin-bottom:12px;">
+      <label style="display:block; font-size:0.85rem; font-weight:600; color:#555; margin-bottom:4px;">Display Name</label>
+      <input type="text" id="editDisplayName" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+    </div>
+    
+    <div style="display:flex; gap:10px; margin-bottom:12px;">
+      <div style="flex:1;">
+        <label style="display:block; font-size:0.85rem; font-weight:600; color:#555; margin-bottom:4px;">Department</label>
+        <input type="text" id="editDept" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+      </div>
+      <div style="flex:1;">
+        <label style="display:block; font-size:0.85rem; font-weight:600; color:#555; margin-bottom:4px;">Rank</label>
+        <input type="text" id="editRank" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+      </div>
+    </div>
+
+    <div style="margin-bottom:15px;">
+      <label style="display:block; font-size:0.85rem; font-weight:600; color:#555; margin-bottom:4px;">Merge Target (Canonical Name if alias)</label>
+      <input type="text" id="editMergeTarget" placeholder="e.g. John Doe" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+    </div>
+    
+    <div style="margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+      <input type="checkbox" id="editDelete" style="width:16px; height:16px; cursor:pointer;">
+      <label for="editDelete" style="font-size:0.9rem; color:#e11d48; font-weight:600; cursor:pointer;">Amputate Profile (Mark for Deletion)</label>
+    </div>
+
+    <div style="text-align:right;">
+      <button onclick="saveProfileEdit()" style="background:#097C87; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; width:100%;">Save Changes Locally</button>
     </div>
   </div>
 </div>
@@ -594,6 +636,8 @@ function goToDirectoryName(name) {
 }
 
 let rosterMap = {};
+let activeProfileEdits = {}; // memory cache for in-app directory edits
+
 function initRoster(){
     const sel = document.getElementById('rosterEventSelect');
     if(!sel) return;
@@ -649,12 +693,29 @@ function updateRoster(){
     if(expBtn) expBtn.style.display = 'inline-flex';
     const attendees = rosterMap[key];
     const rows = attendees.map(a => {
-        const uin = formatNameForUI(a.name);
+        let uin = a.name;
+        let cDept = a.dept || '';
+        let cRank = a.rank || '';
+        let cPos = a.pos || '';
+        if(activeProfileEdits[a.name]) {
+            const up = activeProfileEdits[a.name];
+            if(up.name) uin = up.name;
+            if(up.dept) cDept = up.dept;
+            if(up.rank) cRank = up.rank;
+        }
+        uin = formatNameForUI(uin);
+        
+        let ampuStyle = '';
+        if(activeProfileEdits[a.name] && activeProfileEdits[a.name].action_delete) ampuStyle = 'text-decoration:line-through;color:red;';
+
         return `<tr>
-            <td><a href="#" data-name="${a.name}" onclick="goToDirectoryName(this.getAttribute('data-name')); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1)">${uin}</a></td>
-            <td>${a.rank || ''}</td>
-            <td>${a.pos || ''}</td>
-            <td>${a.dept || ''}</td>
+            <td style="display:flex;align-items:center;gap:6px;">
+              <span title="Edit Profile" style="cursor:pointer;font-size:1.1rem;color:#ccc;" onmouseover="this.style.color='#097C87'" onmouseout="this.style.color='#ccc'" onclick="openProfileEditor('${a.name}', '${a.name.replace(/'/g,"\\'")}', '${cDept.replace(/'/g,"\\'")}', '${cRank.replace(/'/g,"\\'")}')">✎</span>
+              <a href="#" data-name="${a.name}" onclick="goToDirectoryName(this.getAttribute('data-name')); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1);${ampuStyle}">${uin}</a>
+            </td>
+            <td>${cRank}</td>
+            <td>${cPos}</td>
+            <td>${cDept}</td>
             <td class="num">${a.duration || 0}</td>
         </tr>`;
     });
@@ -1475,6 +1536,104 @@ function downloadPersonDatesCSV() {
     link.click();
     document.body.removeChild(link);
 }
+
+// ── DIRECTORY EDIT ENGINE ──────────────────────────────────────────────────
+function openProfileEditor(canonName, currentName, currentDept, currentRank) {
+    document.getElementById('editCanonName').value = canonName;
+    document.getElementById('editDisplayName').value = currentName === canonName ? formatNameForUI(canonName) : currentName;
+    document.getElementById('editDept').value = currentDept || '';
+    document.getElementById('editRank').value = currentRank || '';
+    document.getElementById('editMergeTarget').value = '';
+    document.getElementById('editDelete').checked = false;
+    
+    if (activeProfileEdits[canonName]) {
+        const ed = activeProfileEdits[canonName];
+        if(ed.name) document.getElementById('editDisplayName').value = ed.name;
+        if(ed.dept) document.getElementById('editDept').value = ed.dept;
+        if(ed.rank) document.getElementById('editRank').value = ed.rank;
+        if(ed.merge_target) document.getElementById('editMergeTarget').value = ed.merge_target;
+        if(ed.action_delete) document.getElementById('editDelete').checked = true;
+    }
+    
+    document.getElementById('profileEditModal').style.display = 'flex';
+}
+
+function refreshDirectoryUI() {
+    // Update the live DOM for directory table matching edits
+    document.querySelectorAll('#dirBody tr').forEach(tr => {
+        const aElem = tr.querySelector('a.name-cell');
+        if (!aElem) return;
+        const canonName = aElem.getAttribute('data-name');
+        if(activeProfileEdits[canonName]) {
+            const ed = activeProfileEdits[canonName];
+            if(ed.name) aElem.textContent = formatNameForUI(ed.name);
+            if(ed.rank) { tr.cells[4].textContent = ed.rank; tr.dataset.rank = ed.rank; }
+            if(ed.dept) { tr.cells[5].textContent = ed.dept; tr.dataset.dept = ed.dept; }
+            if(ed.action_delete) {
+                aElem.style.textDecoration = 'line-through';
+                aElem.style.color = 'red';
+            } else {
+                aElem.style.textDecoration = 'none';
+                aElem.style.color = 'var(--c1d)';
+                aElem.style.borderBottom = '1px dashed var(--c1)';
+            }
+        }
+    });
+}
+
+function saveProfileEdit() {
+    const canon = document.getElementById('editCanonName').value;
+    activeProfileEdits[canon] = {
+        name: document.getElementById('editDisplayName').value.trim(),
+        dept: document.getElementById('editDept').value.trim(),
+        rank: document.getElementById('editRank').value.trim(),
+        merge_target: document.getElementById('editMergeTarget').value.trim(),
+        action_delete: document.getElementById('editDelete').checked ? "X" : ""
+    };
+    
+    document.getElementById('profileEditModal').style.display = 'none';
+    
+    // Update Export button count
+    const expBtn = document.getElementById('exportEditsBtn');
+    const ct = Object.keys(activeProfileEdits).length;
+    if(ct > 0) {
+        expBtn.textContent = `Download Pending Edits (${ct})`;
+        expBtn.style.display = 'inline-block';
+    }
+    
+    // Visually refresh roster and directory
+    updateRoster();
+    refreshDirectoryUI();
+}
+
+function exportPendingEdits() {
+    const keys = Object.keys(activeProfileEdits);
+    if(keys.length === 0) return alert("No pending edits to export.");
+    
+    let csv = "name_n_canon,name,dept,rank,action_delete,merge_target\n";
+    keys.forEach(k => {
+        const e = activeProfileEdits[k];
+        csv += `"${k}","${e.name}","${e.dept}","${e.rank}","${e.action_delete}","${e.merge_target}"\n`;
+    });
+    
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const link=document.createElement('a');
+    link.setAttribute('href',URL.createObjectURL(blob));
+    link.setAttribute('download','directory_overrides_UPDATE.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Clear cache after export
+    if(confirm("Download triggered. Clear pending edits from browser memory?")) {
+        activeProfileEdits = {};
+        document.getElementById('exportEditsBtn').style.display = 'none';
+        updateRoster();
+        // Since we clear edits, reload page to restore original state or just trigger refresh
+        window.location.reload();
+    }
+}
+
 window.addEventListener('DOMContentLoaded',()=>{sortDir(6);updateDirCount();addExportButtons();});
 </script>
 </body>
