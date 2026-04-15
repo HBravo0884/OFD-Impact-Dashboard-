@@ -138,11 +138,11 @@
 
             <div id="adminTabArchive" style="display:none; text-align:left;">
                 <h3 style="margin-bottom:15px; color:var(--dark);">Past Events Database</h3>
-                <p style="font-size:0.95rem; color:#666; margin-bottom:15px;">Downloads historical uncertified attendance rosters merged with their Directory profiles. Suitable for printing/PDF.</p>
-                <select id="archiveEventSelect" style="font-size:1.1rem; padding:12px; margin-bottom:15px;">
+                <p style="font-size:0.95rem; color:#666; margin-bottom:15px;">Hold Cmd (Mac) or Ctrl (Windows) to select multiple past events. Exports a single paginated HTML document suitable for batch printing/PDFs.</p>
+                <select id="archiveEventSelect" multiple style="font-size:1.1rem; padding:12px; margin-bottom:15px; min-height: 200px; width: 100%;">
                     <option value="">Loading Past Events...</option>
                 </select>
-                <button class="btn btn-primary" style="width:100%; margin-bottom:15px;" onclick="downloadPastEventArchive()">🖨️ Export Official Sign-in Sheet</button>
+                <button class="btn btn-primary" style="width:100%; margin-bottom:15px;" onclick="downloadPastEventArchive()">🖨️ Export Official Sign-in Sheet(s)</button>
             </div>
         </div>
     </div>
@@ -561,7 +561,7 @@
         document.body.removeChild(link);
         
         // Prep HTML Audit Log mimicking the official CME physical sheet
-        let auditHtml = generatePrintableAuditLog(config.eventName, config.eventDate, config.duration, checkins);
+        let auditHtml = generatePrintableAuditLog(config.eventName, config.eventDate, config.duration, checkins, true);
 
         // Prep JSON Tracking Log for ML
         const jsonData = JSON.stringify({ event: config, checkins: checkins, anonymous_evaluations: evaluations }, null, 2);
@@ -619,8 +619,11 @@
         }
     }
 
-    function generatePrintableAuditLog(eventName, eventDate, duration, attendeesArray) {
-        let auditHtml = `<html><head><meta charset="utf-8"><title>Official CME Sign-In Sheet</title><style>
+    function generatePrintableAuditLog(eventName, eventDate, duration, attendeesArray, includeHeaders = true) {
+        let auditHtml = "";
+        
+        if (includeHeaders) {
+            auditHtml += `<html><head><meta charset="utf-8"><title>Official CME Sign-In Sheet</title><style>
             body { font-family: "Times New Roman", Times, serif; font-size: 11pt; margin: 0; padding: 20px; color: #000; }
             .form-header { text-align: center; margin-bottom: 20px; line-height: 1.3; display: flex; align-items: center; justify-content: center; gap: 20px;}
             .form-title { font-weight: bold; font-size: 12pt; margin-top: 5px; }
@@ -631,13 +634,16 @@
             img.sig { max-height: 45px; display: block; margin: 0 auto; width: auto; mix-blend-mode: multiply; }
             .section-title { font-weight: bold; text-align: center; background: #eee; padding: 8px; border: 2px solid #000; border-bottom: none; text-transform: uppercase; font-size: 10pt; margin-top: 30px;}
             .row-clinician { background-color: #f0fdf4; } /* Light green hint */
+            .page-break { page-break-after: always; display: block; height: 0; padding: 0; margin: 0; border: none; }
             @media print {
-                body { padding: 0; }
+                body { padding: 0; margin: 0; }
                 @page { size: portrait; margin: 10mm; }
                 .section-title { -webkit-print-color-adjust: exact; background: #eee; }
                 .row-clinician { -webkit-print-color-adjust: exact; background-color: #f0fdf4 !important; }
+                .page-break { margin:0; padding:0; height:0;}
             }
             </style></head><body>`;
+        }
             
         const logoUrl = "https://exquisite-puppy-429a19.netlify.app/hucm_logo.png";
         
@@ -713,8 +719,11 @@
         auditHtml += `</table>
         <div style="margin-top: 20px; font-size: 8pt; text-align: justify;">
             Howard University College of Medicine, Office of Continuing Medical Education (CME), is accredited by the Accreditation Council for Continuing Medical Education (ACCME) to provide continuing medical education for physicians. If all prior requirements for this session have been met by the department, The Office of CME designates this educational activity for a maximum of (1) AMA PRA Category 1 Credits™. Physicians should only claim credit commensurate with the extent to their participation in the activity.
-        </div>
-        </body></html>`;
+        </div>`;
+        
+        if (includeHeaders) {
+            auditHtml += `</body></html>`;
+        }
         
         return auditHtml;
     }
@@ -727,7 +736,7 @@
         sel.innerHTML = '<option value="">Loading final_payload.json from server...</option>';
         fetch('final_payload.json').then(r => r.json()).then(data => {
             completePayloadCache = data.sessions_by_series;
-            sel.innerHTML = '<option value="">Select a Historical Session...</option>';
+            sel.innerHTML = '';
             
             let allSessions = [];
             for (let sType in data.sessions_by_series) {
@@ -755,20 +764,48 @@
 
     function downloadPastEventArchive() {
         const sel = document.getElementById('archiveEventSelect');
-        if(!sel.value) return alert("Select a session first.");
+        const options = Array.from(sel.selectedOptions);
+        if(options.length === 0) return alert("Select at least one session using Cmd/Ctrl+Click.");
         
-        const opt = sel.options[sel.selectedIndex];
-        const s = JSON.parse(opt.dataset.json);
+        let finalHtml = `<html><head><meta charset="utf-8"><title>Official CME Sign-In Sheet</title><style>
+            body { font-family: "Times New Roman", Times, serif; font-size: 11pt; margin: 0; padding: 20px; color: #000; }
+            .form-header { text-align: center; margin-bottom: 20px; line-height: 1.3; display: flex; align-items: center; justify-content: center; gap: 20px;}
+            .form-title { font-weight: bold; font-size: 12pt; margin-top: 5px; }
+            table { width: 100%; border-collapse: collapse; border: 2px solid #000; margin-top: 0; }
+            th, td { border: 1px solid #000; padding: 6px 8px; text-align: center; vertical-align: middle; }
+            th { font-weight: bold; font-size: 10pt; background: #fff; text-transform: uppercase; }
+            img.logo { width: 80px; height: 80px; mix-blend-mode: multiply; }
+            img.sig { max-height: 45px; display: block; margin: 0 auto; width: auto; mix-blend-mode: multiply; }
+            .section-title { font-weight: bold; text-align: center; background: #eee; padding: 8px; border: 2px solid #000; border-bottom: none; text-transform: uppercase; font-size: 10pt; margin-top: 30px;}
+            .row-clinician { background-color: #f0fdf4; } 
+            .page-break { page-break-after: always; display: block; height: 0; padding: 0; margin: 0; border: none; }
+            @media print {
+                body { padding: 0; margin: 0; }
+                @page { size: portrait; margin: 10mm; }
+                .section-title { -webkit-print-color-adjust: exact; background: #eee; }
+                .row-clinician { -webkit-print-color-adjust: exact; background-color: #f0fdf4 !important; }
+                .page-break { margin:0; padding:0; height:0;}
+            }
+            </style></head><body>`;
+            
+        options.forEach((opt, idx) => {
+            const s = JSON.parse(opt.dataset.json);
+            const attendees = s.comp && s.comp.attendees ? s.comp.attendees : [];
+            let block = generatePrintableAuditLog(s.topic, s.date, s.duration, attendees, false);
+            finalHtml += block;
+            if(idx < options.length - 1) {
+                finalHtml += `<div class="page-break"></div>`;
+            }
+        });
         
-        const attendees = s.comp && s.comp.attendees ? s.comp.attendees : [];
-        if(attendees.length === 0) return alert("No attendees found for this session.");
+        finalHtml += `</body></html>`;
         
-        let auditHtml = generatePrintableAuditLog(s.topic, s.date, s.duration, attendees);
+        const filename = options.length > 1 ? `PastEvents_AuditLog_Batch_Export_${new Date().getTime()}.html` : `PastEvent_AuditLog_${(JSON.parse(options[0].dataset.json).topic||'Event').replace(/[^a-zA-Z0-9]/g, '_')}.html`;
         
-        const htmlDataURI = "data:text/html;charset=utf-8," + encodeURIComponent(auditHtml);
+        const htmlDataURI = "data:text/html;charset=utf-8," + encodeURIComponent(finalHtml);
         const hlink = document.createElement("a");
         hlink.href = htmlDataURI;
-        hlink.download = `PastEvent_AuditLog_${(s.topic||'Event').replace(/[^a-zA-Z0-9]/g, '_')}.html`;
+        hlink.download = filename;
         document.body.appendChild(hlink); hlink.click(); document.body.removeChild(hlink);
     }
 
