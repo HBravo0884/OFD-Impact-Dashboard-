@@ -199,7 +199,10 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
 
     <div style="margin-bottom:15px;">
       <label style="display:block; font-size:0.85rem; font-weight:600; color:#555; margin-bottom:4px;">Merge Target (Canonical Name if alias)</label>
-      <input type="text" id="editMergeTarget" placeholder="e.g. John Doe" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+      <input type="text" id="editMergeTarget" list="canonicalNamesList" placeholder="e.g. John Doe, or select from list..." style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+      <datalist id="canonicalNamesList">
+        __PERSON_OPTS__
+      </datalist>
     </div>
     
     <div style="margin-bottom:20px; display:flex; align-items:center; gap:8px;">
