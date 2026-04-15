@@ -189,17 +189,50 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
     <div style="display:flex; gap:10px; margin-bottom:12px;">
       <div style="flex:1;">
         <label style="display:block; font-size:0.85rem; font-weight:600; color:#555; margin-bottom:4px;">Department</label>
-        <input type="text" id="editDept" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+        <input type="text" id="editDept" list="deptList" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+        <datalist id="deptList">
+          <option value="">All Departments</option>
+<option value="Anatomy">Anatomy</option>
+<option value="Biochemistry & Molecular Biology">Biochemistry & Molecular Biology</option>
+<option value="Biostatistics">Biostatistics</option>
+<option value="Community & Family Medicine">Community & Family Medicine</option>
+<option value="Dean's Office / COM Admin">Dean's Office / COM Admin</option>
+<option value="Dermatology">Dermatology</option>
+<option value="External / Non-HUCM">External / Non-HUCM</option>
+<option value="Internal Medicine">Internal Medicine</option>
+<option value="Medical Students">Medical Students</option>
+<option value="Microbiology">Microbiology</option>
+<option value="Neurology">Neurology</option>
+<option value="Obstetrics & Gynecology">Obstetrics & Gynecology</option>
+<option value="Ophthalmology">Ophthalmology</option>
+<option value="Orthopedic Surgery">Orthopedic Surgery</option>
+<option value="Pathology">Pathology</option>
+<option value="Pediatrics & Child Health">Pediatrics & Child Health</option>
+<option value="Pharmacology">Pharmacology</option>
+<option value="Physiology & Biophysics">Physiology & Biophysics</option>
+<option value="Psychiatry & Behavioral Sciences">Psychiatry & Behavioral Sciences</option>
+<option value="Radiation Oncology">Radiation Oncology</option>
+<option value="Radiology">Radiology</option>
+<option value="Surgery">Surgery</option>
+        </datalist>
       </div>
       <div style="flex:1;">
         <label style="display:block; font-size:0.85rem; font-weight:600; color:#555; margin-bottom:4px;">Rank</label>
-        <input type="text" id="editRank" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+        <input type="text" id="editRank" list="rankList" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+        <datalist id="rankList">
+          <option value="Instructor">Instructor</option>
+          <option value="Assistant Professor">Assistant Professor</option>
+          <option value="Associate Professor">Associate Professor</option>
+          <option value="Professor">Professor</option>
+          <option value="Staff">Staff</option>
+        </datalist>
       </div>
     </div>
 
     <div style="margin-bottom:15px;">
       <label style="display:block; font-size:0.85rem; font-weight:600; color:#555; margin-bottom:4px;">Merge Target (Canonical Name if alias)</label>
       <input type="text" id="editMergeTarget" list="canonicalNamesList" placeholder="e.g. John Doe, or select from list..." style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+      <p style="font-size:0.75rem; color:#888; margin-top:6px; margin-bottom:0; line-height:1.4;"><strong>Note:</strong> Applying a Merge Target will permanently link this alias. All past & future Zoom events bearing this alias will be attributed to the canonical profile across all charts and audits.</p>
       <datalist id="canonicalNamesList">
         <option value="">Search or Select Attendee...</option>
 <option value="Muneer Abbas">Abbas, Muneer, Ph.D.</option>
