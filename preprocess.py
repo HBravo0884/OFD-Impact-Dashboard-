@@ -581,6 +581,40 @@ valid_sessions = session_counts[session_counts['count'] >= 5]
 df = df.merge(valid_sessions[['topic', 'date']], on=['topic', 'date'], how='inner')
 print(f"    🗑️  Filtered ghost sessions (< 5 participants). Clean records: {len(df)} (Dropped: {original_len - len(df)})")
 
+# ---- AUTO-SWALLOW IN-APP EDITS ----
+update_files = glob.glob(os.path.join(FOLDER, "directory_overrides_UPDATE*.csv"))
+if update_files:
+    print(f"\n    📥  Auto-swallowing {len(update_files)} new in-app edit files...")
+    if os.path.exists(OVERRIDES):
+        overrides_df = pd.read_csv(OVERRIDES, dtype=str).fillna("")
+    else:
+        overrides_df = pd.DataFrame(columns=["name_n_canon", "name", "email", "dept", "division", "rank", "degree", "pos", "admin_title", "gender", "ethnicity", "sessions", "first_seen", "last_seen", "action_delete", "merge_target"])
+    overrides_df = overrides_df.set_index("name_n_canon")
+    
+    for f in update_files:
+        try:
+            new_df = pd.read_csv(f, dtype=str).fillna("")
+            for _, row in new_df.iterrows():
+                canon = str(row["name_n_canon"]).strip()
+                if not canon: continue
+                
+                if canon in overrides_df.index:
+                    for col in ["name", "dept", "rank", "action_delete", "merge_target"]:
+                        overrides_df.at[canon, col] = row[col]
+                else:
+                    new_series = pd.Series("", index=overrides_df.columns)
+                    for col in ["name", "dept", "rank", "action_delete", "merge_target"]:
+                        new_series[col] = row[col]
+                    overrides_df.loc[canon] = new_series
+            os.remove(f)
+            print(f"        ✅  Absorbed {len(new_df)} edits from {os.path.basename(f)}")
+        except Exception as e:
+            print(f"        ❌  Failed to read {f}: {e}")
+            
+    overrides_df.reset_index(inplace=True)
+    overrides_df.to_csv(OVERRIDES, index=False)
+    print(f"    🧹  Master overrides updated. Total records globally: {len(overrides_df)}.\n")
+
 overrides = {}
 if os.path.exists(OVERRIDES):
     ov = pd.read_csv(OVERRIDES, dtype=str).fillna('')
