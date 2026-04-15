@@ -5220,7 +5220,7 @@ function updateRoster(){
 
         return `<tr>
             <td style="display:flex;align-items:center;gap:6px;">
-              <span title="Edit Profile" style="cursor:pointer;font-size:1.1rem;color:#ccc;" onmouseover="this.style.color='#097C87'" onmouseout="this.style.color='#ccc'" onclick="openProfileEditor('${a.name}', '${a.name.replace(/'/g,"\\'")}', '${cDept.replace(/'/g,"\\'")}', '${cRank.replace(/'/g,"\\'")}')">✎</span>
+              <span title="Edit Profile" style="cursor:pointer;font-size:1.1rem;color:#ccc;" onmouseover="this.style.color='#097C87'" onmouseout="this.style.color='#ccc'" onclick="openProfileEditor('${a.name.replace(/'/g, "&#39;")}', '${a.name.replace(/'/g, "&#39;")}', '${cDept.replace(/'/g, "&#39;")}', '${cRank.replace(/'/g, "&#39;")}')">✎</span>
               <a href="#" data-name="${a.name}" onclick="goToDirectoryName(this.getAttribute('data-name')); return false;" class="name-cell" style="color:var(--c1d);text-decoration:none;border-bottom:1px dashed var(--c1);${ampuStyle}">${uin}</a>
             </td>
             <td>${cRank}</td>
@@ -6049,10 +6049,21 @@ function downloadPersonDatesCSV() {
 
 // ── DIRECTORY EDIT ENGINE ──────────────────────────────────────────────────
 function openProfileEditor(canonName, currentName, currentDept, currentRank) {
+    const decode = (str) => {
+        if (!str) return '';
+        const txt = document.createElement("textarea");
+        txt.innerHTML = str;
+        return txt.value;
+    };
+    canonName = decode(canonName);
+    currentName = decode(currentName);
+    currentDept = decode(currentDept);
+    currentRank = decode(currentRank);
+
     document.getElementById('editCanonName').value = canonName;
     document.getElementById('editDisplayName').value = currentName === canonName ? formatNameForUI(canonName) : currentName;
-    document.getElementById('editDept').value = currentDept || '';
-    document.getElementById('editRank').value = currentRank || '';
+    document.getElementById('editDept').value = currentDept;
+    document.getElementById('editRank').value = currentRank;
     document.getElementById('editMergeTarget').value = '';
     document.getElementById('editDelete').checked = false;
     
