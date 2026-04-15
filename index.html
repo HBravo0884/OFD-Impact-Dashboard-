@@ -5522,7 +5522,9 @@ function downloadChartImage(cid){
   const chart=Chart.getChart(cid);
   let prefix = cid;
   if(chart && chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.text){
-      prefix = chart.config.options.plugins.title.text.replace(/[^a-zA-Z0-9]/g, '_');
+      let t = chart.config.options.plugins.title.text;
+      if(Array.isArray(t)) t = t.join('_');
+      prefix = t.replace(/[^a-zA-Z0-9]/g, '_');
   }
   const link=document.createElement('a');
   link.download=prefix+'_export.png';
@@ -5579,7 +5581,8 @@ function generateChartCSV(cid){
   else {
     let titleStr = "";
     if(chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.display) {
-        titleStr = chart.config.options.plugins.title.text;
+        let t = chart.config.options.plugins.title.text;
+        titleStr = Array.isArray(t) ? t.join(' ') : String(t || '');
     }
     if(titleStr) csv += `"Dataset","${titleStr}"\n`;
 
@@ -5606,7 +5609,9 @@ function downloadChartCSV(cid){
   const chart=Chart.getChart(cid);
   let prefix = cid;
   if(chart && chart.config.options.plugins && chart.config.options.plugins.title && chart.config.options.plugins.title.text){
-      prefix = chart.config.options.plugins.title.text.replace(/[^a-zA-Z0-9]/g, '_');
+      let t = chart.config.options.plugins.title.text;
+      if(Array.isArray(t)) t = t.join('_');
+      prefix = t.replace(/[^a-zA-Z0-9]/g, '_');
   }
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const link=document.createElement('a');
