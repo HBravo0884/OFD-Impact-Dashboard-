@@ -4711,8 +4711,10 @@ tbody td{padding:8px 11px;font-size:.8rem;vertical-align:middle}
     <h2 style="margin-top:20px">Data Governance ("God Mode")</h2>
     <p>To assure absolute data fidelity, the pipeline architecture supports administrative override schemas:</p>
     <ul>
-      <li><strong>Quarantine Protocol:</strong> Any surviving profile lacking a valid Department assignment triggers a quarantine. These profiles are barred from entering the UI and exported as `missing_metadata_profiles.csv` for human vetting.</li>
-      <li><strong>Absolute Overrides:</strong> A locally hosted <code>directory_overrides.csv</code> file acts as the ultimate truth. PI's or administrators can utilize this schema to forcefully assert credentials, redirect merge failures, or execute permanent deletions (<code>action_delete='X'</code>) that supersede all algorithmic logic.</li>
+      <li><strong>Quarantine Protocol:</strong> Any surviving profile lacking a valid Department assignment triggers a quarantine. These profiles are barred from entering the UI and exported for human vetting.<br>
+      <a href="missing_metadata_profiles.csv" download style="display:inline-block; margin-top:5px; margin-bottom:10px; background:var(--c4); color:#fff; padding:4px 10px; border-radius:4px; text-decoration:none; font-size:0.85rem">⬇ Download Quarantined Profiles (missing_metadata_profiles.csv)</a></li>
+      <li><strong>Absolute Overrides:</strong> A locally hosted file acts as the ultimate truth. PI's or administrators can utilize this schema to forcefully assert credentials, redirect merge failures, or execute permanent deletions (<code>action_delete='X'</code>) that supersede all algorithmic logic.<br>
+      <a href="directory_overrides.csv" download style="display:inline-block; margin-top:5px; margin-bottom:10px; background:var(--c1); color:#fff; padding:4px 10px; border-radius:4px; text-decoration:none; font-size:0.85rem">⬇ Download Override Schema (directory_overrides.csv)</a></li>
     </ul>
 
     <h2 style="margin-top:20px">Non-Human Accounts Removed</h2>

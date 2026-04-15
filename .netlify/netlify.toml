@@ -7,7 +7,7 @@ redirects = []
 [functions."*"]
 
 [build]
-publish = "/Users/entreprneuros/Examples Impact Dashboard Demo "
+publish = "/Users/entreprneuros/Library/CloudStorage/OneDrive-SharedLibraries-HowardUniversity/Faculty Corner HUCM - OFD Impact Dashboard/OFD/Examples Impact Dashboard Demo"
 publishOrigin = "default"
 
 [build.environment]

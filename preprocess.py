@@ -1481,7 +1481,7 @@ print(f"\n✅  Pipeline complete — {datetime.now().strftime('%B %d, %Y at %I:%
 print(f"\n🚀  Triggering automatic Netlify deployment...")
 print("-" * 58)
 try:
-    subprocess.run(["npx", "netlify-cli", "deploy", "--prod"], cwd=FOLDER, check=True)
+    subprocess.run(["/opt/homebrew/bin/npx", "netlify-cli", "deploy", "--prod"], cwd=FOLDER, check=True)
     print("\n✅  Successfully deployed to Live Netlify Dashboard!")
 except Exception as e:
     print(f"\n❌  Failed to deploy to Netlify automatically: {e}")
